@@ -4,8 +4,7 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
-  useTheme
+  MenuItem
 } from "@mui/material"
 import {
   AccountBox,
@@ -23,8 +22,6 @@ interface IProps {
 
 const AccountMenu: React.FC<IProps> = ({ anchorEl, handleClose }) => {
   const { mode, toggleColorMode } = useColorMode()
-  const { palette } = useTheme()
-  console.log({ palette })
 
   return (
     <Menu

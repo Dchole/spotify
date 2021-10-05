@@ -13,6 +13,7 @@ import {
   createTheme,
   CssBaseline,
   PaletteMode,
+  responsiveFontSizes,
   ThemeProvider /* , useMediaQuery */
 } from "@mui/material"
 import { green, red } from "@mui/material/colors"
@@ -45,20 +46,22 @@ const App = () => {
 
   const theme = useMemo(
     () =>
-      createTheme({
-        palette: {
-          mode, //: prefersDarkMode ? "dark" : "light"
-          primary: {
-            main: green[300]
+      responsiveFontSizes(
+        createTheme({
+          palette: {
+            mode, //: prefersDarkMode ? "dark" : "light"
+            primary: {
+              main: green[300]
+            },
+            secondary: {
+              main: red[500]
+            }
           },
-          secondary: {
-            main: red[500]
+          typography: {
+            fontFamily: "'Nunito', sans-serif"
           }
-        },
-        typography: {
-          fontFamily: "'Nunito', sans-serif"
-        }
-      }),
+        })
+      ),
     [mode /* , prefersDarkMode */]
   )
 
