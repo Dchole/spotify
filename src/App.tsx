@@ -21,6 +21,7 @@ import { green, red } from "@mui/material/colors"
 import Layout from "~/Layout"
 import Home from "#/Home"
 
+const Song = lazy(() => import("#/Song"))
 const Search = lazy(() => import("#/Search"))
 const Playlist = lazy(() => import("#/Playlist"))
 
@@ -75,6 +76,7 @@ const App = () => {
             <Switch>
               <Route path="/" component={Home} exact />
               <Route path="/search" component={Search} />
+              <Route path="/songs/:slug" component={Song} />
               <Route path="/playlists/:slug" component={Playlist} />
             </Switch>
           </Suspense>

@@ -6,8 +6,7 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemText,
-  Typography
+  ListItemText
 } from "@mui/material"
 import { Link } from "react-router-dom"
 
