@@ -6,7 +6,7 @@ const Layout: React.FC = ({ children }) => {
   return (
     <>
       <Header />
-      <Box sx={{ mt: 9 }}>{children}</Box>
+      <Box sx={{ my: 9 }}>{children}</Box>
       <Navigation />
     </>
   )

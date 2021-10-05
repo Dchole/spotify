@@ -22,6 +22,7 @@ import Layout from "~/Layout"
 import Home from "#/Home"
 
 const Search = lazy(() => import("#/Search"))
+const Playlist = lazy(() => import("#/Playlist"))
 
 const defaultContext = {
   mode: "light",
@@ -74,6 +75,7 @@ const App = () => {
             <Switch>
               <Route path="/" component={Home} exact />
               <Route path="/search" component={Search} />
+              <Route path="/playlists/:slug" component={Playlist} />
             </Switch>
           </Suspense>
         </Layout>
