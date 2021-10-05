@@ -20,6 +20,7 @@ import { green, red } from "@mui/material/colors"
 
 import Layout from "~/Layout"
 import Home from "#/Home"
+import PageSpinner from "~/PageSpinner"
 
 const Song = lazy(() => import("#/Song"))
 const Search = lazy(() => import("#/Search"))
@@ -72,7 +73,7 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <Layout>
           <CssBaseline />
-          <Suspense fallback={<div />}>
+          <Suspense fallback={<PageSpinner />}>
             <Switch>
               <Route path="/" component={Home} exact />
               <Route path="/search" component={Search} />

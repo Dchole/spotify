@@ -39,7 +39,9 @@ const SongShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
       mb={4}
     >
       <Text>{album}</Text>
-      <img src={cover} alt={title} className={classes["full-width"]} />
+      <Box width="100%" height="calc(100vw - 32px)">
+        <img src={cover} alt={title} className={classes["full-width"]} />
+      </Box>
       <div>
         <Text variant="h4" component="p">
           {title}

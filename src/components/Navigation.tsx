@@ -1,7 +1,7 @@
 import { Home, LibraryBooks, Search } from "@mui/icons-material"
 import { BottomNavigation, BottomNavigationAction } from "@mui/material"
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { Link, useLocation } from "react-router-dom"
 
 const navLinks = [
   {
@@ -22,7 +22,15 @@ const navLinks = [
 ]
 
 const Navigation = () => {
-  const [value, setValue] = useState(0)
+  const { pathname } = useLocation()
+  const index = navLinks.findIndex(({ path }) => path === pathname)
+
+  const [value, setValue] = useState(index)
+
+  useEffect(() => {
+    const index = navLinks.findIndex(({ path }) => path === pathname)
+    setValue(index)
+  }, [pathname])
 
   return (
     <BottomNavigation
