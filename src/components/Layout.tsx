@@ -1,4 +1,4 @@
-import { Container } from "@mui/material"
+import { Box } from "@mui/system"
 import Header from "./Header"
 import Navigation from "./Navigation"
 
@@ -6,7 +6,7 @@ const Layout: React.FC = ({ children }) => {
   return (
     <>
       <Header />
-      <Container sx={{ mt: 8 }}>{children}</Container>
+      <Box sx={{ mt: 9 }}>{children}</Box>
       <Navigation />
     </>
   )

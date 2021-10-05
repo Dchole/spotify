@@ -1,25 +1,92 @@
 import "@fontsource/nunito"
 
-import { lazy, Suspense } from "react"
+import {
+  createContext,
+  lazy,
+  Suspense,
+  useContext,
+  useMemo,
+  useState
+} from "react"
 import { Route, Switch } from "react-router"
-import { CssBaseline } from "@mui/material"
+import {
+  createTheme,
+  CssBaseline,
+  PaletteMode,
+  ThemeProvider /* , useMediaQuery */
+} from "@mui/material"
+import { green, red } from "@mui/material/colors"
+
 import Layout from "~/Layout"
 import Home from "#/Home"
 
 const Search = lazy(() => import("#/Search"))
 
+const defaultContext = {
+  mode: "light",
+  toggleColorMode: () =>
+    console.error("something went wrong with `ColorModeContext`")
+}
+const ColorModeContext = createContext(defaultContext)
+
 const App = () => {
-  return (
-    <Layout>
-      <CssBaseline />
-      <Switch>
-        <Suspense fallback={<div />}>
-          <Route path="/" component={Home} exact />
-          <Route path="/search" component={Search} />
-        </Suspense>
-      </Switch>
-    </Layout>
+  const [mode, setMode] = useState<PaletteMode>("light")
+  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
+
+  const colorMode = useMemo(
+    () => ({
+      mode,
+      toggleColorMode: () => {
+        setMode(prevMode => (prevMode === "light" ? "dark" : "light"))
+      }
+    }),
+    [mode]
   )
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode, //: prefersDarkMode ? "dark" : "light"
+          primary: {
+            main: green[300]
+          },
+          secondary: {
+            main: red[500]
+          }
+        },
+        typography: {
+          fontFamily: "'Nunito', sans-serif"
+        }
+      }),
+    [mode /* , prefersDarkMode */]
+  )
+
+  return (
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <Layout>
+          <CssBaseline />
+          <Suspense fallback={<div />}>
+            <Switch>
+              <Route path="/" component={Home} exact />
+              <Route path="/search" component={Search} />
+            </Switch>
+          </Suspense>
+        </Layout>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
+  )
+}
+
+export const useColorMode = () => {
+  const colorMode = useContext(ColorModeContext)
+
+  if (!colorMode) {
+    throw new TypeError("`useColorMode` was used outside `ColorModeContext`")
+  }
+
+  return colorMode
 }
 
 export default App
