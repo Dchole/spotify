@@ -25,6 +25,7 @@ import PageSpinner from "~/PageSpinner"
 const Song = lazy(() => import("#/Song"))
 const Album = lazy(() => import("#/Album"))
 const Artist = lazy(() => import("#/Artist"))
+const Library = lazy(() => import("#/Library"))
 const Search = lazy(() => import("#/Search"))
 const Playlist = lazy(() => import("#/Playlist"))
 
@@ -79,6 +80,7 @@ const App = () => {
             <Switch>
               <Route path="/" component={Home} exact />
               <Route path="/search" component={Search} />
+              <Route path="/library" component={Library} />
               <Route path="/songs/:slug" component={Song} />
               <Route path="/albums/:slug" component={Album} />
               <Route path="/artists/:slug" component={Artist} />
