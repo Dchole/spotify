@@ -17,7 +17,7 @@ const Tile: React.FC<IProps> = ({ type, title, cover, alignLeft }) => {
   return (
     <Box
       component={Link}
-      to={`/${type}/${slugify(title)}`}
+      to={`/${type}s/${slugify(title)}`}
       width="fit-content"
       display="flex"
       gap={1.2}

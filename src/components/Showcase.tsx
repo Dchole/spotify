@@ -67,7 +67,7 @@ const Showcase: React.FC<IProps> = ({
             <>
               <span>{author}</span>&bull;<span>{createdAt}</span>&bull;
               <span>
-                {numberOfSongs}, {timeLength}
+                {numberOfSongs} songs, {timeLength} mins
               </span>
             </>
           )}
