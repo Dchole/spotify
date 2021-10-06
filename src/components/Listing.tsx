@@ -21,14 +21,18 @@ interface ISong {
 
 interface IProps {
   songs: ISong[]
-  type: "playlist" | "album"
+  type: "playlist" | "album" | "singles"
+  gutters?: number
 }
 
-const Listing: React.FC<IProps> = ({ type, songs }) => {
+const Listing: React.FC<IProps> = ({ type, songs, gutters }) => {
   return (
     <List>
       {songs.map(song => (
-        <ListItem key={song.title} sx={{ py: 0 }}>
+        <ListItem
+          key={song.title}
+          sx={{ py: gutters, gap: type === "album" ? 1 : undefined }}
+        >
           <ListItemAvatar>
             <Avatar
               component={Link}
@@ -36,6 +40,7 @@ const Listing: React.FC<IProps> = ({ type, songs }) => {
               variant="square"
               src={song.cover}
               alt={song.title}
+              sx={type === "album" ? { width: 60, height: 60 } : undefined}
               imgProps={{
                 width: "50",
                 height: "50",
@@ -56,6 +61,12 @@ const Listing: React.FC<IProps> = ({ type, songs }) => {
                 <>
                   <span>{song.artist}</span>&bull;<span>{song.album}</span>
                 </>
+              ) : type === "singles" ? (
+                <>
+                  <span>{new Date(song.dateAdded || "").getFullYear()}</span>
+                  &bull;
+                  <span>{song.album}</span>
+                </>
               ) : undefined
             }
             secondaryTypographyProps={{
@@ -72,6 +83,10 @@ const Listing: React.FC<IProps> = ({ type, songs }) => {
       ))}
     </List>
   )
+}
+
+Listing.defaultProps = {
+  gutters: 0
 }
 
 export default Listing

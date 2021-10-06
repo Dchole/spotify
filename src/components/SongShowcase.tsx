@@ -11,7 +11,7 @@ interface IProps {
 }
 
 type TTypography = TypographyTypeMap["props"] & {
-  component?: React.ReactNode | React.ElementType
+  component?: React.ReactNode & React.ElementType
 }
 
 const Text = forwardRef<HTMLParagraphElement | HTMLHeadingElement, TTypography>(
