@@ -21,6 +21,7 @@ import { green, red } from "@mui/material/colors"
 import Layout from "~/Layout"
 import Home from "#/Home"
 import PageSpinner from "~/PageSpinner"
+import SearchProvider from "~/SearchContext"
 
 const Song = lazy(() => import("#/Song"))
 const Album = lazy(() => import("#/Album"))
@@ -74,20 +75,22 @@ const App = () => {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Layout>
-          <CssBaseline />
-          <Suspense fallback={<PageSpinner />}>
-            <Switch>
-              <Route path="/" component={Home} exact />
-              <Route path="/search" component={Search} />
-              <Route path="/library" component={Library} />
-              <Route path="/songs/:slug" component={Song} />
-              <Route path="/albums/:slug" component={Album} />
-              <Route path="/artists/:slug" component={Artist} />
-              <Route path="/playlists/:slug" component={Playlist} />
-            </Switch>
-          </Suspense>
-        </Layout>
+        <SearchProvider>
+          <Layout>
+            <CssBaseline />
+            <Suspense fallback={<PageSpinner />}>
+              <Switch>
+                <Route path="/" component={Home} exact />
+                <Route path="/search" component={Search} />
+                <Route path="/library" component={Library} />
+                <Route path="/songs/:slug" component={Song} />
+                <Route path="/albums/:slug" component={Album} />
+                <Route path="/artists/:slug" component={Artist} />
+                <Route path="/playlists/:slug" component={Playlist} />
+              </Switch>
+            </Suspense>
+          </Layout>
+        </SearchProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   )
