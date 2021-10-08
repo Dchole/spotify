@@ -17,7 +17,12 @@ const Volume = lazy(() => import("~/Volume"))
 const [song] = songs
 
 const Song = () => {
+  const [volume, setVolume] = useState(50)
   const [volumeEl, setVolumeEl] = useState<HTMLButtonElement | null>(null)
+
+  const handleVolumeChange = (_event: Event, newValue: number | number[]) => {
+    setVolume(newValue as number)
+  }
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setVolumeEl(event.currentTarget)
@@ -84,7 +89,12 @@ const Song = () => {
           <VolumeUp />
         </IconButton>
       </Grid>
-      <Volume anchorEl={volumeEl} handleClose={handleClose} volume={50} />
+      <Volume
+        volume={volume}
+        anchorEl={volumeEl}
+        handleClose={handleClose}
+        handleChange={handleVolumeChange}
+      />
     </Container>
   )
 }
