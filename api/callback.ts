@@ -1,15 +1,9 @@
 import { VercelRequest, VercelResponse } from "@vercel/node"
 import { serialize } from "cookie"
-import SpotifyWebApi from "spotify-web-api-node"
+import { spotifyApi } from "../spotify-api.config"
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
   if (req.method === "POST") {
-    const spotifyApi = new SpotifyWebApi({
-      clientId: process.env.SPOTIFY_CLIENT_ID,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-      redirectUri: "http://localhost:3000/auth"
-    })
-
     const { body } = await spotifyApi.authorizationCodeGrant(req.body.code)
     const { access_token, refresh_token } = body
 

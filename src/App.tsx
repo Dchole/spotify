@@ -77,25 +77,25 @@ const App = () => {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <SearchProvider>
-          <Layout>
-            <CssBaseline />
-            <Suspense fallback={<PageSpinner />}>
-              <Switch>
-                <Route path="/auth" component={Auth} />
-                <AuthProvider>
+        <AuthProvider>
+          <SearchProvider>
+            <Layout>
+              <CssBaseline />
+              <Suspense fallback={<PageSpinner />}>
+                <Switch>
                   <Route path="/" component={Home} exact />
+                  <Route path="/auth" component={Auth} />
                   <Route path="/search" component={Search} />
                   <Route path="/library" component={Library} />
                   <Route path="/songs/:slug" component={Song} />
                   <Route path="/albums/:slug" component={Album} />
                   <Route path="/artists/:slug" component={Artist} />
                   <Route path="/playlists/:slug" component={Playlist} />
-                </AuthProvider>
-              </Switch>
-            </Suspense>
-          </Layout>
-        </SearchProvider>
+                </Switch>
+              </Suspense>
+            </Layout>
+          </SearchProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   )

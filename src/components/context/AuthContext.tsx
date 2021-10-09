@@ -1,14 +1,22 @@
 import { createContext, useContext, useEffect, useState } from "react"
 
+interface IUser {
+  id: string
+  name: string
+  href: string
+  images: SpotifyApi.ImageObject[]
+}
+
 interface IContextProps {
-  user: unknown
+  user: IUser | null
   token: string
+  setToken: React.Dispatch<React.SetStateAction<string>>
 }
 
 const AuthContext = createContext<IContextProps | null>(null)
 
 const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState("")
+  const [user, setUser] = useState<IUser | null>(null)
   const [token, setToken] = useState("")
 
   useEffect(() => {
@@ -28,8 +36,22 @@ const AuthProvider: React.FC = ({ children }) => {
       })
   }, [])
 
+  useEffect(() => {
+    if (token) {
+      fetch("/api/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => res.json())
+        .then(user => setUser(user))
+        .catch(err => console.log(err.message))
+    }
+  }, [token])
+
   return (
-    <AuthContext.Provider value={{ user, token }}>
+    <AuthContext.Provider value={{ user, token, setToken }}>
       {children}
     </AuthContext.Provider>
   )
