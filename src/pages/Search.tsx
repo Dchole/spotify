@@ -7,7 +7,7 @@ import {
   ListItemText,
   Typography
 } from "@mui/material"
-import { useSearch } from "~/SearchContext"
+import { useSearch } from "~/context/SearchContext"
 
 const Search = () => {
   const { autocompleteProps } = useSearch()

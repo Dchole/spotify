@@ -1,7 +1,7 @@
 import { Collapse, OutlinedInput } from "@mui/material"
 import { Box } from "@mui/system"
 import { useLocation } from "react-router"
-import { useSearch } from "~/SearchContext"
+import { useSearch } from "~/context/SearchContext"
 
 const Search = () => {
   const { pathname } = useLocation()

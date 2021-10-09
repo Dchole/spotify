@@ -28,7 +28,7 @@ const Tile: React.FC<IProps> = ({ type, title, cover, alignLeft }) => {
         src={
           cover || `/src/assets/${type === "artist" ? "artist" : "album"}.svg`
         }
-        alt={title}
+        alt=""
         loading="lazy"
         width={galaxyFold ? "100" : iPhone5 ? "124" : "140"}
         height={galaxyFold ? "100" : iPhone5 ? "124" : "140"}

@@ -34,6 +34,7 @@ const Navigation = () => {
 
   return (
     <BottomNavigation
+      color="red"
       component="nav"
       showLabels
       value={value}
@@ -46,7 +47,7 @@ const Navigation = () => {
         bottom: 0,
         width: "100%",
         borderTop: "1.5px solid",
-        borderTopColor: theme => theme.palette.divider
+        borderTopColor: "divider"
       }}
     >
       {navLinks.map(({ label, path, icon }) => (
@@ -56,6 +57,7 @@ const Navigation = () => {
           icon={icon}
           component={Link}
           to={path}
+          sx={{ "&.Mui-selected": { color: "primary.dark" } }}
         />
       ))}
     </BottomNavigation>

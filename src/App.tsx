@@ -14,16 +14,18 @@ import {
   CssBaseline,
   PaletteMode,
   responsiveFontSizes,
-  ThemeProvider /* , useMediaQuery */
+  ThemeProvider
 } from "@mui/material"
 import { green, red } from "@mui/material/colors"
 
 import Layout from "~/Layout"
 import Home from "#/Home"
 import PageSpinner from "~/PageSpinner"
-import SearchProvider from "~/SearchContext"
+import SearchProvider from "~/context/SearchContext"
+import AuthProvider from "~/context/AuthContext"
 
 const Song = lazy(() => import("#/Song"))
+const Auth = lazy(() => import("#/Auth"))
 const Album = lazy(() => import("#/Album"))
 const Artist = lazy(() => import("#/Artist"))
 const Library = lazy(() => import("#/Library"))
@@ -58,7 +60,7 @@ const App = () => {
           palette: {
             mode, //: prefersDarkMode ? "dark" : "light"
             primary: {
-              main: green[300]
+              main: green[400]
             },
             secondary: {
               main: red[500]
@@ -80,13 +82,16 @@ const App = () => {
             <CssBaseline />
             <Suspense fallback={<PageSpinner />}>
               <Switch>
-                <Route path="/" component={Home} exact />
-                <Route path="/search" component={Search} />
-                <Route path="/library" component={Library} />
-                <Route path="/songs/:slug" component={Song} />
-                <Route path="/albums/:slug" component={Album} />
-                <Route path="/artists/:slug" component={Artist} />
-                <Route path="/playlists/:slug" component={Playlist} />
+                <Route path="/auth" component={Auth} />
+                <AuthProvider>
+                  <Route path="/" component={Home} exact />
+                  <Route path="/search" component={Search} />
+                  <Route path="/library" component={Library} />
+                  <Route path="/songs/:slug" component={Song} />
+                  <Route path="/albums/:slug" component={Album} />
+                  <Route path="/artists/:slug" component={Artist} />
+                  <Route path="/playlists/:slug" component={Playlist} />
+                </AuthProvider>
               </Switch>
             </Suspense>
           </Layout>
