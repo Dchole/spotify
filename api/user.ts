@@ -12,8 +12,8 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
   res.json({
     id: body.id,
     name: body.display_name,
-    href: body.href,
-    images: body.images
+    accountURL: body.href,
+    photoURL: body.images[0].url
   })
 }
 

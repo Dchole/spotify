@@ -12,10 +12,12 @@ import {
 } from "@mui/material"
 import { ArrowBack } from "@mui/icons-material"
 import Search from "./Search"
+import useUser from "@/hooks/useUser"
 
 const AccountMenu = lazy(() => import("./AccountMenu"))
 
 const Header = () => {
+  const { user } = useUser()
   const { goBack } = useHistory()
   const { pathname } = useLocation()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -64,7 +66,11 @@ const Header = () => {
           <Search />
         </Box>
         <IconButton aria-label="open menu" onClick={handleOpen}>
-          <Avatar sx={{ bgcolor: theme => theme.palette.secondary.light }} />
+          <Avatar
+            sx={{ bgcolor: theme => theme.palette.secondary.light }}
+            src={user?.photoURL || ""}
+            alt="profile"
+          />
         </IconButton>
       </Toolbar>
       <Suspense fallback={<div />}>

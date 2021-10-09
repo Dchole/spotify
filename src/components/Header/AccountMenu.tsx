@@ -14,6 +14,7 @@ import {
   OpenInNew
 } from "@mui/icons-material"
 import { useColorMode } from "@/App"
+import useUser from "@/hooks/useUser"
 
 interface IProps {
   anchorEl: HTMLButtonElement | null
