@@ -2,7 +2,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node"
 import { serialize } from "cookie"
 import SpotifyWebApi from "spotify-web-api-node"
 
-export const handler = async (req: VercelRequest, res: VercelResponse) => {
+const handler = async (req: VercelRequest, res: VercelResponse) => {
   if (req.method === "POST") {
     const spotifyApi = new SpotifyWebApi({
       clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -31,3 +31,5 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
     res.status(404).end()
   }
 }
+
+export default handler
