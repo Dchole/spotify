@@ -1,4 +1,5 @@
-interface ImportMetaEnv extends Readonly<Record<string, string>> {
+interface ImportMetaEnv
+  extends Readonly<Record<string, string | boolean | undefined>> {
   readonly VITE_SPOTIFY_CLIENT_ID: string
   readonly VITE_SPOTIFY_CLIENT_SECRET: string
   readonly VITE_FIREBASE_APP_ID: string

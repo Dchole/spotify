@@ -2,7 +2,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node"
 import { spotifyApi } from "../spotify-api.config"
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
-  const token = req.headers.authorization.split(" ")[1]
+  const token = req.headers.authorization?.split(" ")[1]
 
   if (!token) return res.status(401).end()
 
@@ -13,7 +13,7 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
     id: body.id,
     name: body.display_name,
     accountURL: body.href,
-    photoURL: body.images[0].url
+    photoURL: body.images?.[0].url
   })
 }
 
