@@ -8,7 +8,7 @@ import albumFallback from "@/assets/album.svg"
 interface IProps {
   cover?: string
   title: string
-  type: "artist" | "playlist" | "album"
+  type: "artist" | "playlist" | "album" | "track"
   alignLeft?: boolean
 }
 
