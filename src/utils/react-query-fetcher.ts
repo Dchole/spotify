@@ -7,7 +7,5 @@ export const fetcher = async ({ queryKey }: QueryFunctionContext) => {
 
   return fetch(`/api/${apiRoute}`, {
     headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
-    .catch(err => console.log(err))
+  }).then(res => res.json())
 }

@@ -1,4 +1,4 @@
-import { fetcher } from "@/utils/react-query-fetcher"
+import { fetcher } from "@/utils"
 import { useQuery } from "react-query"
 
 interface IRecent {

@@ -1,13 +1,14 @@
-import { card } from "@/data/card"
 import { Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import Tile from "~/Tile"
 import usePlaylists from "@/hooks/usePlaylists"
 import useRecent from "@/hooks/useRecent"
+import useTopTracks from "@/hooks/useTopTracks"
 
 const Home = () => {
   const { playlists } = usePlaylists()
   const { playHistory } = useRecent()
+  const { topTracks } = useTopTracks()
 
   return (
     <Box component="main" width="100%">
@@ -54,21 +55,28 @@ const Home = () => {
           </Box>
         </Box>
       )}
-      <Box component="section" sx={{ mb: 3 }} aria-labelledby="top-playlists">
-        <Typography
-          id="top-playlists"
-          variant="h4"
-          component="h2"
-          sx={{ pl: 2 }}
-        >
-          Top Playlists
-        </Typography>
-        <Box display="flex" gap={3} overflow="scroll" px={3} pt={2} pb={3}>
-          {[1, 2, 3].map(i => (
-            <Tile key={i} title={card.title} type="album" />
-          ))}
+      {Boolean(topTracks?.length) && (
+        <Box component="section" sx={{ mb: 3 }} aria-labelledby="top-tracks">
+          <Typography
+            id="top-tracks"
+            variant="h4"
+            component="h2"
+            sx={{ pl: 2 }}
+          >
+            Top Tracks
+          </Typography>
+          <Box display="flex" gap={3} overflow="scroll" px={3} pt={2} pb={3}>
+            {topTracks?.map(({ id, name, type, album }) => (
+              <Tile
+                key={id}
+                title={name}
+                type={type}
+                cover={album.images[0].url}
+              />
+            ))}
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   )
 }
