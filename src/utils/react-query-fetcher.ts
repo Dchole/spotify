@@ -5,8 +5,6 @@ export const fetcher =
   async ({ queryKey }: QueryFunctionContext<"user">): Promise<DataType> => {
     const [apiRoute] = queryKey
 
-    console.log({ token })
-
     return fetch(`/api/${apiRoute}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
