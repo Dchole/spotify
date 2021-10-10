@@ -1,5 +1,7 @@
 import { Typography } from "@mui/material"
 import { Box } from "@mui/system"
+import artistFallback from "@/assets/artist.svg"
+import albumFallback from "@/assets/album.svg"
 
 interface IProps {
   type: "album" | "playlist" | "artist"
@@ -44,9 +46,7 @@ const Showcase: React.FC<IProps> = ({
         </Typography>
       )}
       <img
-        src={
-          cover || `/src/assets/${type === "artist" ? "artist" : "album"}.svg`
-        }
+        src={cover || type === "artist" ? artistFallback : albumFallback}
         alt={title}
         width="200"
         height="200"

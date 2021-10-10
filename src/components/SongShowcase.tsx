@@ -2,6 +2,7 @@ import { Typography, TypographyTypeMap } from "@mui/material"
 import { Box } from "@mui/system"
 import { forwardRef } from "react"
 import classes from "@/styles/full-width.module.css"
+import coverFallback from "@/assets/song.svg"
 
 interface IProps {
   title: string
@@ -40,7 +41,11 @@ const SongShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
     >
       <Text>{album}</Text>
       <Box width="100%" height="calc(100vw - 32px)">
-        <img src={cover} alt={title} className={classes["full-width"]} />
+        <img
+          src={cover || coverFallback}
+          alt={title}
+          className={classes["full-width"]}
+        />
       </Box>
       <div>
         <Text variant="h4" component="p">
@@ -52,10 +57,6 @@ const SongShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
       </div>
     </Box>
   )
-}
-
-SongShowcase.defaultProps = {
-  cover: "/src/assets/song.svg"
 }
 
 export default SongShowcase

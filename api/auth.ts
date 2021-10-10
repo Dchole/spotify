@@ -1,3 +1,4 @@
+import { createHash } from "crypto"
 import { VercelRequest, VercelResponse } from "@vercel/node"
 import { spotifyApi } from "../spotify-api.config"
 
@@ -14,7 +15,12 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
     return res.json({ access_token })
   }
 
-  const authURL = spotifyApi.createAuthorizeURL(scopes, "34fFs29kd09")
+  const state = createHash("sha256")
+    .update("state", "utf8")
+    .digest("hex")
+    .substring(0, 11)
+
+  const authURL = spotifyApi.createAuthorizeURL(scopes, state)
 
   res.json({ authURL })
 }

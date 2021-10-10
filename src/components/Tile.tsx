@@ -2,6 +2,8 @@ import { slugify } from "@/utils"
 import { Typography, useMediaQuery } from "@mui/material"
 import { Box } from "@mui/system"
 import { Link } from "react-router-dom"
+import artistFallback from "@/assets/artist.svg"
+import albumFallback from "@/assets/album.svg"
 
 interface IProps {
   cover?: string
@@ -25,9 +27,7 @@ const Tile: React.FC<IProps> = ({ type, title, cover, alignLeft }) => {
       sx={{ textDecoration: "none" }}
     >
       <img
-        src={
-          cover || `/src/assets/${type === "artist" ? "artist" : "album"}.svg`
-        }
+        src={cover || type === "artist" ? artistFallback : albumFallback}
         alt=""
         loading="lazy"
         width={galaxyFold ? "100" : iPhone5 ? "124" : "140"}

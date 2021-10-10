@@ -9,10 +9,11 @@ import {
   ListItemText
 } from "@mui/material"
 import { Link } from "react-router-dom"
+import coverFallback from "@/assets/song.svg"
 
 interface ISong {
   title: string
-  cover: string
+  cover?: string
   album: string
   artist: string
   listeners: number
@@ -38,7 +39,7 @@ const Listing: React.FC<IProps> = ({ type, songs, gutters }) => {
               component={Link}
               to={`/songs/${slugify(song.title)}`}
               variant="square"
-              src={song.cover}
+              src={song.cover || coverFallback}
               alt={song.title}
               sx={type === "album" ? { width: 60, height: 60 } : undefined}
               imgProps={{

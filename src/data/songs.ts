@@ -1,7 +1,9 @@
+import coverFallback from "@/assets/album.svg"
+
 export const songs = [
   {
     title: "electron",
-    cover: "/src/assets/album.svg",
+    cover: coverFallback,
     album: "retro",
     artist: "retrospect",
     listeners: 12_231_100,
@@ -9,7 +11,7 @@ export const songs = [
   },
   {
     title: "run",
-    cover: "/src/assets/album.svg",
+    cover: coverFallback,
     album: "retro",
     artist: "retrospect",
     listeners: 12_231_100,
@@ -17,7 +19,7 @@ export const songs = [
   },
   {
     title: "change",
-    cover: "/src/assets/album.svg",
+    cover: coverFallback,
     album: "retro",
     artist: "retrospect",
     listeners: 12_231_100,
@@ -25,7 +27,7 @@ export const songs = [
   },
   {
     title: "fire",
-    cover: "/src/assets/album.svg",
+    cover: coverFallback,
     album: "retro",
     artist: "retrospect",
     listeners: 12_231_100,
@@ -33,7 +35,7 @@ export const songs = [
   },
   {
     title: "water",
-    cover: "/src/assets/album.svg",
+    cover: coverFallback,
     album: "retro",
     artist: "retrospect",
     listeners: 12_231_100,

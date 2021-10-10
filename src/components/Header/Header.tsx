@@ -8,7 +8,8 @@ import {
   IconButton,
   Theme,
   Toolbar,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material"
 import { ArrowBack } from "@mui/icons-material"
 import Search from "./Search"
@@ -18,6 +19,7 @@ const AccountMenu = lazy(() => import("./AccountMenu"))
 
 const Header = () => {
   const { user } = useUser()
+  const { palette } = useTheme()
   const { goBack } = useHistory()
   const { pathname } = useLocation()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -28,7 +30,7 @@ const Header = () => {
   const handleClose = () => setAnchorEl(null)
 
   return (
-    <AppBar elevation={0}>
+    <AppBar elevation={palette.mode === "light" ? 0 : 2}>
       <Toolbar>
         {pathname !== "/search" && (
           <IconButton aria-label="go back" onClick={goBack} sx={{ zIndex: 0 }}>
@@ -39,7 +41,7 @@ const Header = () => {
           position="relative"
           flexGrow={1}
           zIndex={1}
-          bgcolor="primary.main"
+          bgcolor={palette.mode === "light" ? "primary.main" : "grey.900"}
           sx={{
             transform:
               deepLevel || pathname === "/search"
