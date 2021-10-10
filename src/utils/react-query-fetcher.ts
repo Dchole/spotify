@@ -1,13 +1,13 @@
+import { getAccessToken } from "@/token"
 import { QueryFunctionContext } from "react-query"
 
-export const fetcher =
-  <DataType>(token: string) =>
-  async ({ queryKey }: QueryFunctionContext<"user">): Promise<DataType> => {
-    const [apiRoute] = queryKey
+export const fetcher = async ({ queryKey }: QueryFunctionContext) => {
+  const [apiRoute] = queryKey
+  const token = getAccessToken()
 
-    return fetch(`/api/${apiRoute}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .catch(err => console.log(err))
-  }
+  return fetch(`/api/${apiRoute}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .catch(err => console.log(err))
+}

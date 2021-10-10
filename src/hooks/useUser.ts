@@ -1,6 +1,5 @@
 import { fetcher } from "@/utils/react-query-fetcher"
 import { useQuery } from "react-query"
-import { useAuth } from "~/context/AuthContext"
 
 interface IUser {
   id: string
@@ -10,12 +9,7 @@ interface IUser {
 }
 
 const useUser = () => {
-  const { token } = useAuth()
-  const {
-    data: user,
-    error,
-    isFetching
-  } = useQuery("user", fetcher<IUser>(token))
+  const { data: user, error, isFetching } = useQuery<IUser>("user", fetcher)
 
   return { user, error, isFetching }
 }

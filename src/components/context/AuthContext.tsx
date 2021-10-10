@@ -1,3 +1,4 @@
+import { setAccessToken } from "@/token"
 import { createContext, useContext, useEffect, useState } from "react"
 
 interface IContextProps {
@@ -23,6 +24,7 @@ const AuthProvider: React.FC = ({ children }) => {
           window.location.href = authURL
         }
 
+        setAccessToken(access_token || "")
         setToken(access_token || "")
       })
   }, [])

@@ -27,7 +27,7 @@ const Tile: React.FC<IProps> = ({ type, title, cover, alignLeft }) => {
       sx={{ textDecoration: "none" }}
     >
       <img
-        src={cover || type === "artist" ? artistFallback : albumFallback}
+        src={cover}
         alt=""
         loading="lazy"
         width={galaxyFold ? "100" : iPhone5 ? "124" : "140"}
@@ -38,6 +38,12 @@ const Tile: React.FC<IProps> = ({ type, title, cover, alignLeft }) => {
       </Typography>
     </Box>
   )
+}
+
+Tile.defaultProps = {
+  get cover() {
+    return this.type === "artist" ? artistFallback : albumFallback
+  }
 }
 
 export default Tile
