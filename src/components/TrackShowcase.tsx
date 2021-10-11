@@ -28,7 +28,7 @@ const Text = forwardRef<HTMLParagraphElement | HTMLHeadingElement, TTypography>(
   }
 )
 
-const SongShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
+const TrackShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
   return (
     <Box
       component="section"
@@ -41,11 +41,7 @@ const SongShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
     >
       <Text>{album}</Text>
       <Box width="100%" height="calc(100vw - 32px)">
-        <img
-          src={cover || coverFallback}
-          alt={title}
-          className={classes["full-width"]}
-        />
+        <img src={cover} alt={title} className={classes["full-width"]} />
       </Box>
       <div>
         <Text variant="h4" component="p">
@@ -59,4 +55,8 @@ const SongShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
   )
 }
 
-export default SongShowcase
+TrackShowcase.defaultProps = {
+  cover: coverFallback
+}
+
+export default TrackShowcase

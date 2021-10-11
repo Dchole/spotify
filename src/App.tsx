@@ -24,7 +24,7 @@ import PageSpinner from "~/PageSpinner"
 import SearchProvider from "~/context/SearchContext"
 import AuthProvider from "~/context/AuthContext"
 
-const Song = lazy(() => import("#/Song"))
+const Track = lazy(() => import("#/Track"))
 const Auth = lazy(() => import("#/Auth"))
 const Album = lazy(() => import("#/Album"))
 const Artist = lazy(() => import("#/Artist"))
@@ -87,7 +87,7 @@ const App = () => {
                   <Route path="/auth" component={Auth} />
                   <Route path="/search" component={Search} />
                   <Route path="/library" component={Library} />
-                  <Route path="/songs/:slug" component={Song} />
+                  <Route path="/tracks/:slug" component={Track} />
                   <Route path="/albums/:slug" component={Album} />
                   <Route path="/artists/:slug" component={Artist} />
                   <Route path="/playlists/:slug" component={Playlist} />

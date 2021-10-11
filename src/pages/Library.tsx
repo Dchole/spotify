@@ -1,4 +1,3 @@
-import { card } from "@/data/card"
 import useFollowedArtists from "@/hooks/useFollowedArtists"
 import usePlaylists from "@/hooks/usePlaylists"
 import useSavedAlbums from "@/hooks/useSavedAlbums"
@@ -13,6 +12,7 @@ const Library = () => {
   const { playlists } = usePlaylists()
   const { albums } = useSavedAlbums()
   const { artists } = useFollowedArtists()
+
   const [value, setValue] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     const tab = params.get("tab") || tabs[0]

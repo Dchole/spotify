@@ -8,7 +8,7 @@ import {
   SkipPrevious,
   VolumeUp
 } from "@mui/icons-material"
-import SongShowcase from "~/SongShowcase"
+import TrackShowcase from "~/TrackShowcase"
 import { songs } from "@/data/songs"
 import { lazy, useState } from "react"
 
@@ -16,7 +16,7 @@ const Volume = lazy(() => import("~/Volume"))
 
 const [song] = songs
 
-const Song = () => {
+const Track = () => {
   const [volume, setVolume] = useState(50)
   const [volumeEl, setVolumeEl] = useState<HTMLButtonElement | null>(null)
 
@@ -32,7 +32,7 @@ const Song = () => {
 
   return (
     <Container component="main">
-      <SongShowcase
+      <TrackShowcase
         title="still feel"
         artist="half life"
         album="Now, Not yet"
@@ -99,4 +99,4 @@ const Song = () => {
   )
 }
 
-export default Song
+export default Track
