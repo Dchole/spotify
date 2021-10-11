@@ -6,6 +6,7 @@ export const fetcher = async ({ queryKey }: QueryFunctionContext) => {
   const token = getAccessToken()
 
   return fetch(`/api/${apiRoute}`, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
+    credentials: "include"
   }).then(res => res.json())
 }

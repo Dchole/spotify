@@ -1,4 +1,7 @@
 import { card } from "@/data/card"
+import useFollowedArtists from "@/hooks/useFollowedArtists"
+import usePlaylists from "@/hooks/usePlaylists"
+import useSavedAlbums from "@/hooks/useSavedAlbums"
 import { Stack, Tab, Tabs } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react"
@@ -7,6 +10,9 @@ import Tabpanel, { tabs } from "~/Tabpanel"
 import Tile from "~/Tile"
 
 const Library = () => {
+  const { playlists } = usePlaylists()
+  const { albums } = useSavedAlbums()
+  const { artists } = useFollowedArtists()
   const [value, setValue] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     const tab = params.get("tab") || tabs[0]
@@ -60,9 +66,14 @@ const Library = () => {
             flexWrap="wrap"
             justifyContent="space-between"
           >
-            {[...new Array(8)].map((_, i) => (
-              <Box key={i} mb={2.5}>
-                <Tile title={card.title} type="playlist" alignLeft />
+            {playlists?.map(({ id, name, type, images }) => (
+              <Box key={id} mb={2.5}>
+                <Tile
+                  title={name}
+                  type={type}
+                  cover={images[1]?.url}
+                  alignLeft
+                />
               </Box>
             ))}
           </Stack>
@@ -74,9 +85,14 @@ const Library = () => {
             flexWrap="wrap"
             justifyContent="space-between"
           >
-            {[...new Array(8)].map((_, i) => (
-              <Box key={i} mb={2.5}>
-                <Tile title={card.title} type="album" alignLeft />
+            {albums?.map(({ album }) => (
+              <Box key={album.id} mb={2.5}>
+                <Tile
+                  title={album.name}
+                  type={album.type}
+                  cover={album.images[1]?.url}
+                  alignLeft
+                />
               </Box>
             ))}
           </Stack>
@@ -88,9 +104,9 @@ const Library = () => {
             flexWrap="wrap"
             justifyContent="space-between"
           >
-            {[...new Array(8)].map((_, i) => (
-              <Box key={i} mb={2.5}>
-                <Tile title={card.title} type="artist" alignLeft />
+            {artists?.map(({ id, name, type, images }) => (
+              <Box key={id} mb={2.5}>
+                <Tile title={name} type={type} cover={images[1]?.url} />
               </Box>
             ))}
           </Stack>

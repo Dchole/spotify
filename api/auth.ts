@@ -3,7 +3,12 @@ import { VercelRequest, VercelResponse } from "@vercel/node"
 import { spotifyApi } from "../spotify-api.config"
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
-  const scopes = ["user-read-private", "user-read-email"]
+  const scopes = [
+    "user-read-private",
+    "user-follow-read",
+    "user-library-read",
+    "user-read-email"
+  ]
 
   if (req.cookies.refresh_token) {
     spotifyApi.setRefreshToken(req.cookies.refresh_token)

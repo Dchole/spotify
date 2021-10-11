@@ -4,6 +4,7 @@ import { Box } from "@mui/system"
 import { Link } from "react-router-dom"
 import artistFallback from "@/assets/artist.svg"
 import albumFallback from "@/assets/album.svg"
+import classes from "@/styles/rounded.module.css"
 
 interface IProps {
   cover?: string
@@ -30,6 +31,7 @@ const Tile: React.FC<IProps> = ({ type, title, cover, alignLeft }) => {
         src={cover}
         alt=""
         loading="lazy"
+        className={type === "artist" ? classes.rounded : undefined}
         width={galaxyFold ? "100" : iPhone5 ? "124" : "140"}
         height={galaxyFold ? "100" : iPhone5 ? "124" : "140"}
       />
