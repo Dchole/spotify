@@ -1,6 +1,4 @@
-import { card } from "@/data/card"
-import { songs } from "@/data/songs"
-import useAlbum from "@/hooks/useAlbum"
+import useArtist from "@/hooks/useArtist"
 import { ChevronRight, PlayCircle, Share } from "@mui/icons-material"
 import { Button, Container, IconButton, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
@@ -9,24 +7,15 @@ import Listing from "~/Listing"
 import Showcase from "~/Showcase"
 import Tile from "~/Tile"
 
-const artist = {
-  name: "Image Dragons",
-  numberOfListeners: 10
-}
-
 const Artist = () => {
-  const { album } = useAlbum()
+  const { info, tracks, albums } = useArtist()
   const [showingMore, setShowingMore] = useState(false)
-  const [showingSongs, setShowingSongs] = useState(
-    album?.tracks.items.slice(0, 3)
-  )
+  const [showingSongs, setShowingSongs] = useState(tracks?.slice(0, 3))
 
   const showMore = () => setShowingMore(!showingMore)
 
   useEffect(() => {
-    setShowingSongs(
-      showingMore ? album?.tracks.items : album?.tracks.items.slice(0, 3)
-    )
+    setShowingSongs(showingMore ? tracks : tracks?.slice(0, 3))
   }, [showingMore])
 
   return (
@@ -34,8 +23,9 @@ const Artist = () => {
       <Container>
         <Showcase
           type="artist"
-          name={artist.name}
-          numberOfListeners={artist.numberOfListeners}
+          cover={info?.images[1]?.url}
+          name={info?.name}
+          numberOfListeners={info?.popularity}
         />
         <Stack
           direction="row"
@@ -60,12 +50,12 @@ const Artist = () => {
         mb={2}
         component="section"
         id="popular-songs"
-        aria-label={`top songs by ${artist.name}`}
+        aria-label={`top songs by ${info?.name}`}
       >
         <Typography variant="h4" sx={{ ml: 2 }}>
-          Popular Songs
+          Popular Tracks
         </Typography>
-        <Listing tracks={[]} type="album" gutters={1} />
+        <Listing tracks={tracks} type="singles" gutters={1} />
         <Button
           color="inherit"
           endIcon={
@@ -93,7 +83,7 @@ const Artist = () => {
       <Container
         component="section"
         id="albums"
-        aria-label={`${artist.name}'s albums'`}
+        aria-label={`${info?.name}'s albums'`}
       >
         <Typography variant="h4" sx={{ mb: 1.8 }}>
           Albums
@@ -104,19 +94,19 @@ const Artist = () => {
           flexWrap="wrap"
           justifyContent="space-between"
         >
-          {[...new Array(8)].map((_, i) => (
-            <Box key={i} mb={2.5}>
-              <Tile title={card.title} type="album" alignLeft />
+          {albums?.items.map(({ id, name, images }) => (
+            <Box key={id} mb={2.5}>
+              <Tile
+                id={id}
+                title={name}
+                cover={images[1]?.url}
+                type="album"
+                alignLeft
+              />
             </Box>
           ))}
         </Stack>
       </Container>
-      <section id="singles-eps" aria-labelledby="singles-heading">
-        <Typography id="singles-heading" variant="h4" sx={{ ml: 2 }}>
-          Singles and EPs
-        </Typography>
-        <Listing type="singles" tracks={showingSongs || []} />
-      </section>
     </main>
   )
 }

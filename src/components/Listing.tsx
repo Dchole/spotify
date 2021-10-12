@@ -63,7 +63,9 @@ const Listing: React.FC<IProps> = ({
                 </>
               ) : type === "singles" ? (
                 <>
-                  <span>{new Date().getFullYear()}</span>
+                  <span>
+                    {new Date(track.album.release_date).getFullYear()}
+                  </span>
                   &bull;
                   <span>{track.album?.name}</span>
                 </>
