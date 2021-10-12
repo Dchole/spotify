@@ -45,12 +45,7 @@ const Showcase: React.FC<IProps> = ({
           {type}
         </Typography>
       )}
-      <img
-        src={cover || type === "artist" ? artistFallback : albumFallback}
-        alt={title}
-        width="200"
-        height="200"
-      />
+      <img src={cover} alt={title} width="200" height="200" />
       <div>
         <Typography align="center" variant="h4">
           {title || name}
@@ -75,6 +70,12 @@ const Showcase: React.FC<IProps> = ({
       </div>
     </Box>
   )
+}
+
+Showcase.defaultProps = {
+  get cover() {
+    return this.type === "artist" ? artistFallback : albumFallback
+  }
 }
 
 export default Showcase

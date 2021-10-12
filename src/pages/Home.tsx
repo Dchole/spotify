@@ -24,7 +24,13 @@ const Home = () => {
           </Typography>
           <Box display="flex" gap={3} overflow="scroll" px={3} pt={2} pb={3}>
             {playlists?.map(({ id, name, type, images }) => (
-              <Tile key={id} title={name} type={type} cover={images[1]?.url} />
+              <Tile
+                key={id}
+                id={id}
+                title={name}
+                type={type}
+                cover={images[1]?.url}
+              />
             ))}
           </Box>
         </Box>
@@ -47,6 +53,7 @@ const Home = () => {
             {playHistory?.map(({ track }) => (
               <Tile
                 key={track.id}
+                id={track.id}
                 title={track.name}
                 cover={track.album.images[1].url}
                 type={track.type}
@@ -69,6 +76,7 @@ const Home = () => {
             {topTracks?.map(({ id, name, type, album }) => (
               <Tile
                 key={id}
+                id={id}
                 title={name}
                 type={type}
                 cover={album.images[0].url}

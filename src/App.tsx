@@ -87,10 +87,10 @@ const App = () => {
                   <Route path="/auth" component={Auth} />
                   <Route path="/search" component={Search} />
                   <Route path="/library" component={Library} />
-                  <Route path="/tracks/:slug" component={Track} />
-                  <Route path="/albums/:slug" component={Album} />
-                  <Route path="/artists/:slug" component={Artist} />
-                  <Route path="/playlists/:slug" component={Playlist} />
+                  <Route path="/tracks/:id" component={Track} />
+                  <Route path="/albums/:id" component={Album} />
+                  <Route path="/artists/:id" component={Artist} />
+                  <Route path="/playlists/:id" component={Playlist} />
                 </Switch>
               </Suspense>
             </Layout>

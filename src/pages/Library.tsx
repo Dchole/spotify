@@ -69,6 +69,7 @@ const Library = () => {
             {playlists?.map(({ id, name, type, images }) => (
               <Box key={id} mb={2.5}>
                 <Tile
+                  id={id}
                   title={name}
                   type={type}
                   cover={images[1]?.url}
@@ -88,6 +89,7 @@ const Library = () => {
             {albums?.map(({ album }) => (
               <Box key={album.id} mb={2.5}>
                 <Tile
+                  id={album.id}
                   title={album.name}
                   type={album.type}
                   cover={album.images[1]?.url}
@@ -106,7 +108,7 @@ const Library = () => {
           >
             {artists?.map(({ id, name, type, images }) => (
               <Box key={id} mb={2.5}>
-                <Tile title={name} type={type} cover={images[1]?.url} />
+                <Tile id={id} title={name} type={type} cover={images[1]?.url} />
               </Box>
             ))}
           </Stack>

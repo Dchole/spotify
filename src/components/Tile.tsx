@@ -1,4 +1,3 @@
-import { slugify } from "@/utils"
 import { Typography, useMediaQuery } from "@mui/material"
 import { Box } from "@mui/system"
 import { Link } from "react-router-dom"
@@ -7,20 +6,21 @@ import albumFallback from "@/assets/album.svg"
 import classes from "@/styles/rounded.module.css"
 
 interface IProps {
+  id: string
   cover?: string
   title: string
   type: "artist" | "playlist" | "album" | "track"
   alignLeft?: boolean
 }
 
-const Tile: React.FC<IProps> = ({ type, title, cover, alignLeft }) => {
+const Tile: React.FC<IProps> = ({ id, type, title, cover, alignLeft }) => {
   const iPhone5 = useMediaQuery("(max-width: 320px)")
   const galaxyFold = useMediaQuery("(max-width: 280px)")
 
   return (
     <Box
       component={Link}
-      to={`/${type}s/${slugify(title)}`}
+      to={`/${type}s/${id}`}
       width="fit-content"
       display="flex"
       gap={1.2}

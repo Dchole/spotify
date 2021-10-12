@@ -38,7 +38,7 @@ const Playlist = () => {
           handleChange={handleChange}
         />
       </Container>
-      <Listing songs={songs} type="playlist" />
+      <Listing tracks={[]} type="playlist" />
     </main>
   )
 }

@@ -1,4 +1,3 @@
-import { slugify } from "@/utils"
 import { PlayArrow } from "@mui/icons-material"
 import {
   Avatar,
@@ -11,36 +10,27 @@ import {
 import { Link } from "react-router-dom"
 import coverFallback from "@/assets/song.svg"
 
-interface ISong {
-  title: string
-  cover?: string
-  album: string
-  artist: string
-  listeners: number
-  dateAdded?: string
-}
-
 interface IProps {
-  songs: ISong[]
+  tracks: SpotifyApi.TrackObjectSimplified[] | never[]
   type: "playlist" | "album" | "singles"
   gutters?: number
 }
 
-const Listing: React.FC<IProps> = ({ type, songs, gutters }) => {
+const Listing: React.FC<IProps> = ({ type, tracks, gutters }) => {
   return (
     <List>
-      {songs.map(song => (
+      {tracks.map(track => (
         <ListItem
-          key={song.title}
+          key={track.name}
           sx={{ py: gutters, gap: type === "album" ? 1 : undefined }}
         >
           <ListItemAvatar>
             <Avatar
               component={Link}
-              to={`/songs/${slugify(song.title)}`}
+              to={`/tracks/${track.id}`}
               variant="square"
-              src={song.cover || coverFallback}
-              alt={song.title}
+              src={track.album?.images[1]?.url || coverFallback}
+              alt={track.name}
               sx={type === "album" ? { width: 60, height: 60 } : undefined}
               imgProps={{
                 width: "50",
@@ -50,34 +40,35 @@ const Listing: React.FC<IProps> = ({ type, songs, gutters }) => {
             />
           </ListItemAvatar>
           <ListItemText
-            primary={song.title}
+            primary={track.name}
             primaryTypographyProps={{
               component: Link,
               color: "textPrimary",
-              to: `/songs/${slugify(song.title)}`,
+              to: `/tracks/${track.id}`,
               sx: { textTransform: "capitalize", textDecoration: "none" }
             }}
             secondary={
               type === "playlist" ? (
                 <>
-                  <span>{song.artist}</span>&bull;<span>{song.album}</span>
+                  <span>{track.artists[0].name}</span>&bull;
+                  <span>{track.album?.name}</span>
                 </>
               ) : type === "singles" ? (
                 <>
-                  <span>{new Date(song.dateAdded || "").getFullYear()}</span>
+                  <span>{new Date().getFullYear()}</span>
                   &bull;
-                  <span>{song.album}</span>
+                  <span>{track.album?.name}</span>
                 </>
               ) : undefined
             }
             secondaryTypographyProps={{
               component: Link,
               color: "textSecondary",
-              to: `/artists/${slugify(song.artist)}#${song.album}`,
+              to: `/artists/${track.artists[0].id}#${track.album}`,
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
           />
-          <IconButton aria-label={`play ${song.title}`}>
+          <IconButton aria-label={`play ${track.name}`}>
             <PlayArrow />
           </IconButton>
         </ListItem>

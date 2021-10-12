@@ -1,5 +1,6 @@
 import { card } from "@/data/card"
 import { songs } from "@/data/songs"
+import useAlbum from "@/hooks/useAlbum"
 import { ChevronRight, PlayCircle, Share } from "@mui/icons-material"
 import { Button, Container, IconButton, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
@@ -14,13 +15,18 @@ const artist = {
 }
 
 const Artist = () => {
+  const { album } = useAlbum()
   const [showingMore, setShowingMore] = useState(false)
-  const [showingSongs, setShowingSongs] = useState(songs.slice(0, 3))
+  const [showingSongs, setShowingSongs] = useState(
+    album?.tracks.items.slice(0, 3)
+  )
 
   const showMore = () => setShowingMore(!showingMore)
 
   useEffect(() => {
-    setShowingSongs(showingMore ? songs : songs.slice(0, 3))
+    setShowingSongs(
+      showingMore ? album?.tracks.items : album?.tracks.items.slice(0, 3)
+    )
   }, [showingMore])
 
   return (
@@ -59,7 +65,7 @@ const Artist = () => {
         <Typography variant="h4" sx={{ ml: 2 }}>
           Popular Songs
         </Typography>
-        <Listing songs={showingSongs} type="album" gutters={1} />
+        <Listing tracks={[]} type="album" gutters={1} />
         <Button
           color="inherit"
           endIcon={
@@ -109,7 +115,7 @@ const Artist = () => {
         <Typography id="singles-heading" variant="h4" sx={{ ml: 2 }}>
           Singles and EPs
         </Typography>
-        <Listing type="singles" songs={songs} />
+        <Listing type="singles" tracks={showingSongs || []} />
       </section>
     </main>
   )

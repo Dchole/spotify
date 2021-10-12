@@ -1,20 +1,25 @@
-import { songs } from "@/data/songs"
+import useAlbum from "@/hooks/useAlbum"
 import { FavoriteBorder, PlayCircle, Share } from "@mui/icons-material"
 import { Container, IconButton, Stack } from "@mui/material"
 import Listing from "~/Listing"
 import Showcase from "~/Showcase"
 
 const Playlist = () => {
+  const { album } = useAlbum()
+  const albumDuration =
+    album?.tracks.items.reduce((acc, cur) => acc + cur.duration_ms, 0) ?? 0
+
   return (
     <main>
       <Container>
         <Showcase
           type="album"
-          title="Scaled and Icy"
-          author="Twenty one pilots"
-          createdAt="2021"
-          numberOfSongs={11}
-          timeLength={37}
+          cover={album?.images[1]?.url}
+          title={album?.name}
+          author={album?.artists[0].name}
+          createdAt={album?.release_date}
+          numberOfSongs={album?.tracks.total}
+          timeLength={Math.round(albumDuration / 60_000)}
         />
         <Stack
           direction="row"
@@ -34,7 +39,7 @@ const Playlist = () => {
           </IconButton>
         </Stack>
       </Container>
-      <Listing songs={songs} type="playlist" />
+      <Listing tracks={album?.tracks.items || []} type="playlist" />
     </main>
   )
 }
