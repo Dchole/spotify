@@ -10,12 +10,12 @@ import Tile from "~/Tile"
 const Artist = () => {
   const { info, tracks, albums } = useArtist()
   const [showingMore, setShowingMore] = useState(false)
-  const [showingSongs, setShowingSongs] = useState(tracks?.slice(0, 3))
+  const [showingTracks, setShowingTracks] = useState(tracks?.slice(0, 3))
 
   const showMore = () => setShowingMore(!showingMore)
 
   useEffect(() => {
-    setShowingSongs(showingMore ? tracks : tracks?.slice(0, 3))
+    setShowingTracks(showingMore ? tracks : tracks?.slice(0, 3))
   }, [showingMore])
 
   return (
@@ -53,9 +53,9 @@ const Artist = () => {
         aria-label={`top songs by ${info?.name}`}
       >
         <Typography variant="h4" sx={{ ml: 2 }}>
-          Popular Tracks
+          All Tracks
         </Typography>
-        <Listing tracks={tracks} type="singles" gutters={1} />
+        <Listing tracks={showingTracks} type="singles" gutters={1} />
         <Button
           color="inherit"
           endIcon={
