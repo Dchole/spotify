@@ -2,6 +2,7 @@ import { Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import artistFallback from "@/assets/artist.svg"
 import albumFallback from "@/assets/album.svg"
+import classes from "@/styles/cover-image.module.css"
 
 interface IProps {
   type: "album" | "playlist" | "artist"
@@ -26,6 +27,8 @@ const Showcase: React.FC<IProps> = ({
   numberOfSongs,
   numberOfListeners
 }) => {
+  console.log(cover)
+
   return (
     <Box
       mb={2}
@@ -45,7 +48,13 @@ const Showcase: React.FC<IProps> = ({
           {type}
         </Typography>
       )}
-      <img src={cover} alt={title} width="200" height="200" />
+      <img
+        src={cover}
+        alt={title}
+        width="200"
+        height="200"
+        className={classes.cover}
+      />
       <div>
         <Typography align="center" variant="h4">
           {title || name}
@@ -60,7 +69,12 @@ const Showcase: React.FC<IProps> = ({
             <>{numberOfListeners}M monthly listeners</>
           ) : (
             <>
-              <span>{author}</span>&bull;<span>{createdAt}</span>&bull;
+              <span>{author}</span>&bull;
+              {createdAt && (
+                <>
+                  <span>{createdAt}</span>&bull;
+                </>
+              )}
               <span>
                 {numberOfSongs} songs, {timeLength} mins
               </span>

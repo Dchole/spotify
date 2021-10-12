@@ -1,4 +1,4 @@
-import { songs } from "@/data/songs"
+import usePlaylist from "@/hooks/usePlaylist"
 import { Container, SelectChangeEvent } from "@mui/material"
 import { useState } from "react"
 import Listing from "~/Listing"
@@ -15,7 +15,13 @@ export type TOrder =
   | "date added"
 
 const Playlist = () => {
+  const { playlist } = usePlaylist()
   const [order, setOrder] = useState<TOrder>("")
+  const playlistDuration =
+    playlist?.tracks.items.reduce(
+      (acc, cur) => acc + cur.track.duration_ms,
+      0
+    ) ?? 0
 
   const handleChange = (event: SelectChangeEvent) => {
     setOrder(event.target.value as TOrder)
@@ -26,11 +32,11 @@ const Playlist = () => {
       <Container>
         <Showcase
           type="playlist"
-          title="Cools"
-          author="Bunny"
-          createdAt="2021"
-          numberOfSongs={8}
-          timeLength={100}
+          cover={playlist?.images[0]?.url}
+          title={playlist?.name}
+          author={playlist?.owner.display_name || "Unknown"}
+          numberOfSongs={playlist?.tracks.total}
+          timeLength={Math.round(playlistDuration / 60_000)}
         />
         <PlaylistControls
           type="playlist"
@@ -38,7 +44,7 @@ const Playlist = () => {
           handleChange={handleChange}
         />
       </Container>
-      <Listing tracks={[]} type="playlist" />
+      <Listing playlistTracks={playlist?.tracks.items} type="playlist" />
     </main>
   )
 }

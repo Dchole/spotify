@@ -11,15 +11,23 @@ import { Link } from "react-router-dom"
 import coverFallback from "@/assets/song.svg"
 
 interface IProps {
-  tracks: SpotifyApi.TrackObjectSimplified[] | never[]
+  tracks?: SpotifyApi.TrackObjectSimplified[]
+  playlistTracks?: SpotifyApi.PlaylistTrackObject[]
   type: "playlist" | "album" | "singles"
   gutters?: number
 }
 
-const Listing: React.FC<IProps> = ({ type, tracks, gutters }) => {
+const Listing: React.FC<IProps> = ({
+  type,
+  tracks,
+  playlistTracks,
+  gutters
+}) => {
+  const tracksFromPlaylist = playlistTracks?.map(track => track.track)
+
   return (
     <List>
-      {tracks.map(track => (
+      {[...(tracks || tracksFromPlaylist || [])].map(track => (
         <ListItem
           key={track.name}
           sx={{ py: gutters, gap: type === "album" ? 1 : undefined }}
