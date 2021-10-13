@@ -4,6 +4,7 @@ import App from "./App"
 import { BrowserRouter } from "react-router-dom"
 import { QueryClientProvider } from "react-query"
 import { client } from "./lib/query-client"
+import ColorModeProvider from "~/context/ColorMode"
 
 if (!import.meta.env.PROD) {
   import("@axe-core/react").then(axe => {
@@ -15,7 +16,9 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={client}>
-        <App />
+        <ColorModeProvider>
+          <App />
+        </ColorModeProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>,

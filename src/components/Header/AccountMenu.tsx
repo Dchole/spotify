@@ -13,7 +13,7 @@ import {
   LightMode,
   OpenInNew
 } from "@mui/icons-material"
-import { useColorMode } from "@/App"
+import { useColorMode } from "~/context/ColorMode"
 
 interface IProps {
   anchorEl: HTMLButtonElement | null
