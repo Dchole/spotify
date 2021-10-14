@@ -1,5 +1,4 @@
-import { Typography } from "@mui/material"
-import { Box } from "@mui/system"
+import { Grid, Typography } from "@mui/material"
 import artistFallback from "@/assets/artist.svg"
 import albumFallback from "@/assets/album.svg"
 import classes from "@/styles/cover-image.module.css"
@@ -27,43 +26,47 @@ const Showcase: React.FC<IProps> = ({
   numberOfSongs,
   numberOfListeners
 }) => {
-  console.log(cover)
-
   return (
-    <Box
-      mb={2}
-      gap={1.5}
-      display="flex"
+    <Grid
+      container
       alignItems="center"
       flexDirection="column"
       component="section"
       aria-label="showcase"
+      sx={{
+        mb: 2,
+        gap: 1.5
+      }}
     >
-      {type !== "artist" && (
-        <Typography
-          align="center"
-          variant="body2"
-          sx={{ textTransform: "capitalize" }}
-        >
-          {type}
-        </Typography>
-      )}
-      <img
-        src={cover}
-        alt={title}
-        width="200"
-        height="200"
-        className={classes.cover}
-      />
-      <div>
-        <Typography align="center" variant="h4">
+      <Grid item>
+        {type !== "artist" && (
+          <Typography
+            align="center"
+            variant="body2"
+            sx={{ textTransform: "capitalize" }}
+          >
+            {type}
+          </Typography>
+        )}
+      </Grid>
+      <Grid item>
+        <img
+          src={cover}
+          alt={title}
+          width="200"
+          height="200"
+          className={classes.cover}
+        />
+      </Grid>
+      <Grid item xs zeroMinWidth>
+        <Typography title={title || name} align="center" variant="h4" noWrap>
           {title || name}
         </Typography>
         <Typography
           align="center"
           variant="body2"
           color="textSecondary"
-          sx={{ display: "flex", gap: 0.6 }}
+          sx={{ display: "flex", justifyContent: "center", gap: 0.6 }}
         >
           {type === "artist" ? (
             <>{numberOfListeners}M monthly listeners</>
@@ -81,8 +84,8 @@ const Showcase: React.FC<IProps> = ({
             </>
           )}
         </Typography>
-      </div>
-    </Box>
+      </Grid>
+    </Grid>
   )
 }
 

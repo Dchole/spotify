@@ -1,5 +1,6 @@
 import { Home, LibraryBooks, Search } from "@mui/icons-material"
 import { BottomNavigation, BottomNavigationAction } from "@mui/material"
+import { alpha } from "@mui/system"
 import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 
@@ -57,7 +58,17 @@ const Navigation = () => {
           icon={icon}
           component={Link}
           to={path}
-          sx={{ "&.Mui-selected": { color: "primary.dark" } }}
+          sx={{
+            transition: ({ transitions }) =>
+              transitions.create("background-color", {
+                duration: transitions.duration.shortest
+              }),
+
+            "&.Mui-selected": {
+              color: "primary.dark",
+              bgcolor: ({ palette }) => alpha(palette.primary.light, 0.16)
+            }
+          }}
         />
       ))}
     </BottomNavigation>

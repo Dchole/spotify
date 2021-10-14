@@ -1,4 +1,4 @@
-import { Container } from "@mui/material"
+import { Box } from "@mui/system"
 
 interface IProps {
   value: number
@@ -17,7 +17,7 @@ const Tabpanel: React.FC<IProps> = ({ value, item, children, ...props }) => {
       {...props}
     >
       {tabs.indexOf(item) === value && (
-        <Container sx={{ my: 2 }}>{children}</Container>
+        <Box sx={{ my: 2, mx: 1 }}>{children}</Box>
       )}
     </div>
   )

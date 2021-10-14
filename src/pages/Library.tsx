@@ -66,6 +66,15 @@ const Library = () => {
             flexWrap="wrap"
             justifyContent="space-between"
           >
+            <Box mb={2.5}>
+              <Tile
+                path="/liked-songs"
+                id="liked-songs"
+                title="Liked Songs"
+                type="playlist"
+                alignLeft
+              />
+            </Box>
             {playlists?.map(({ id, name, type, images }) => (
               <Box key={id} mb={2.5}>
                 <Tile

@@ -30,7 +30,10 @@ const Header = () => {
   const handleClose = () => setAnchorEl(null)
 
   return (
-    <AppBar elevation={palette.mode === "light" ? 0 : 2}>
+    <AppBar
+      elevation={palette.mode === "light" ? 0 : 2}
+      sx={{ boxShadow: "none" }}
+    >
       <Toolbar>
         {pathname !== "/search" && (
           <IconButton aria-label="go back" onClick={goBack} sx={{ zIndex: 0 }}>
