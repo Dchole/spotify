@@ -1,26 +1,24 @@
 import clsx from "clsx"
 import { Grid, Typography, useMediaQuery } from "@mui/material"
 import { Link } from "react-router-dom"
+import { Playlist } from "@/generated/graphql"
 import artistFallback from "@/assets/artist.svg"
 import albumFallback from "@/assets/album.svg"
 import classes from "@/styles/rounded.module.css"
 import styles from "@/styles/cover-image.module.css"
 
-interface IProps {
-  id: string
-  title: string
+interface IProps extends Partial<Omit<Playlist, "type">> {
   type: "artist" | "playlist" | "album" | "track"
   path?: string
-  cover?: string
   alignLeft?: boolean
 }
 
 const Tile: React.FC<IProps> = ({
   id,
+  name,
   type,
   path,
-  title,
-  cover,
+  cover_image,
   alignLeft
 }) => {
   const iPhone5 = useMediaQuery("(max-width: 320px)")
@@ -41,7 +39,7 @@ const Tile: React.FC<IProps> = ({
     >
       <Grid item>
         <img
-          src={cover}
+          src={cover_image || ""}
           alt=""
           loading="lazy"
           className={
@@ -59,7 +57,7 @@ const Tile: React.FC<IProps> = ({
           color="textSecondary"
           noWrap
         >
-          {title}
+          {name}
         </Typography>
       </Grid>
     </Grid>
@@ -67,7 +65,7 @@ const Tile: React.FC<IProps> = ({
 }
 
 Tile.defaultProps = {
-  get cover() {
+  get cover_image() {
     return this.type === "artist" ? artistFallback : albumFallback
   }
 }

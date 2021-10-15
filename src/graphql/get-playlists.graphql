@@ -1,0 +1,7 @@
+query getPlaylists {
+  playlists {
+    id
+    name
+    cover_image
+  }
+}

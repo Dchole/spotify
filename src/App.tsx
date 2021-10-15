@@ -1,5 +1,8 @@
 import "@fontsource/nunito"
-
+import "@fontsource/montserrat/500.css"
+import "@fontsource/montserrat/600.css"
+import "@fontsource/montserrat/700.css"
+import "@/styles/global.css"
 import { lazy, Suspense } from "react"
 import { Route, Switch } from "react-router"
 import { CssBaseline, ThemeProvider } from "@mui/material"

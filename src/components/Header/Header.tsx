@@ -12,13 +12,14 @@ import {
   useTheme
 } from "@mui/material"
 import { ArrowBack } from "@mui/icons-material"
+import { useGetUserQuery } from "@/generated/graphql"
 import Search from "./Search"
-import useUser from "@/hooks/useUser"
 
 const AccountMenu = lazy(() => import("./AccountMenu"))
 
 const Header = () => {
-  const { user } = useUser()
+  const { data } = useGetUserQuery()
+
   const { palette } = useTheme()
   const { goBack } = useHistory()
   const { pathname } = useLocation()
@@ -73,7 +74,7 @@ const Header = () => {
         <IconButton aria-label="open menu" onClick={handleOpen}>
           <Avatar
             sx={{ bgcolor: theme => theme.palette.secondary.light }}
-            src={user?.photoURL || ""}
+            src={data?.user.photoURL || ""}
             alt="profile"
           />
         </IconButton>

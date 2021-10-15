@@ -1,22 +1,20 @@
 import { VercelRequest, VercelResponse } from "@vercel/node"
 import { ApolloServer } from "apollo-server-micro"
+import { BaseRedisCache } from "apollo-server-cache-redis"
 import { schema } from "../apollo/schema"
+import Redis from "ioredis"
 import SpotifyWebApi from "spotify-web-api-node"
+import SpotifyAPI from "../apollo/datasource/Spotify"
 
 const server = new ApolloServer({
   schema,
   introspection: true,
-  context: async ({
-    req,
-    res
-  }: {
-    req: VercelRequest
-    res: VercelResponse
-  }) => {
-    res.setHeader("access-control-allow-origin", "*")
-    res.setHeader("access-control-allow-credentials", "true")
-    res.setHeader("access-control-allow-methods", "POST")
-
+  cache: new BaseRedisCache({
+    client: new Redis({
+      host: "127.0.0.1:6379"
+    })
+  }),
+  context: async ({ req }: { req: VercelRequest; res: VercelResponse }) => {
     const spotifyApi = new SpotifyWebApi({
       clientId: process.env.SPOTIFY_CLIENT_ID,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -40,9 +38,14 @@ const server = new ApolloServer({
       }
     }
 
-    return spotifyApi
-  }
+    return { spotifyApi }
+  },
+  dataSources: () => ({
+    spotifyAPI: new SpotifyAPI()
+  })
 })
+
+const startServer = server.start()
 
 export const config = {
   api: {
@@ -50,6 +53,25 @@ export const config = {
   }
 }
 
-export default server
-  .start()
-  .then(() => server.createHandler({ path: "/api/graphql" }))
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader("Access-Control-Allow-Credentials", "true")
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  )
+  res.setHeader("Access-Control-Allow-Origin", "*")
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  )
+
+  if (req.method === "OPTIONS") {
+    res.end()
+    return false
+  }
+
+  await startServer
+  await server.createHandler({
+    path: "/api/graphql"
+  })(req, res)
+}

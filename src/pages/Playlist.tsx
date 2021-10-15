@@ -1,6 +1,7 @@
-import usePlaylist from "@/hooks/usePlaylist"
-import { Container, SelectChangeEvent } from "@mui/material"
 import { useState } from "react"
+import { useParams } from "react-router"
+import { useGetPlaylistQuery } from "@/generated/graphql"
+import { Container, SelectChangeEvent } from "@mui/material"
 import Listing from "~/Listing"
 import PlaylistControls from "~/PlaylistControls"
 import Showcase from "~/Showcase"
@@ -15,13 +16,11 @@ export type TOrder =
   | "date added"
 
 const Playlist = () => {
-  const { playlist } = usePlaylist()
+  const { id } = useParams<{ id: string }>()
+  const { data } = useGetPlaylistQuery({ variables: { id } })
+
+  const playlist = data?.playlist
   const [order, setOrder] = useState<TOrder>("")
-  const playlistDuration =
-    playlist?.tracks.items.reduce(
-      (acc, cur) => acc + cur.track.duration_ms,
-      0
-    ) ?? 0
 
   const handleChange = (event: SelectChangeEvent) => {
     setOrder(event.target.value as TOrder)
@@ -32,11 +31,11 @@ const Playlist = () => {
       <Container>
         <Showcase
           type="playlist"
-          cover={playlist?.images[0]?.url}
+          cover={playlist?.cover_image || ""}
           title={playlist?.name}
-          author={playlist?.owner.display_name || "Unknown"}
-          numberOfSongs={playlist?.tracks.total}
-          timeLength={Math.round(playlistDuration / 60_000)}
+          author={playlist?.owner.name || "Unknown"}
+          numberOfSongs={playlist?.total}
+          timeLength={playlist?.duration}
         />
         <PlaylistControls
           type="playlist"
@@ -44,7 +43,7 @@ const Playlist = () => {
           handleChange={handleChange}
         />
       </Container>
-      <Listing playlistTracks={playlist?.tracks.items} type="playlist" />
+      <Listing playlistTracks={playlist?.tracks} type="playlist" />
     </main>
   )
 }

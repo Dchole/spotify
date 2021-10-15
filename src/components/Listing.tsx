@@ -9,10 +9,12 @@ import {
 } from "@mui/material"
 import { Link } from "react-router-dom"
 import coverFallback from "@/assets/song.svg"
+import { GetPlaylistQuery } from "@/generated/graphql"
+import { slugify } from "@/utils"
 
 interface IProps {
   tracks?: SpotifyApi.TrackObjectSimplified[]
-  playlistTracks?: SpotifyApi.PlaylistTrackObject[]
+  playlistTracks?: GetPlaylistQuery["playlist"]["tracks"]
   type: "playlist" | "album" | "singles"
   gutters?: number
 }
@@ -23,13 +25,11 @@ const Listing: React.FC<IProps> = ({
   playlistTracks,
   gutters
 }) => {
-  const tracksFromPlaylist = playlistTracks?.map(track => track.track)
-
   return (
     <List>
-      {[...(tracks || tracksFromPlaylist || [])].map(track => (
+      {playlistTracks?.map(track => (
         <ListItem
-          key={track.name}
+          key={track.id}
           sx={{ py: gutters, gap: type === "album" ? 1 : undefined }}
         >
           <ListItemAvatar>
@@ -37,8 +37,8 @@ const Listing: React.FC<IProps> = ({
               component={Link}
               to={`/tracks/${track.id}`}
               variant="square"
-              src={track.album?.images[1]?.url || coverFallback}
-              alt={track.name}
+              src={track.track.album.cover_image || coverFallback}
+              alt={track.track.name}
               sx={type === "album" ? { width: 60, height: 60 } : undefined}
               imgProps={{
                 width: "50",
@@ -48,7 +48,7 @@ const Listing: React.FC<IProps> = ({
             />
           </ListItemAvatar>
           <ListItemText
-            primary={track.name}
+            primary={track.track.name}
             primaryTypographyProps={{
               component: Link,
               color: "textPrimary",
@@ -58,27 +58,29 @@ const Listing: React.FC<IProps> = ({
             secondary={
               type === "playlist" ? (
                 <>
-                  <span>{track.artists[0].name}</span>&bull;
-                  <span>{track.album?.name}</span>
+                  <span>{track.track.artists[0].name}</span>&bull;
+                  <span>{track.track.album?.name}</span>
                 </>
               ) : type === "singles" ? (
                 <>
                   <span>
-                    {new Date(track.album.release_date).getFullYear()}
+                    {new Date(track.track.album.release_date).getFullYear()}
                   </span>
                   &bull;
-                  <span>{track.album?.name}</span>
+                  <span>{track.track.album?.name}</span>
                 </>
               ) : undefined
             }
             secondaryTypographyProps={{
               component: Link,
               color: "textSecondary",
-              to: `/artists/${track.artists[0].id}#${track.album}`,
+              to: `/artists/${track.track.artists[0].id}#${slugify(
+                track.track.album.name
+              )}`,
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
           />
-          <IconButton aria-label={`play ${track.name}`}>
+          <IconButton aria-label={`play ${track.track.name}`}>
             <PlayArrow />
           </IconButton>
         </ListItem>

@@ -17,13 +17,13 @@ export type Album = {
   __typename?: 'Album';
   album_type: Scalars['String'];
   artists: Array<Artist>;
-  genres: Array<Scalars['String']>;
+  cover_image?: Maybe<Scalars['String']>;
+  genres?: Maybe<Array<Scalars['String']>>;
   id: Scalars['ID'];
   name: Scalars['String'];
-  popularity: Scalars['Int'];
-  preview_image?: Maybe<Scalars['String']>;
+  popularity?: Maybe<Scalars['Int']>;
   release_date: Scalars['String'];
-  tracks: Array<Track>;
+  tracks?: Maybe<Array<Track>>;
   type: EType;
 };
 
@@ -46,15 +46,14 @@ export enum EType {
 
 export type Playlist = {
   __typename?: 'Playlist';
-  collaborative: Scalars['Boolean'];
-  description?: Maybe<Scalars['String']>;
-  followers: Scalars['Int'];
+  cover_image?: Maybe<Scalars['String']>;
+  duration: Scalars['Int'];
+  followers?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
   name: Scalars['String'];
   owner: User;
-  preview_image?: Maybe<Scalars['String']>;
   public?: Maybe<Scalars['Boolean']>;
-  snapshot_id: Scalars['String'];
+  total: Scalars['Int'];
   tracks: Array<PlaylistTrack>;
   type: EType;
 };
@@ -106,11 +105,11 @@ export type Track = {
   __typename?: 'Track';
   album: Album;
   artists: Array<Artist>;
+  cover_image?: Maybe<Scalars['String']>;
   duration: Scalars['Int'];
   id: Scalars['ID'];
   name: Scalars['String'];
   popularity?: Maybe<Scalars['Int']>;
-  preview_image?: Maybe<Scalars['String']>;
   type: EType;
 };
 
@@ -222,13 +221,13 @@ export type ResolversParentTypes = {
 export type AlbumResolvers<ContextType = any, ParentType extends ResolversParentTypes['Album'] = ResolversParentTypes['Album']> = {
   album_type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   artists?: Resolver<Array<ResolversTypes['Artist']>, ParentType, ContextType>;
-  genres?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  genres?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  popularity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  preview_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  popularity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   release_date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  tracks?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
+  tracks?: Resolver<Maybe<Array<ResolversTypes['Track']>>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -241,15 +240,14 @@ export type ArtistResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type PlaylistResolvers<ContextType = any, ParentType extends ResolversParentTypes['Playlist'] = ResolversParentTypes['Playlist']> = {
-  collaborative?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  followers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  followers?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   owner?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  preview_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   public?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  snapshot_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   tracks?: Resolver<Array<ResolversTypes['PlaylistTrack']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -280,11 +278,11 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type TrackResolvers<ContextType = any, ParentType extends ResolversParentTypes['Track'] = ResolversParentTypes['Track']> = {
   album?: Resolver<ResolversTypes['Album'], ParentType, ContextType>;
   artists?: Resolver<Array<ResolversTypes['Artist']>, ParentType, ContextType>;
+  cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   popularity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  preview_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

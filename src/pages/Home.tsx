@@ -1,18 +1,14 @@
+import { useGetPlaylistsQuery } from "@/generated/graphql"
 import { Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import Tile from "~/Tile"
-import usePlaylists from "@/hooks/usePlaylists"
-import useRecent from "@/hooks/useRecent"
-import useTopTracks from "@/hooks/useTopTracks"
 
 const Home = () => {
-  const { playlists } = usePlaylists()
-  const { playHistory } = useRecent()
-  const { topTracks } = useTopTracks()
+  const { data } = useGetPlaylistsQuery()
 
   return (
     <Box component="main" width="100%">
-      {Boolean(playlists?.length) && (
+      {Boolean(data?.playlists.length) && (
         <Box component="section" sx={{ mb: 3 }} aria-labelledby="my-playlists">
           <Typography
             id="my-playlists"
@@ -23,19 +19,19 @@ const Home = () => {
             My Playlists
           </Typography>
           <Box display="flex" gap={3} overflow="scroll" px={3} pt={2} pb={3}>
-            {playlists?.map(({ id, name, type, images }) => (
+            {data?.playlists.map(({ id, name, cover_image }) => (
               <Tile
                 key={id}
                 id={id}
-                title={name}
-                type={type}
-                cover={images[1]?.url}
+                name={name}
+                type="playlist"
+                cover_image={cover_image}
               />
             ))}
           </Box>
         </Box>
       )}
-      {Boolean(playHistory?.length) && (
+      {/* {Boolean(playHistory?.length) && (
         <Box
           component="section"
           sx={{ mb: 3 }}
@@ -84,7 +80,7 @@ const Home = () => {
             ))}
           </Box>
         </Box>
-      )}
+      )} */}
     </Box>
   )
 }

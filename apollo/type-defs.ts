@@ -27,7 +27,7 @@ export const typeDefs = gql`
     album: Album!
     artists: [Artist!]!
     duration: Int!
-    preview_image: String
+    cover_image: String
     popularity: Int
     type: EType!
   }
@@ -35,28 +35,27 @@ export const typeDefs = gql`
   type Album {
     id: ID!
     name: String!
-    genres: [String!]!
-    popularity: Int!
+    genres: [String!]
+    popularity: Int
     album_type: String!
     artists: [Artist!]!
-    preview_image: String
+    cover_image: String
     release_date: String!
-    tracks: [Track!]!
+    tracks: [Track!]
     type: EType!
   }
 
   type Playlist {
     id: ID!
     name: String!
-    collaborative: Boolean!
-    description: String
-    preview_image: String
+    cover_image: String
     owner: User!
     public: Boolean
-    snapshot_id: String!
     type: EType!
-    followers: Int!
+    duration: Int!
+    followers: Int
     tracks: [PlaylistTrack!]!
+    total: Int!
   }
   type Artist {
     id: ID!
