@@ -100,7 +100,7 @@ const Artist = () => {
             <Box key={id} mb={2.5}>
               <Tile
                 id={id}
-                title={name}
+                name={name}
                 cover_image={cover_image}
                 type={EType["Album"]}
                 alignLeft
