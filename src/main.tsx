@@ -13,7 +13,8 @@ if (!import.meta.env.PROD) {
 
 const client = new ApolloClient({
   uri: "http://localhost:3000/api/graphql",
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  connectToDevTools: import.meta.env.DEV
 })
 
 ReactDOM.render(

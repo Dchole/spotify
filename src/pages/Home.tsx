@@ -11,11 +11,11 @@ import { Box } from "@mui/system"
 import Tile from "~/Tile"
 
 const collections = [
-  "my recommendations",
-  "new releases",
   "my playlists",
   "top tracks",
-  "recently played"
+  "recently played",
+  "new releases",
+  "my recommendations"
 ]
 
 const Home = () => {
@@ -27,7 +27,7 @@ const Home = () => {
 
   return (
     <Box component="main" width="100%">
-      {[recommendations, newReleases, playlists, topTracks, recentlyPlayed].map(
+      {[playlists, topTracks, recentlyPlayed, newReleases, recommendations].map(
         (collection, index) => (
           <Box
             key={index}

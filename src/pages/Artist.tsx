@@ -57,7 +57,12 @@ const Artist = () => {
         <Typography variant="h4" sx={{ ml: 2 }}>
           All Tracks
         </Typography>
-        <Tracks tracks={showingTracks} type={EType["Track"]} gutters={1} />
+        <Tracks
+          name="Unknown"
+          tracks={showingTracks}
+          album_type={"singles"}
+          gutters={1}
+        />
         <Button
           color="inherit"
           endIcon={

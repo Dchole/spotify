@@ -22,6 +22,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["./src", "api", "spotify.d.ts"],
+  "include": ["./src", "api", "spotify.d.ts", "spotify-api.ts"],
   "exclude": ["node_modules"]
 }

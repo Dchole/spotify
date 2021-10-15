@@ -23,7 +23,9 @@ export default class SpotifyAPI extends DataSource<IContext> {
   }
 
   private artistReducer(
-    artist: SpotifyApi.ArtistObjectFull | SpotifyApi.ArtistObjectSimplified
+    artist: SpotifyApi.ArtistObjectFull | SpotifyApi.ArtistObjectSimplified,
+    albums?: SpotifyApi.AlbumObjectSimplified[],
+    tracks?: SpotifyApi.TrackObjectFull[]
   ): Artist {
     const fullObject = artist as SpotifyApi.ArtistObjectFull
 
@@ -31,8 +33,8 @@ export default class SpotifyAPI extends DataSource<IContext> {
       id: artist.id,
       name: artist.name,
       type: EType["Artist"],
-      tracks: [],
-      albums: [],
+      tracks: tracks?.map(track => this.trackReducer(track)) || [],
+      albums: albums?.map(album => this.albumReducer(album)) || [],
       get cover_image() {
         if (Object.prototype.hasOwnProperty.call(fullObject, "images")) {
           return fullObject.images[1]?.url || fullObject.images[0]?.url
@@ -236,8 +238,21 @@ export default class SpotifyAPI extends DataSource<IContext> {
   }
 
   async getArtist(id: string): Promise<Artist> {
-    const { body } = await this.spotifyAPI.getArtist(id)
-    return this.artistReducer(body)
+    const artistResponse = this.spotifyAPI.getArtist(id)
+    const albumsResponse = this.spotifyAPI.getArtistAlbums(id)
+    const tracksResponse = this.spotifyAPI.getArtistTopTracks(id, "US")
+
+    const [
+      { body: artist },
+      {
+        body: { items: albums }
+      },
+      {
+        body: { tracks }
+      }
+    ] = await Promise.all([artistResponse, albumsResponse, tracksResponse])
+
+    return this.artistReducer(artist, albums, tracks)
   }
 
   async getNewReleases(): Promise<Album[]> {
@@ -246,7 +261,16 @@ export default class SpotifyAPI extends DataSource<IContext> {
   }
 
   async getRecommendations(): Promise<Track[]> {
-    const { body } = await this.spotifyAPI.getRecommendations()
+    const {
+      body: { items: tracks }
+    } = await this.spotifyAPI.getMyRecentlyPlayedTracks({ limit: 5 })
+
+    const { body } = await this.spotifyAPI.getRecommendations({
+      market: "US",
+      seed_genres: ["pop", "indie", "r&b"],
+      seed_tracks: tracks[0].track.id,
+      seed_artists: tracks[0].track.artists[0].id
+    })
     return body.tracks.map(track => this.trackReducer(track))
   }
 

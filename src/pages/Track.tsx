@@ -13,6 +13,8 @@ import { songs } from "@/data/songs"
 import { lazy, useState } from "react"
 import { useGetTrackQuery } from "@/generated/graphql"
 import { useParams } from "react-router"
+import { spotifyApi } from "@/lib/spotify-api"
+import { getAccessToken } from "@/token"
 
 const Volume = lazy(() => import("~/Volume"))
 
@@ -33,6 +35,11 @@ const Track = () => {
   }
 
   const handleClose = () => setVolumeEl(null)
+
+  const play = () => {
+    spotifyApi.setAccessToken(getAccessToken())
+    spotifyApi.play()
+  }
 
   return (
     <Container component="main">
@@ -86,7 +93,7 @@ const Track = () => {
         <IconButton aria-label="go to previous song">
           <SkipPrevious fontSize="large" />
         </IconButton>
-        <IconButton aria-label={`play ${song.title}`}>
+        <IconButton aria-label={`play ${song.title}`} onClick={play}>
           <PlayCircle color="primary" sx={{ fontSize: "4rem" }} />
         </IconButton>
         <IconButton aria-label="skip to next song">

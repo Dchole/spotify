@@ -8,7 +8,7 @@ import {
   ListItemText
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import { GetAlbumQuery } from "@/generated/graphql"
+import { GetAlbumQuery, GetArtistQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 import coverFallback from "@/assets/song.svg"
 
@@ -16,7 +16,7 @@ interface IProps {
   album_type?: string
   name: string
   release_date?: string
-  tracks: GetAlbumQuery["album"]["tracks"]
+  tracks: GetAlbumQuery["album"]["tracks"] | GetArtistQuery["artist"]["tracks"]
   gutters?: number
 }
 
@@ -66,7 +66,7 @@ const AlbumTracks: React.FC<IProps> = ({
             secondaryTypographyProps={{
               component: Link,
               color: "textSecondary",
-              to: `/artists/${track.artists[0].id}#${slugify(name)}`,
+              to: `/artists/${(track as any).artists[0].id}#${slugify(name)}`,
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
           />

@@ -1,6 +1,6 @@
 import { createHash } from "crypto"
 import { VercelRequest, VercelResponse } from "@vercel/node"
-import { spotifyApi } from "../spotify-api.config"
+import { spotifyApi } from "../spotify-api"
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
   const scopes = [

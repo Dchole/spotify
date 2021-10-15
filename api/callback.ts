@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node"
 import { serialize } from "cookie"
-import { spotifyApi } from "../spotify-api.config"
+import { spotifyApi } from "../spotify-api"
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
   if (req.method === "POST") {
