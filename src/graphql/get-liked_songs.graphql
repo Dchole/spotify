@@ -1,0 +1,8 @@
+query getLikedSongs {
+  liked_songs {
+    id
+    name
+    type
+    cover_image
+  }
+}

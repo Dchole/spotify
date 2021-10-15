@@ -1,17 +1,27 @@
-import useFollowedArtists from "@/hooks/useFollowedArtists"
-import usePlaylists from "@/hooks/usePlaylists"
-import useSavedAlbums from "@/hooks/useSavedAlbums"
+import {
+  EType,
+  useGetFollowedArtistsLazyQuery,
+  useGetPlaylistsLazyQuery,
+  useGetSavedAlbumsLazyQuery
+} from "@/generated/graphql"
 import { Stack, Tab, Tabs } from "@mui/material"
 import { Box } from "@mui/system"
-import { useState } from "react"
+import { unstable_capitalize } from "@mui/utils"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import Tabpanel, { tabs } from "~/Tabpanel"
 import Tile from "~/Tile"
 
+const collections: ["playlists", "albums", "artists"] = [
+  "playlists",
+  "albums",
+  "artists"
+]
+
 const Library = () => {
-  const { playlists } = usePlaylists()
-  const { albums } = useSavedAlbums()
-  const { artists } = useFollowedArtists()
+  const [getPlaylists, { data: playlistsData }] = useGetPlaylistsLazyQuery()
+  const [getAlbums, { data: albumsData }] = useGetSavedAlbumsLazyQuery()
+  const [getArtists, { data: artistsData }] = useGetFollowedArtistsLazyQuery()
 
   const [value, setValue] = useState(() => {
     const params = new URLSearchParams(window.location.search)
@@ -19,6 +29,22 @@ const Library = () => {
 
     return tabs.indexOf(tab)
   })
+
+  useEffect(() => {
+    switch (value) {
+      case 0:
+        getPlaylists()
+        break
+      case 1:
+        getAlbums()
+        break
+      case 2:
+        getArtists()
+        break
+      default:
+        break
+    }
+  }, [value])
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -36,92 +62,55 @@ const Library = () => {
           borderBottom: ({ palette }) => `1px solid ${palette.divider}`
         }}
       >
-        <Tab
-          component={Link}
-          to="?tab=playlists"
-          label="Playlists"
-          id="playlists-tab"
-          aria-controls="playlists"
-        />
-        <Tab
-          component={Link}
-          to="?tab=albums"
-          label="Albums"
-          id="albums-tab"
-          aria-controls="albums"
-        />
-        <Tab
-          component={Link}
-          to="?tab=artists"
-          label="Artists"
-          id="artists-tab"
-          aria-controls="artists"
-        />
+        {collections.map(collection => (
+          <Tab
+            key={collection}
+            component={Link}
+            to={`?tab=${collection}`}
+            label={unstable_capitalize(collection)}
+            id={`${collection}-tab`}
+            aria-controls={collection}
+          />
+        ))}
       </Tabs>
       <main>
-        <Tabpanel value={value} item="playlists">
-          <Stack
-            sx={{ mx: 2 }}
-            direction="row"
-            flexWrap="wrap"
-            justifyContent="space-between"
-          >
-            <Box mb={2.5}>
-              <Tile
-                path="/liked-songs"
-                id="liked-songs"
-                title="Liked Songs"
-                type="playlist"
-                alignLeft
-              />
-            </Box>
-            {playlists?.map(({ id, name, type, images }) => (
-              <Box key={id} mb={2.5}>
-                <Tile
-                  id={id}
-                  title={name}
-                  type={type}
-                  cover={images[1]?.url}
-                  alignLeft
-                />
-              </Box>
-            ))}
-          </Stack>
-        </Tabpanel>
-        <Tabpanel value={value} item="albums">
-          <Stack
-            sx={{ mx: 2 }}
-            direction="row"
-            flexWrap="wrap"
-            justifyContent="space-between"
-          >
-            {albums?.map(({ album }) => (
-              <Box key={album.id} mb={2.5}>
-                <Tile
-                  id={album.id}
-                  title={album.name}
-                  type={album.type}
-                  cover={album.images[1]?.url}
-                  alignLeft
-                />
-              </Box>
-            ))}
-          </Stack>
-        </Tabpanel>
-        <Tabpanel value={value} item="artists">
-          <Stack
-            sx={{ mx: 2 }}
-            direction="row"
-            flexWrap="wrap"
-            justifyContent="space-between"
-          >
-            {artists?.map(({ id, name, type, images }) => (
-              <Box key={id} mb={2.5}>
-                <Tile id={id} title={name} type={type} cover={images[1]?.url} />
-              </Box>
-            ))}
-          </Stack>
-        </Tabpanel>
+        {[
+          playlistsData?.playlists,
+          albumsData?.saved_albums,
+          artistsData?.followed_artists
+        ].map((data, index) => (
+          <Tabpanel key={index} value={value} item={collections[index]}>
+            <Stack
+              sx={{ mx: 2 }}
+              direction="row"
+              flexWrap="wrap"
+              justifyContent="space-between"
+            >
+              {index === 0 && (
+                <Box mb={2.5}>
+                  <Tile
+                    path="/liked-songs"
+                    id="liked-songs"
+                    name="Liked Songs"
+                    type={EType["Playlist"]}
+                    alignLeft
+                  />
+                </Box>
+              )}
+              {data?.map(({ id, name, type, cover_image }) => (
+                <Box key={id} mb={2.5}>
+                  <Tile
+                    id={id}
+                    name={name}
+                    type={type}
+                    cover_image={cover_image}
+                    alignLeft={index !== 2}
+                  />
+                </Box>
+              ))}
+            </Stack>
+          </Tabpanel>
+        ))}
       </main>
     </>
   )

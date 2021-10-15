@@ -1,0 +1,8 @@
+query getRecommendations {
+  recommendation {
+    id
+    name
+    type
+    cover_image
+  }
+}

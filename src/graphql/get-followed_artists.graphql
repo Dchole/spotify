@@ -1,0 +1,8 @@
+query getFollowedArtists {
+  followed_artists {
+    id
+    name
+    type
+    cover_image
+  }
+}

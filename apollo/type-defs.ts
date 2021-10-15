@@ -7,7 +7,9 @@ export const typeDefs = gql`
     liked_songs: [Track!]!
     recently_played: [Track!]!
     top_tracks: [Track!]!
+    recommendation: [Track!]!
     album(id: ID!): Album!
+    new_releases: [Album!]!
     saved_albums: [Album!]!
     playlist(id: ID!): Playlist!
     playlists: [Playlist!]!
@@ -37,12 +39,14 @@ export const typeDefs = gql`
     name: String!
     genres: [String!]
     popularity: Int
+    duration: Int!
     album_type: String!
     artists: [Artist!]!
     cover_image: String
     release_date: String!
     tracks: [Track!]
     type: EType!
+    numberOfTracks: Int
   }
 
   type Playlist {
@@ -57,10 +61,15 @@ export const typeDefs = gql`
     tracks: [PlaylistTrack!]!
     total: Int!
   }
+
   type Artist {
     id: ID!
     name: String!
     type: EType!
+    popularity: Int
+    cover_image: String
+    tracks: [Track!]!
+    albums: [Album!]!
   }
 
   type PlaylistTrack {

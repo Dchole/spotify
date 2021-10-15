@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { Playlist, EType } from "@/generated/graphql"
 import artistFallback from "@/assets/artist.svg"
 import albumFallback from "@/assets/album.svg"
+import trackFallback from "@/assets/track.svg"
 import classes from "@/styles/rounded.module.css"
 import styles from "@/styles/cover-image.module.css"
 
@@ -23,6 +24,13 @@ const Tile: React.FC<IProps> = ({
   const iPhone5 = useMediaQuery("(max-width: 320px)")
   const galaxyFold = useMediaQuery("(max-width: 280px)")
 
+  const fallbackImage =
+    type === EType["Artist"]
+      ? artistFallback
+      : type === EType["Track"]
+      ? trackFallback
+      : albumFallback
+
   return (
     <Grid
       container
@@ -38,7 +46,7 @@ const Tile: React.FC<IProps> = ({
     >
       <Grid item>
         <img
-          src={cover_image || ""}
+          src={cover_image || fallbackImage}
           alt=""
           loading="lazy"
           className={

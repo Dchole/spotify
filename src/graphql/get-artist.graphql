@@ -1,0 +1,24 @@
+query getArtist($id: ID!) {
+  artist(id: $id) {
+    id
+    name
+    type
+    popularity
+    cover_image
+    tracks {
+      id
+      name
+      type
+      cover_image
+      album {
+        id
+        name
+      }
+    }
+    albums {
+      id
+      name
+      cover_image
+    }
+  }
+}

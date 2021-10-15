@@ -2,8 +2,15 @@ query getAlbum($id: ID!) {
   album(id: $id) {
     id
     name
+    duration
+    cover_image
     popularity
+    numberOfTracks
     release_date
+    artists {
+      id
+      name
+    }
     tracks {
       id
       name

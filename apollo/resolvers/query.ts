@@ -34,5 +34,11 @@ export const Query: QueryResolvers<IContext> = {
   },
   recently_played: async (_parent, _args, { dataSources }) => {
     return dataSources.spotifyAPI.getPlayHistory()
+  },
+  recommendation: async (_parent, _args, { dataSources }) => {
+    return dataSources.spotifyAPI.getRecommendations()
+  },
+  new_releases: async (_parent, _args, { dataSources }) => {
+    return dataSources.spotifyAPI.getNewReleases()
   }
 }

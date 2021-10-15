@@ -11,12 +11,16 @@ import {
 import TrackShowcase from "~/TrackShowcase"
 import { songs } from "@/data/songs"
 import { lazy, useState } from "react"
+import { useGetTrackQuery } from "@/generated/graphql"
+import { useParams } from "react-router"
 
 const Volume = lazy(() => import("~/Volume"))
 
 const [song] = songs
 
 const Track = () => {
+  const { id } = useParams<{ id: string }>()
+  const track = useGetTrackQuery({ variables: { id } }).data?.track
   const [volume, setVolume] = useState(50)
   const [volumeEl, setVolumeEl] = useState<HTMLButtonElement | null>(null)
 
@@ -33,9 +37,12 @@ const Track = () => {
   return (
     <Container component="main">
       <TrackShowcase
-        title="still feel"
-        artist="half life"
-        album="Now, Not yet"
+        name={track?.name || "Unknown"}
+        cover_image={track?.cover_image}
+        artistName={
+          track?.artists.map(artist => artist.name).join(", ") || "Unknown"
+        }
+        albumName={track?.album.name || "Unknown"}
       />
       <Grid
         component="section"
@@ -54,7 +61,7 @@ const Track = () => {
         <Slider
           color="secondary"
           size="small"
-          defaultValue={70}
+          defaultValue={0}
           aria-label="Small"
           valueLabelDisplay="auto"
           sx={{ "& .MuiSlider-rail": { bgcolor: "gray" } }}

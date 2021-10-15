@@ -25,10 +25,28 @@ export default class SpotifyAPI extends DataSource<IContext> {
   private artistReducer(
     artist: SpotifyApi.ArtistObjectFull | SpotifyApi.ArtistObjectSimplified
   ): Artist {
+    const fullObject = artist as SpotifyApi.ArtistObjectFull
+
     return {
       id: artist.id,
       name: artist.name,
-      type: EType["Artist"]
+      type: EType["Artist"],
+      tracks: [],
+      albums: [],
+      get cover_image() {
+        if (Object.prototype.hasOwnProperty.call(fullObject, "images")) {
+          return fullObject.images[1]?.url || fullObject.images[0]?.url
+        }
+
+        return undefined
+      },
+      get popularity() {
+        if (Object.prototype.hasOwnProperty.call(fullObject, "popularity")) {
+          return fullObject.popularity
+        }
+
+        return undefined
+      }
     }
   }
 
@@ -44,6 +62,7 @@ export default class SpotifyAPI extends DataSource<IContext> {
         this.trackReducer(track as SpotifyApi.TrackObjectFull)
       )
     }
+
     const isObjectFull = Object.keys(onlyInFull).every(prop =>
       Object.getOwnPropertyNames(album).includes(prop)
     )
@@ -56,6 +75,15 @@ export default class SpotifyAPI extends DataSource<IContext> {
       release_date: album.release_date,
       type: EType["Album"],
       cover_image: album.images[1]?.url || album.images[0]?.url,
+      get numberOfTracks() {
+        return this.tracks?.length
+      },
+      get duration() {
+        const albumDuration =
+          this.tracks?.reduce((acc, cur) => acc + cur.duration, 0) ?? 0
+
+        return Math.round(albumDuration / 60_000)
+      },
       genres: undefined,
       tracks: undefined,
       popularity: undefined,

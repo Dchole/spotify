@@ -13,25 +13,15 @@ import { GetPlaylistQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 
 interface IProps {
-  tracks?: SpotifyApi.TrackObjectSimplified[]
-  playlistTracks?: GetPlaylistQuery["playlist"]["tracks"]
-  type: "playlist" | "album" | "singles"
+  tracks: GetPlaylistQuery["playlist"]["tracks"]
   gutters?: number
 }
 
-const Listing: React.FC<IProps> = ({
-  type,
-  tracks,
-  playlistTracks,
-  gutters
-}) => {
+const Listing: React.FC<IProps> = ({ tracks, gutters = 0 }) => {
   return (
     <List>
-      {playlistTracks?.map(track => (
-        <ListItem
-          key={track.id}
-          sx={{ py: gutters, gap: type === "album" ? 1 : undefined }}
-        >
+      {tracks?.map(track => (
+        <ListItem key={track.id} sx={{ py: gutters }}>
           <ListItemAvatar>
             <Avatar
               component={Link}
@@ -39,7 +29,6 @@ const Listing: React.FC<IProps> = ({
               variant="square"
               src={track.track.cover_image || coverFallback}
               alt={track.track.name}
-              sx={type === "album" ? { width: 60, height: 60 } : undefined}
               imgProps={{
                 width: "50",
                 height: "50",
@@ -56,20 +45,10 @@ const Listing: React.FC<IProps> = ({
               sx: { textTransform: "capitalize", textDecoration: "none" }
             }}
             secondary={
-              type === "playlist" ? (
-                <>
-                  <span>{track.track.artists[0].name}</span>&bull;
-                  <span>{track.track.album?.name}</span>
-                </>
-              ) : type === "singles" ? (
-                <>
-                  <span>
-                    {new Date(track.track.album.release_date).getFullYear()}
-                  </span>
-                  &bull;
-                  <span>{track.track.album?.name}</span>
-                </>
-              ) : undefined
+              <>
+                <span>{track.track.artists[0].name}</span>&bull;
+                <span>{track.track.album?.name}</span>
+              </>
             }
             secondaryTypographyProps={{
               component: Link,
@@ -87,10 +66,6 @@ const Listing: React.FC<IProps> = ({
       ))}
     </List>
   )
-}
-
-Listing.defaultProps = {
-  gutters: 0
 }
 
 export default Listing

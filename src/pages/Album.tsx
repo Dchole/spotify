@@ -1,25 +1,26 @@
-import useAlbum from "@/hooks/useAlbum"
+import { EType, useGetAlbumQuery } from "@/generated/graphql"
 import { FavoriteBorder, PlayCircle, Share } from "@mui/icons-material"
 import { Container, IconButton, Stack } from "@mui/material"
-import Listing from "~/Listing"
+import { useParams } from "react-router"
+import AlbumTracks from "~/AlbumTracks"
 import Showcase from "~/Showcase"
 
 const Playlist = () => {
-  const { album } = useAlbum()
-  const albumDuration =
-    album?.tracks.items.reduce((acc, cur) => acc + cur.duration_ms, 0) ?? 0
+  const { id } = useParams<{ id: string }>()
+  const album = useGetAlbumQuery({ variables: { id } }).data?.album
 
   return (
     <main>
       <Container>
         <Showcase
-          type="album"
-          cover={album?.images[1]?.url}
-          title={album?.name}
-          author={album?.artists[0].name}
-          createdAt={album?.release_date}
-          numberOfSongs={album?.tracks.total}
-          timeLength={Math.round(albumDuration / 60_000)}
+          type={EType["Album"]}
+          cover_image={album?.cover_image}
+          name={album?.name || "Unknown"}
+          artistName={album?.artists[0].name}
+          release_date={album?.release_date}
+          popularity={album?.popularity}
+          numberOfTracks={album?.numberOfTracks}
+          duration={album?.duration || 0}
         />
         <Stack
           direction="row"
@@ -39,7 +40,11 @@ const Playlist = () => {
           </IconButton>
         </Stack>
       </Container>
-      <Listing tracks={album?.tracks.items || []} type="playlist" />
+      <AlbumTracks
+        name={album?.name || "Unknown"}
+        release_date={album?.release_date}
+        tracks={album?.tracks || []}
+      />
     </main>
   )
 }

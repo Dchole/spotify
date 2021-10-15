@@ -18,9 +18,11 @@ export type Album = {
   album_type: Scalars['String'];
   artists: Array<Artist>;
   cover_image?: Maybe<Scalars['String']>;
+  duration: Scalars['Int'];
   genres?: Maybe<Array<Scalars['String']>>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  numberOfTracks?: Maybe<Scalars['Int']>;
   popularity?: Maybe<Scalars['Int']>;
   release_date: Scalars['String'];
   tracks?: Maybe<Array<Track>>;
@@ -29,8 +31,12 @@ export type Album = {
 
 export type Artist = {
   __typename?: 'Artist';
+  albums: Array<Album>;
+  cover_image?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  popularity?: Maybe<Scalars['Int']>;
+  tracks: Array<Track>;
   type: EType;
 };
 
@@ -72,9 +78,11 @@ export type Query = {
   artist: Artist;
   followed_artists: Array<Artist>;
   liked_songs: Array<Track>;
+  new_releases: Array<Album>;
   playlist: Playlist;
   playlists: Array<Playlist>;
   recently_played: Array<Track>;
+  recommendation: Array<Track>;
   saved_albums: Array<Album>;
   top_tracks: Array<Track>;
   track: Track;
@@ -222,9 +230,11 @@ export type AlbumResolvers<ContextType = any, ParentType extends ResolversParent
   album_type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   artists?: Resolver<Array<ResolversTypes['Artist']>, ParentType, ContextType>;
   cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   genres?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  numberOfTracks?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   popularity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   release_date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tracks?: Resolver<Maybe<Array<ResolversTypes['Track']>>, ParentType, ContextType>;
@@ -233,8 +243,12 @@ export type AlbumResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type ArtistResolvers<ContextType = any, ParentType extends ResolversParentTypes['Artist'] = ResolversParentTypes['Artist']> = {
+  albums?: Resolver<Array<ResolversTypes['Album']>, ParentType, ContextType>;
+  cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  popularity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  tracks?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -266,9 +280,11 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   artist?: Resolver<ResolversTypes['Artist'], ParentType, ContextType, RequireFields<QueryArtistArgs, 'id'>>;
   followed_artists?: Resolver<Array<ResolversTypes['Artist']>, ParentType, ContextType>;
   liked_songs?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
+  new_releases?: Resolver<Array<ResolversTypes['Album']>, ParentType, ContextType>;
   playlist?: Resolver<ResolversTypes['Playlist'], ParentType, ContextType, RequireFields<QueryPlaylistArgs, 'id'>>;
   playlists?: Resolver<Array<ResolversTypes['Playlist']>, ParentType, ContextType>;
   recently_played?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
+  recommendation?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
   saved_albums?: Resolver<Array<ResolversTypes['Album']>, ParentType, ContextType>;
   top_tracks?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
   track?: Resolver<ResolversTypes['Track'], ParentType, ContextType, RequireFields<QueryTrackArgs, 'id'>>;

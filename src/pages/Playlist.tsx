@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { useParams } from "react-router"
-import { useGetPlaylistQuery } from "@/generated/graphql"
+import { EType, useGetPlaylistQuery } from "@/generated/graphql"
 import { Container, SelectChangeEvent } from "@mui/material"
-import Listing from "~/Listing"
+import PlaylistTracks from "~/PlaylistTracks"
 import PlaylistControls from "~/PlaylistControls"
 import Showcase from "~/Showcase"
 
@@ -30,20 +30,20 @@ const Playlist = () => {
     <main>
       <Container>
         <Showcase
-          type="playlist"
-          cover={playlist?.cover_image || ""}
-          title={playlist?.name}
-          author={playlist?.owner.name || "Unknown"}
-          numberOfSongs={playlist?.total}
-          timeLength={playlist?.duration}
+          type={EType["Playlist"]}
+          cover_image={playlist?.cover_image || ""}
+          name={playlist?.name || "Unknown"}
+          owner={playlist?.owner.name || "Unknown"}
+          numberOfTracks={playlist?.total}
+          duration={playlist?.duration || 0}
         />
         <PlaylistControls
-          type="playlist"
+          type={playlist?.type || EType["Playlist"]}
           order={order}
           handleChange={handleChange}
         />
       </Container>
-      <Listing playlistTracks={playlist?.tracks} type="playlist" />
+      <PlaylistTracks tracks={playlist?.tracks || []} />
     </main>
   )
 }

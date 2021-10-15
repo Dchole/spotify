@@ -19,9 +19,11 @@ export type Album = {
   album_type: Scalars['String'];
   artists: Array<Artist>;
   cover_image?: Maybe<Scalars['String']>;
+  duration: Scalars['Int'];
   genres?: Maybe<Array<Scalars['String']>>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  numberOfTracks?: Maybe<Scalars['Int']>;
   popularity?: Maybe<Scalars['Int']>;
   release_date: Scalars['String'];
   tracks?: Maybe<Array<Track>>;
@@ -30,8 +32,12 @@ export type Album = {
 
 export type Artist = {
   __typename?: 'Artist';
+  albums: Array<Album>;
+  cover_image?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  popularity?: Maybe<Scalars['Int']>;
+  tracks: Array<Track>;
   type: EType;
 };
 
@@ -73,9 +79,11 @@ export type Query = {
   artist: Artist;
   followed_artists: Array<Artist>;
   liked_songs: Array<Track>;
+  new_releases: Array<Album>;
   playlist: Playlist;
   playlists: Array<Playlist>;
   recently_played: Array<Track>;
+  recommendation: Array<Track>;
   saved_albums: Array<Album>;
   top_tracks: Array<Track>;
   track: Track;
@@ -126,14 +134,36 @@ export type GetAlbumQueryVariables = Exact<{
 }>;
 
 
-export type GetAlbumQuery = { __typename?: 'Query', album: { __typename?: 'Album', id: string, name: string, popularity?: number | null | undefined, release_date: string, tracks?: Array<{ __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, artists: Array<{ __typename?: 'Artist', id: string, name: string }> }> | null | undefined } };
+export type GetAlbumQuery = { __typename?: 'Query', album: { __typename?: 'Album', id: string, name: string, duration: number, cover_image?: string | null | undefined, popularity?: number | null | undefined, numberOfTracks?: number | null | undefined, release_date: string, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, tracks?: Array<{ __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, artists: Array<{ __typename?: 'Artist', id: string, name: string }> }> | null | undefined } };
+
+export type GetArtistQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetArtistQuery = { __typename?: 'Query', artist: { __typename?: 'Artist', id: string, name: string, type: EType, popularity?: number | null | undefined, cover_image?: string | null | undefined, tracks: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined, album: { __typename?: 'Album', id: string, name: string } }>, albums: Array<{ __typename?: 'Album', id: string, name: string, cover_image?: string | null | undefined }> } };
+
+export type GetFollowedArtistsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFollowedArtistsQuery = { __typename?: 'Query', followed_artists: Array<{ __typename?: 'Artist', id: string, name: string, type: EType, cover_image?: string | null | undefined }> };
+
+export type GetLikedSongsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLikedSongsQuery = { __typename?: 'Query', liked_songs: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined }> };
+
+export type GetNewReleasesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetNewReleasesQuery = { __typename?: 'Query', new_releases: Array<{ __typename?: 'Album', id: string, name: string, type: EType, cover_image?: string | null | undefined }> };
 
 export type GetPlaylistQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetPlaylistQuery = { __typename?: 'Query', playlist: { __typename?: 'Playlist', id: string, name: string, total: number, duration: number, cover_image?: string | null | undefined, owner: { __typename?: 'User', id: string, name: string }, tracks: Array<{ __typename?: 'PlaylistTrack', id: string, added_at: string, track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album: { __typename?: 'Album', id: string, name: string, release_date: string } } }> } };
+export type GetPlaylistQuery = { __typename?: 'Query', playlist: { __typename?: 'Playlist', id: string, name: string, type: EType, total: number, duration: number, cover_image?: string | null | undefined, owner: { __typename?: 'User', id: string, name: string }, tracks: Array<{ __typename?: 'PlaylistTrack', id: string, added_at: string, track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album: { __typename?: 'Album', id: string, name: string, release_date: string } } }> } };
 
 export type GetPlaylistsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -144,6 +174,11 @@ export type GetRecentlyPlayedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetRecentlyPlayedQuery = { __typename?: 'Query', recently_played: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined }> };
+
+export type GetRecommendationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetRecommendationsQuery = { __typename?: 'Query', recommendation: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined }> };
 
 export type GetSavedAlbumsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -160,7 +195,7 @@ export type GetTrackQueryVariables = Exact<{
 }>;
 
 
-export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, artists: Array<{ __typename?: 'Artist', id: string, name: string }> } };
+export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album: { __typename?: 'Album', id: string, name: string } } };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -173,8 +208,15 @@ export const GetAlbumDocument = gql`
   album(id: $id) {
     id
     name
+    duration
+    cover_image
     popularity
+    numberOfTracks
     release_date
+    artists {
+      id
+      name
+    }
     tracks {
       id
       name
@@ -215,11 +257,177 @@ export function useGetAlbumLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetAlbumQueryHookResult = ReturnType<typeof useGetAlbumQuery>;
 export type GetAlbumLazyQueryHookResult = ReturnType<typeof useGetAlbumLazyQuery>;
 export type GetAlbumQueryResult = Apollo.QueryResult<GetAlbumQuery, GetAlbumQueryVariables>;
+export const GetArtistDocument = gql`
+    query getArtist($id: ID!) {
+  artist(id: $id) {
+    id
+    name
+    type
+    popularity
+    cover_image
+    tracks {
+      id
+      name
+      type
+      cover_image
+      album {
+        id
+        name
+      }
+    }
+    albums {
+      id
+      name
+      cover_image
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetArtistQuery__
+ *
+ * To run a query within a React component, call `useGetArtistQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetArtistQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetArtistQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetArtistQuery(baseOptions: Apollo.QueryHookOptions<GetArtistQuery, GetArtistQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetArtistQuery, GetArtistQueryVariables>(GetArtistDocument, options);
+      }
+export function useGetArtistLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetArtistQuery, GetArtistQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetArtistQuery, GetArtistQueryVariables>(GetArtistDocument, options);
+        }
+export type GetArtistQueryHookResult = ReturnType<typeof useGetArtistQuery>;
+export type GetArtistLazyQueryHookResult = ReturnType<typeof useGetArtistLazyQuery>;
+export type GetArtistQueryResult = Apollo.QueryResult<GetArtistQuery, GetArtistQueryVariables>;
+export const GetFollowedArtistsDocument = gql`
+    query getFollowedArtists {
+  followed_artists {
+    id
+    name
+    type
+    cover_image
+  }
+}
+    `;
+
+/**
+ * __useGetFollowedArtistsQuery__
+ *
+ * To run a query within a React component, call `useGetFollowedArtistsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFollowedArtistsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFollowedArtistsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetFollowedArtistsQuery(baseOptions?: Apollo.QueryHookOptions<GetFollowedArtistsQuery, GetFollowedArtistsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFollowedArtistsQuery, GetFollowedArtistsQueryVariables>(GetFollowedArtistsDocument, options);
+      }
+export function useGetFollowedArtistsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFollowedArtistsQuery, GetFollowedArtistsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFollowedArtistsQuery, GetFollowedArtistsQueryVariables>(GetFollowedArtistsDocument, options);
+        }
+export type GetFollowedArtistsQueryHookResult = ReturnType<typeof useGetFollowedArtistsQuery>;
+export type GetFollowedArtistsLazyQueryHookResult = ReturnType<typeof useGetFollowedArtistsLazyQuery>;
+export type GetFollowedArtistsQueryResult = Apollo.QueryResult<GetFollowedArtistsQuery, GetFollowedArtistsQueryVariables>;
+export const GetLikedSongsDocument = gql`
+    query getLikedSongs {
+  liked_songs {
+    id
+    name
+    type
+    cover_image
+  }
+}
+    `;
+
+/**
+ * __useGetLikedSongsQuery__
+ *
+ * To run a query within a React component, call `useGetLikedSongsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLikedSongsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLikedSongsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetLikedSongsQuery(baseOptions?: Apollo.QueryHookOptions<GetLikedSongsQuery, GetLikedSongsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLikedSongsQuery, GetLikedSongsQueryVariables>(GetLikedSongsDocument, options);
+      }
+export function useGetLikedSongsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLikedSongsQuery, GetLikedSongsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLikedSongsQuery, GetLikedSongsQueryVariables>(GetLikedSongsDocument, options);
+        }
+export type GetLikedSongsQueryHookResult = ReturnType<typeof useGetLikedSongsQuery>;
+export type GetLikedSongsLazyQueryHookResult = ReturnType<typeof useGetLikedSongsLazyQuery>;
+export type GetLikedSongsQueryResult = Apollo.QueryResult<GetLikedSongsQuery, GetLikedSongsQueryVariables>;
+export const GetNewReleasesDocument = gql`
+    query getNewReleases {
+  new_releases {
+    id
+    name
+    type
+    cover_image
+  }
+}
+    `;
+
+/**
+ * __useGetNewReleasesQuery__
+ *
+ * To run a query within a React component, call `useGetNewReleasesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNewReleasesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNewReleasesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetNewReleasesQuery(baseOptions?: Apollo.QueryHookOptions<GetNewReleasesQuery, GetNewReleasesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNewReleasesQuery, GetNewReleasesQueryVariables>(GetNewReleasesDocument, options);
+      }
+export function useGetNewReleasesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNewReleasesQuery, GetNewReleasesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNewReleasesQuery, GetNewReleasesQueryVariables>(GetNewReleasesDocument, options);
+        }
+export type GetNewReleasesQueryHookResult = ReturnType<typeof useGetNewReleasesQuery>;
+export type GetNewReleasesLazyQueryHookResult = ReturnType<typeof useGetNewReleasesLazyQuery>;
+export type GetNewReleasesQueryResult = Apollo.QueryResult<GetNewReleasesQuery, GetNewReleasesQueryVariables>;
 export const GetPlaylistDocument = gql`
     query getPlaylist($id: ID!) {
   playlist(id: $id) {
     id
     name
+    type
     total
     duration
     cover_image
@@ -350,6 +558,43 @@ export function useGetRecentlyPlayedLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetRecentlyPlayedQueryHookResult = ReturnType<typeof useGetRecentlyPlayedQuery>;
 export type GetRecentlyPlayedLazyQueryHookResult = ReturnType<typeof useGetRecentlyPlayedLazyQuery>;
 export type GetRecentlyPlayedQueryResult = Apollo.QueryResult<GetRecentlyPlayedQuery, GetRecentlyPlayedQueryVariables>;
+export const GetRecommendationsDocument = gql`
+    query getRecommendations {
+  recommendation {
+    id
+    name
+    type
+    cover_image
+  }
+}
+    `;
+
+/**
+ * __useGetRecommendationsQuery__
+ *
+ * To run a query within a React component, call `useGetRecommendationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRecommendationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRecommendationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetRecommendationsQuery(baseOptions?: Apollo.QueryHookOptions<GetRecommendationsQuery, GetRecommendationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRecommendationsQuery, GetRecommendationsQueryVariables>(GetRecommendationsDocument, options);
+      }
+export function useGetRecommendationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRecommendationsQuery, GetRecommendationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRecommendationsQuery, GetRecommendationsQueryVariables>(GetRecommendationsDocument, options);
+        }
+export type GetRecommendationsQueryHookResult = ReturnType<typeof useGetRecommendationsQuery>;
+export type GetRecommendationsLazyQueryHookResult = ReturnType<typeof useGetRecommendationsLazyQuery>;
+export type GetRecommendationsQueryResult = Apollo.QueryResult<GetRecommendationsQuery, GetRecommendationsQueryVariables>;
 export const GetSavedAlbumsDocument = gql`
     query getSavedAlbums {
   saved_albums {
@@ -432,6 +677,10 @@ export const GetTrackDocument = gql`
     cover_image
     duration
     artists {
+      id
+      name
+    }
+    album {
       id
       name
     }

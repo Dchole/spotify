@@ -8,5 +8,9 @@ query getTrack($id: ID!) {
       id
       name
     }
+    album {
+      id
+      name
+    }
   }
 }

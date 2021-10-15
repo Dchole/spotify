@@ -1,4 +1,5 @@
 import { TOrder } from "#/Playlist"
+import { EType } from "@/generated/graphql"
 import { FavoriteBorder, PlayCircle, Share } from "@mui/icons-material"
 import { Grid, IconButton, SelectChangeEvent, Skeleton } from "@mui/material"
 import { lazy, Suspense } from "react"
@@ -6,7 +7,7 @@ import { lazy, Suspense } from "react"
 const SortingOrder = lazy(() => import("./SortingOrder"))
 
 interface IProps {
-  type: "playlist" | "album"
+  type: EType
   order: TOrder
   handleChange: (event: SelectChangeEvent) => void
 }
@@ -21,7 +22,7 @@ const PlaylistControls: React.FC<IProps> = ({ type, order, handleChange }) => {
       container
     >
       <Grid alignItems="center" gap={2} container sx={{ width: "fit-content" }}>
-        {type === "playlist" && (
+        {type === EType["Playlist"] && (
           <Suspense
             fallback={
               <Skeleton variant="rectangular" width={150} height={42.2} />
@@ -33,7 +34,7 @@ const PlaylistControls: React.FC<IProps> = ({ type, order, handleChange }) => {
         <IconButton aria-label="add playlist to favorite">
           <FavoriteBorder />
         </IconButton>
-        {type === "album" && (
+        {type === EType["Album"] && (
           <IconButton aria-label="share album">
             <Share />
           </IconButton>

@@ -2,13 +2,12 @@ import { Typography, TypographyTypeMap } from "@mui/material"
 import { Box } from "@mui/system"
 import { forwardRef } from "react"
 import classes from "@/styles/full-width.module.css"
-import coverFallback from "@/assets/song.svg"
+import coverFallback from "@/assets/track.svg"
+import { Track } from "@/generated/graphql"
 
-interface IProps {
-  title: string
-  album: string
-  cover?: string
-  artist: string
+interface IProps extends Pick<Track, "name" | "cover_image"> {
+  albumName: string
+  artistName: string
 }
 
 type TTypography = TypographyTypeMap["props"] & {
@@ -28,7 +27,12 @@ const Text = forwardRef<HTMLParagraphElement | HTMLHeadingElement, TTypography>(
   }
 )
 
-const TrackShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
+const TrackShowcase: React.FC<IProps> = ({
+  name,
+  cover_image,
+  albumName,
+  artistName
+}) => {
   return (
     <Box
       component="section"
@@ -39,24 +43,24 @@ const TrackShowcase: React.FC<IProps> = ({ title, cover, album, artist }) => {
       gap={1.5}
       mb={4}
     >
-      <Text>{album}</Text>
+      <Text>{albumName}</Text>
       <Box width="100%" height="calc(100vw - 32px)">
-        <img src={cover} alt={title} className={classes["full-width"]} />
+        <img
+          src={cover_image || coverFallback}
+          alt={name}
+          className={classes["full-width"]}
+        />
       </Box>
       <div>
         <Text variant="h4" component="p">
-          {title}
+          {name}
         </Text>
         <Text variant="body2" color="textSecondary">
-          {artist}
+          {artistName}
         </Text>
       </div>
     </Box>
   )
-}
-
-TrackShowcase.defaultProps = {
-  cover: coverFallback
 }
 
 export default TrackShowcase

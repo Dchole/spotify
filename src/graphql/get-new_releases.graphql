@@ -1,0 +1,8 @@
+query getNewReleases {
+  new_releases {
+    id
+    name
+    type
+    cover_image
+  }
+}

@@ -1,31 +1,33 @@
-import useArtist from "@/hooks/useArtist"
+import { EType, useGetArtistQuery } from "@/generated/graphql"
 import { ChevronRight, PlayCircle, Share } from "@mui/icons-material"
 import { Button, Container, IconButton, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
-import Listing from "~/Listing"
+import { useParams } from "react-router"
+import Tracks from "~/AlbumTracks"
 import Showcase from "~/Showcase"
 import Tile from "~/Tile"
 
 const Artist = () => {
-  const { info, tracks, albums } = useArtist()
+  const { id } = useParams<{ id: string }>()
+  const artist = useGetArtistQuery({ variables: { id } }).data?.artist
   const [showingMore, setShowingMore] = useState(false)
-  const [showingTracks, setShowingTracks] = useState(tracks?.slice(0, 3))
+  const [showingTracks, setShowingTracks] = useState(artist?.tracks.slice(0, 3))
 
   const showMore = () => setShowingMore(!showingMore)
 
   useEffect(() => {
-    setShowingTracks(showingMore ? tracks : tracks?.slice(0, 3))
+    setShowingTracks(showingMore ? artist?.tracks : artist?.tracks?.slice(0, 3))
   }, [showingMore])
 
   return (
     <main>
       <Container>
         <Showcase
-          type="artist"
-          cover={info?.images[1]?.url}
-          name={info?.name}
-          numberOfListeners={info?.popularity}
+          type={EType["Artist"]}
+          cover_image={artist?.cover_image}
+          name={artist?.name || "Unknown"}
+          popularity={artist?.popularity}
         />
         <Stack
           direction="row"
@@ -50,12 +52,12 @@ const Artist = () => {
         mb={2}
         component="section"
         id="popular-songs"
-        aria-label={`top songs by ${info?.name}`}
+        aria-label={`top songs by ${artist?.name}`}
       >
         <Typography variant="h4" sx={{ ml: 2 }}>
           All Tracks
         </Typography>
-        <Listing tracks={showingTracks} type="singles" gutters={1} />
+        <Tracks tracks={showingTracks} type={EType["Track"]} gutters={1} />
         <Button
           color="inherit"
           endIcon={
@@ -83,7 +85,7 @@ const Artist = () => {
       <Container
         component="section"
         id="albums"
-        aria-label={`${info?.name}'s albums'`}
+        aria-label={`${artist?.name}'s albums'`}
       >
         <Typography variant="h4" sx={{ mb: 1.8 }}>
           Albums
@@ -94,13 +96,13 @@ const Artist = () => {
           flexWrap="wrap"
           justifyContent="space-between"
         >
-          {albums?.items.map(({ id, name, images }) => (
+          {artist?.albums.map(({ id, name, cover_image }) => (
             <Box key={id} mb={2.5}>
               <Tile
                 id={id}
                 title={name}
-                cover={images[1]?.url}
-                type="album"
+                cover_image={cover_image}
+                type={EType["Album"]}
                 alignLeft
               />
             </Box>

@@ -2,6 +2,7 @@ query getPlaylist($id: ID!) {
   playlist(id: $id) {
     id
     name
+    type
     total
     duration
     cover_image
