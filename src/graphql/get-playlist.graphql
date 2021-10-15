@@ -2,9 +2,9 @@ query getPlaylist($id: ID!) {
   playlist(id: $id) {
     id
     name
-    cover_image
     total
     duration
+    cover_image
     owner {
       id
       name
@@ -15,7 +15,7 @@ query getPlaylist($id: ID!) {
       track {
         id
         name
-        duration
+        cover_image
         artists {
           id
           name
@@ -23,7 +23,6 @@ query getPlaylist($id: ID!) {
         album {
           id
           name
-          cover_image
           release_date
         }
       }

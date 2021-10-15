@@ -1,14 +1,13 @@
 import clsx from "clsx"
 import { Grid, Typography, useMediaQuery } from "@mui/material"
 import { Link } from "react-router-dom"
-import { Playlist } from "@/generated/graphql"
+import { Playlist, EType } from "@/generated/graphql"
 import artistFallback from "@/assets/artist.svg"
 import albumFallback from "@/assets/album.svg"
 import classes from "@/styles/rounded.module.css"
 import styles from "@/styles/cover-image.module.css"
 
-interface IProps extends Partial<Omit<Playlist, "type">> {
-  type: "artist" | "playlist" | "album" | "track"
+interface IProps extends Partial<Playlist> {
   path?: string
   alignLeft?: boolean
 }
@@ -29,7 +28,7 @@ const Tile: React.FC<IProps> = ({
       container
       wrap="nowrap"
       component={Link}
-      to={path || `/${type}s/${id}`}
+      to={path || `/${type?.toLowerCase()}s/${id}`}
       display="flex"
       flexDirection="column"
       sx={{
@@ -43,7 +42,7 @@ const Tile: React.FC<IProps> = ({
           alt=""
           loading="lazy"
           className={
-            type === "artist"
+            type === EType["Artist"]
               ? clsx(classes.rounded, styles.cover)
               : styles.cover
           }
@@ -62,12 +61,6 @@ const Tile: React.FC<IProps> = ({
       </Grid>
     </Grid>
   )
-}
-
-Tile.defaultProps = {
-  get cover_image() {
-    return this.type === "artist" ? artistFallback : albumFallback
-  }
 }
 
 export default Tile

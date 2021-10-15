@@ -1,0 +1,12 @@
+query getTrack($id: ID!) {
+  track(id: $id) {
+    id
+    name
+    cover_image
+    duration
+    artists {
+      id
+      name
+    }
+  }
+}

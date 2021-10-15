@@ -1,5 +1,5 @@
-query getPlaylists {
-  playlists {
+query getTopTracks {
+  top_tracks {
     id
     name
     type

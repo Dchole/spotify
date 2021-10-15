@@ -1,0 +1,17 @@
+query getAlbum($id: ID!) {
+  album(id: $id) {
+    id
+    name
+    popularity
+    release_date
+    tracks {
+      id
+      name
+      cover_image
+      artists {
+        id
+        name
+      }
+    }
+  }
+}

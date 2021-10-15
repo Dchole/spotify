@@ -37,7 +37,7 @@ const Listing: React.FC<IProps> = ({
               component={Link}
               to={`/tracks/${track.id}`}
               variant="square"
-              src={track.track.album.cover_image || coverFallback}
+              src={track.track.cover_image || coverFallback}
               alt={track.track.name}
               sx={type === "album" ? { width: 60, height: 60 } : undefined}
               imgProps={{

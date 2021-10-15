@@ -1,5 +1,5 @@
-query getPlaylists {
-  playlists {
+query getRecentlyPlayed {
+  recently_played {
     id
     name
     type

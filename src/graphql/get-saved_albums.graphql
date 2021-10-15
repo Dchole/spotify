@@ -1,5 +1,5 @@
-query getPlaylists {
-  playlists {
+query getSavedAlbums {
+  saved_albums {
     id
     name
     type
