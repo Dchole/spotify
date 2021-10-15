@@ -4,8 +4,6 @@ import App from "./App"
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { BrowserRouter } from "react-router-dom"
 import ColorModeProvider from "~/context/ColorMode"
-import { client as rqClient } from "@/lib/query-client"
-import { QueryClientProvider } from "react-query"
 
 if (!import.meta.env.PROD) {
   import("@axe-core/react").then(axe => {
@@ -21,13 +19,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <QueryClientProvider client={rqClient}>
-        <ApolloProvider client={client}>
-          <ColorModeProvider>
-            <App />
-          </ColorModeProvider>
-        </ApolloProvider>
-      </QueryClientProvider>
+      <ApolloProvider client={client}>
+        <ColorModeProvider>
+          <App />
+        </ColorModeProvider>
+      </ApolloProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
