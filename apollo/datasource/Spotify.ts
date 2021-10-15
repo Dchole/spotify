@@ -55,17 +55,18 @@ export default class SpotifyAPI extends DataSource<IContext> {
   ): Album {
     const fullAlbum = album as SpotifyApi.AlbumObjectFull
 
-    const onlyInFull = {
-      genres: fullAlbum.genres,
-      popularity: fullAlbum.popularity,
-      tracks: fullAlbum.tracks?.items.map(track =>
-        this.trackReducer(track as SpotifyApi.TrackObjectFull)
-      )
-    }
-
-    const isObjectFull = Object.keys(onlyInFull).every(prop =>
-      Object.getOwnPropertyNames(album).includes(prop)
-    )
+    const onlyInFull = Object.getOwnPropertyNames(fullAlbum).includes("genres")
+      ? {
+          genres: fullAlbum.genres,
+          popularity: fullAlbum.popularity,
+          tracks: fullAlbum.tracks.items.map(track =>
+            this.trackReducer(
+              track as SpotifyApi.TrackObjectFull,
+              album.images[1].url || album.images[0].url
+            )
+          )
+        }
+      : undefined
 
     return {
       id: album.id,
@@ -87,7 +88,7 @@ export default class SpotifyAPI extends DataSource<IContext> {
       genres: undefined,
       tracks: undefined,
       popularity: undefined,
-      ...(isObjectFull ? onlyInFull : {})
+      ...(onlyInFull || {})
     }
   }
 
@@ -153,7 +154,8 @@ export default class SpotifyAPI extends DataSource<IContext> {
   }
 
   private trackReducer(
-    track: SpotifyApi.TrackObjectSimplified | SpotifyApi.TrackObjectFull
+    track: SpotifyApi.TrackObjectSimplified | SpotifyApi.TrackObjectFull,
+    cover_image?: string
   ): Track {
     const fullObject = track as SpotifyApi.TrackObjectFull
 
@@ -163,8 +165,11 @@ export default class SpotifyAPI extends DataSource<IContext> {
       artists: track.artists.map(artist => this.artistReducer(artist)),
       duration: track.duration_ms,
       type: EType["Track"],
-      cover_image: track.album.images[1]?.url || track.album.images[0]?.url,
-      album: this.albumReducer(track.album),
+      cover_image:
+        track.album?.images[1]?.url ||
+        track.album?.images[0]?.url ||
+        cover_image,
+      album: track.album ? this.albumReducer(track.album) : undefined,
       get popularity() {
         if (Object.prototype.hasOwnProperty.call(fullObject, "popularity")) {
           return fullObject.popularity

@@ -38,7 +38,7 @@ const AlbumTracks: React.FC<IProps> = ({
               variant="square"
               src={track.cover_image || coverFallback}
               alt={track.name}
-              sx={{ width: 60, height: 60 }}
+              sx={{ width: 50, height: 50 }}
               imgProps={{
                 width: "50",
                 height: "50",

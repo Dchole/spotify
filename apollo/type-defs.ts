@@ -26,7 +26,7 @@ export const typeDefs = gql`
   type Track {
     id: ID!
     name: String!
-    album: Album!
+    album: Album
     artists: [Artist!]!
     duration: Int!
     cover_image: String

@@ -111,7 +111,7 @@ export type QueryTrackArgs = {
 
 export type Track = {
   __typename?: 'Track';
-  album: Album;
+  album?: Maybe<Album>;
   artists: Array<Artist>;
   cover_image?: Maybe<Scalars['String']>;
   duration: Scalars['Int'];
@@ -292,7 +292,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type TrackResolvers<ContextType = any, ParentType extends ResolversParentTypes['Track'] = ResolversParentTypes['Track']> = {
-  album?: Resolver<ResolversTypes['Album'], ParentType, ContextType>;
+  album?: Resolver<Maybe<ResolversTypes['Album']>, ParentType, ContextType>;
   artists?: Resolver<Array<ResolversTypes['Artist']>, ParentType, ContextType>;
   cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;

@@ -41,6 +41,7 @@ const Playlist = () => {
         </Stack>
       </Container>
       <AlbumTracks
+        gutters={1}
         name={album?.name || "Unknown"}
         release_date={album?.release_date}
         tracks={album?.tracks || []}
