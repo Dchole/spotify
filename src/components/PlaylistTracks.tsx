@@ -8,7 +8,7 @@ import {
   ListItemText
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import coverFallback from "@/assets/song.svg"
+import coverFallback from "@/assets/track.svg"
 import { GetPlaylistQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 

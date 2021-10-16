@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom"
 import { GetAlbumQuery, GetArtistQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
-import coverFallback from "@/assets/song.svg"
+import coverFallback from "@/assets/track.svg"
 
 interface IProps {
   album_type?: string
