@@ -65,8 +65,9 @@ const Navigation = () => {
               }),
 
             "&.Mui-selected": {
-              color: "primary.dark",
-              bgcolor: ({ palette }) => alpha(palette.primary.light, 0.16)
+              color: ({ palette }) =>
+                palette.mode === "light" ? "primary.dark" : "primary.light",
+              bgcolor: ({ palette }) => alpha(palette.primary.light, 0.14)
             }
           }}
         />

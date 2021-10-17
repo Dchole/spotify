@@ -112,7 +112,7 @@ export type QueryTrackArgs = {
 
 export type Track = {
   __typename?: 'Track';
-  album: Album;
+  album?: Maybe<Album>;
   artists: Array<Artist>;
   cover_image?: Maybe<Scalars['String']>;
   duration: Scalars['Int'];
@@ -141,7 +141,7 @@ export type GetArtistQueryVariables = Exact<{
 }>;
 
 
-export type GetArtistQuery = { __typename?: 'Query', artist: { __typename?: 'Artist', id: string, name: string, type: EType, popularity?: number | null | undefined, cover_image?: string | null | undefined, tracks: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined, album: { __typename?: 'Album', id: string, name: string } }>, albums: Array<{ __typename?: 'Album', id: string, name: string, cover_image?: string | null | undefined }> } };
+export type GetArtistQuery = { __typename?: 'Query', artist: { __typename?: 'Artist', id: string, name: string, type: EType, popularity?: number | null | undefined, cover_image?: string | null | undefined, tracks: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined, album?: { __typename?: 'Album', id: string, name: string, release_date: string } | null | undefined }>, albums: Array<{ __typename?: 'Album', id: string, name: string, cover_image?: string | null | undefined }> } };
 
 export type GetFollowedArtistsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -163,7 +163,7 @@ export type GetPlaylistQueryVariables = Exact<{
 }>;
 
 
-export type GetPlaylistQuery = { __typename?: 'Query', playlist: { __typename?: 'Playlist', id: string, name: string, type: EType, total: number, duration: number, cover_image?: string | null | undefined, owner: { __typename?: 'User', id: string, name: string }, tracks: Array<{ __typename?: 'PlaylistTrack', id: string, added_at: string, track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album: { __typename?: 'Album', id: string, name: string, release_date: string } } }> } };
+export type GetPlaylistQuery = { __typename?: 'Query', playlist: { __typename?: 'Playlist', id: string, name: string, type: EType, total: number, duration: number, cover_image?: string | null | undefined, owner: { __typename?: 'User', id: string, name: string }, tracks: Array<{ __typename?: 'PlaylistTrack', id: string, added_at: string, track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album?: { __typename?: 'Album', id: string, name: string, release_date: string } | null | undefined } }> } };
 
 export type GetPlaylistsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -195,7 +195,7 @@ export type GetTrackQueryVariables = Exact<{
 }>;
 
 
-export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album: { __typename?: 'Album', id: string, name: string } } };
+export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album?: { __typename?: 'Album', id: string, name: string } | null | undefined } };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -273,6 +273,7 @@ export const GetArtistDocument = gql`
       album {
         id
         name
+        release_date
       }
     }
     albums {

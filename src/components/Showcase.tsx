@@ -79,7 +79,7 @@ const Showcase: React.FC<IProps> = ({
               <span>{owner || artistName}</span>&bull;
               {release_date && (
                 <>
-                  <span>{release_date}</span>&bull;
+                  <span>{new Date(release_date).getFullYear()}</span>&bull;
                 </>
               )}
               <span>

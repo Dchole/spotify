@@ -8,25 +8,16 @@ import {
   ListItemText
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import { GetAlbumQuery } from "@/generated/graphql"
+import { GetArtistQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 import coverFallback from "@/assets/track.svg"
 
 interface IProps {
-  album_type?: string
-  name: string
-  release_date?: string
-  tracks: GetAlbumQuery["album"]["tracks"]
+  tracks?: GetArtistQuery["artist"]["tracks"]
   gutters?: number
 }
 
-const AlbumTracks: React.FC<IProps> = ({
-  name,
-  album_type,
-  tracks,
-  release_date,
-  gutters = 0
-}) => {
+const AlbumTracks: React.FC<IProps> = ({ tracks, gutters = 0 }) => {
   return (
     <List>
       {tracks?.map(track => (
@@ -55,18 +46,20 @@ const AlbumTracks: React.FC<IProps> = ({
               sx: { textTransform: "capitalize", textDecoration: "none" }
             }}
             secondary={
-              album_type === "singles" ? (
-                <>
-                  <span>{new Date(release_date || "").getFullYear()}</span>
-                  &bull;
-                  <span>{name}</span>
-                </>
-              ) : undefined
+              <>
+                {track.album?.release_date && (
+                  <span>
+                    {new Date(track.album.release_date).getFullYear()}
+                  </span>
+                )}
+                &bull;
+                <span>{track.album?.name}</span>
+              </>
             }
             secondaryTypographyProps={{
               component: Link,
               color: "textSecondary",
-              to: `/artists/${track.artists[0].id}#${slugify(name)}`,
+              to: `/albums/${track.album?.id}#${slugify(track.name)}`,
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
           />

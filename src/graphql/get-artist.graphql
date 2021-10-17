@@ -13,6 +13,7 @@ query getArtist($id: ID!) {
       album {
         id
         name
+        release_date
       }
     }
     albums {

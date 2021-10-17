@@ -1,10 +1,10 @@
-import { EType, useGetArtistQuery } from "@/generated/graphql"
+import { EType, GetArtistQuery, useGetArtistQuery } from "@/generated/graphql"
 import { ChevronRight, PlayCircle, Share } from "@mui/icons-material"
 import { Button, Container, IconButton, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import Tracks from "~/AlbumTracks"
+import ArtistTracks from "~/ArtistTracks"
 import Showcase from "~/Showcase"
 import Tile from "~/Tile"
 
@@ -12,13 +12,16 @@ const Artist = () => {
   const { id } = useParams<{ id: string }>()
   const artist = useGetArtistQuery({ variables: { id } }).data?.artist
   const [showingMore, setShowingMore] = useState(false)
-  const [showingTracks, setShowingTracks] = useState(artist?.tracks.slice(0, 3))
+
+  const [showingTracks, setShowingTracks] = useState<
+    GetArtistQuery["artist"]["tracks"] | undefined
+  >(undefined)
 
   const showMore = () => setShowingMore(!showingMore)
 
   useEffect(() => {
-    setShowingTracks(showingMore ? artist?.tracks : artist?.tracks?.slice(0, 3))
-  }, [showingMore])
+    setShowingTracks(showingMore ? artist?.tracks : artist?.tracks?.slice(0, 4))
+  }, [showingMore, artist?.tracks])
 
   return (
     <main>
@@ -57,12 +60,7 @@ const Artist = () => {
         <Typography variant="h4" sx={{ ml: 2 }}>
           All Tracks
         </Typography>
-        <Tracks
-          name="Unknown"
-          tracks={showingTracks}
-          album_type={"singles"}
-          gutters={1}
-        />
+        <ArtistTracks tracks={showingTracks} gutters={1} />
         <Button
           color="inherit"
           endIcon={
