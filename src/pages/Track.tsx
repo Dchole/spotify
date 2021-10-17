@@ -49,7 +49,7 @@ const Track = () => {
         artistName={
           track?.artists.map(artist => artist.name).join(", ") || "Unknown"
         }
-        albumName={track?.album.name || "Unknown"}
+        albumName={track?.album?.name || "Unknown"}
       />
       <Grid
         component="section"

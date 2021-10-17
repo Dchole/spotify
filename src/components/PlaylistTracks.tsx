@@ -54,7 +54,7 @@ const Listing: React.FC<IProps> = ({ tracks, gutters = 0 }) => {
               component: Link,
               color: "textSecondary",
               to: `/artists/${track.track.artists[0].id}#${slugify(
-                track.track.album.name
+                track.track.album?.name||""
               )}`,
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
