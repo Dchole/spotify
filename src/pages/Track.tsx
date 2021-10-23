@@ -11,7 +11,7 @@ import {
   VolumeUp
 } from "@mui/icons-material"
 import TrackShowcase from "~/TrackShowcase"
-import { lazy, useEffect, useState } from "react"
+import { lazy, useCallback, useEffect, useState } from "react"
 import { useGetLikedSongsQuery, useGetTrackQuery } from "@/generated/graphql"
 import { useParams } from "react-router"
 import { usePlayback } from "~/context/Playback"
@@ -74,12 +74,14 @@ const Track = () => {
     }
   }
 
-  const updateTimeline = (event: Event, newValue: number | number[]) => {
-    const value = newValue as number
-    setProgress(value)
-    console.log(value)
-    event && spotifyApi.seek(value * 1000)
-  }
+  const updateTimeline = useCallback(
+    (event: Event, newValue: number | number[]) => {
+      const value = newValue as number
+      setProgress(value)
+      event && spotifyApi.seek(value * 1000)
+    },
+    []
+  )
 
   const fastForward = () => {
     const position = progress + 10
@@ -127,6 +129,7 @@ const Track = () => {
 
       setProgress(progress / 1000)
 
+      console.log(currentlyPlayingTrack?.is_paused)
       const isPlaying = !currentlyPlayingTrack?.is_paused
       if (isPlaying) {
         console.log({ isPlaying })
@@ -143,7 +146,7 @@ const Track = () => {
     }
 
     return () => clearInterval(timer)
-  }, [isPlaying])
+  }, [isPlaying, currentlyPlayingTrack, updateTimeline])
 
   const addToFavourite = () => {
     setSaved(true)
@@ -238,7 +241,6 @@ const Track = () => {
           onClick={isPlaying ? pause : play}
           disabled={loading}
         >
-          {console.log(isPlaying)}
           {currentlyPlayingTrack?.item?.uri === track?.uri && isPlaying ? (
             <PauseCircle
               color={loading ? undefined : "primary"}

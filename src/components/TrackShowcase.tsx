@@ -53,7 +53,7 @@ const TrackShowcase: React.FC<IProps> = ({
         />
       </Box>
       <div>
-        <Text variant="h4" component="p">
+        <Text variant="h4" component="h1">
           {name}
         </Text>
         <Text variant="body2" color="textSecondary">
