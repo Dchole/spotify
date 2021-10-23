@@ -84,12 +84,10 @@ const PlaybackProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     player?.addListener("ready", ({ device_id }) => {
-      console.log("Web Playback")
       setDevice_id(device_id)
     })
 
     player?.addListener("player_state_changed", state => {
-      console.log(state?.paused)
       setCurrentlyPlayingTrack(prevState => {
         if (!prevState) return null
 

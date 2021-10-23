@@ -129,10 +129,8 @@ const Track = () => {
 
       setProgress(progress / 1000)
 
-      console.log(currentlyPlayingTrack?.is_paused)
       const isPlaying = !currentlyPlayingTrack?.is_paused
       if (isPlaying) {
-        console.log({ isPlaying })
         setIsPlaying(isPlaying)
 
         timer = setInterval((event: never) => {
