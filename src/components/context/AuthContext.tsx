@@ -1,6 +1,5 @@
 import { setAccessToken } from "@/token"
 import { createContext, useContext, useEffect, useState } from "react"
-import { useLocation } from "react-router"
 
 interface IContextProps {
   token: string
@@ -10,28 +9,26 @@ interface IContextProps {
 const AuthContext = createContext<IContextProps | null>(null)
 
 const AuthProvider: React.FC = ({ children }) => {
-  const { pathname } = useLocation()
   const [token, setToken] = useState("")
 
   useEffect(() => {
-    if (pathname !== "/auth") {
-      fetch("/api/auth", {
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      })
-        .then(res => res.json())
-        .then(({ authURL, access_token }) => {
-          if (authURL) {
-            window.location.href = authURL
-          }
+    fetch("/api/auth", {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(({ authURL, access_token }) => {
+        if (authURL) {
+          window.location.href = authURL
+        }
 
-          setAccessToken(access_token || "")
-          setToken(access_token || "")
-        })
-    }
-  }, [pathname])
+        console.log({ access_token })
+        setAccessToken(access_token || "")
+        setToken(access_token || "")
+      })
+  }, [])
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>

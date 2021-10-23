@@ -35,13 +35,14 @@ const TrackShowcase: React.FC<IProps> = ({
 }) => {
   return (
     <Box
+      id="showcase"
       component="section"
       aria-label="showcase"
       display="flex"
       flexDirection="column"
       alignItems="center"
       gap={1.5}
-      mb={4}
+      mb={2}
     >
       <Text>{albumName}</Text>
       <Box width="100%" height="calc(100vw - 32px)">

@@ -1,0 +1,6 @@
+fragment TileParts on Tile {
+  id
+  name
+  type
+  cover_image
+}

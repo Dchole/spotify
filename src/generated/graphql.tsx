@@ -14,7 +14,7 @@ export type Scalars = {
   Float: number;
 };
 
-export type Album = {
+export type Album = Tile & {
   __typename?: 'Album';
   album_type: Scalars['String'];
   artists: Array<Artist>;
@@ -30,7 +30,7 @@ export type Album = {
   type: EType;
 };
 
-export type Artist = {
+export type Artist = Tile & {
   __typename?: 'Artist';
   albums: Array<Album>;
   cover_image?: Maybe<Scalars['String']>;
@@ -51,7 +51,7 @@ export enum EType {
   User = 'USER'
 }
 
-export type Playlist = {
+export type Playlist = Tile & {
   __typename?: 'Playlist';
   cover_image?: Maybe<Scalars['String']>;
   duration: Scalars['Int'];
@@ -110,7 +110,14 @@ export type QueryTrackArgs = {
   id: Scalars['ID'];
 };
 
-export type Track = {
+export type Tile = {
+  cover_image?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  type: EType;
+};
+
+export type Track = Tile & {
   __typename?: 'Track';
   album?: Maybe<Album>;
   artists: Array<Artist>;
@@ -120,6 +127,7 @@ export type Track = {
   name: Scalars['String'];
   popularity?: Maybe<Scalars['Int']>;
   type: EType;
+  uri: Scalars['String'];
 };
 
 export type User = {
@@ -195,14 +203,31 @@ export type GetTrackQueryVariables = Exact<{
 }>;
 
 
-export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album?: { __typename?: 'Album', id: string, name: string } | null | undefined } };
+export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, uri: string, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album?: { __typename?: 'Album', id: string, name: string } | null | undefined } };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, name: string, photoURL?: string | null | undefined } };
 
+type TileParts_Album_Fragment = { __typename?: 'Album', id: string, name: string, type: EType, cover_image?: string | null | undefined };
 
+type TileParts_Artist_Fragment = { __typename?: 'Artist', id: string, name: string, type: EType, cover_image?: string | null | undefined };
+
+type TileParts_Playlist_Fragment = { __typename?: 'Playlist', id: string, name: string, type: EType, cover_image?: string | null | undefined };
+
+type TileParts_Track_Fragment = { __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined };
+
+export type TilePartsFragment = TileParts_Album_Fragment | TileParts_Artist_Fragment | TileParts_Playlist_Fragment | TileParts_Track_Fragment;
+
+export const TilePartsFragmentDoc = gql`
+    fragment TileParts on Tile {
+  id
+  name
+  type
+  cover_image
+}
+    `;
 export const GetAlbumDocument = gql`
     query getAlbum($id: ID!) {
   album(id: $id) {
@@ -677,6 +702,7 @@ export const GetTrackDocument = gql`
     name
     cover_image
     duration
+    uri
     artists {
       id
       name

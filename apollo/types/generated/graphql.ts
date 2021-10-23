@@ -13,7 +13,7 @@ export type Scalars = {
   Float: number;
 };
 
-export type Album = {
+export type Album = Tile & {
   __typename?: 'Album';
   album_type: Scalars['String'];
   artists: Array<Artist>;
@@ -29,7 +29,7 @@ export type Album = {
   type: EType;
 };
 
-export type Artist = {
+export type Artist = Tile & {
   __typename?: 'Artist';
   albums: Array<Album>;
   cover_image?: Maybe<Scalars['String']>;
@@ -50,7 +50,7 @@ export enum EType {
   User = 'USER'
 }
 
-export type Playlist = {
+export type Playlist = Tile & {
   __typename?: 'Playlist';
   cover_image?: Maybe<Scalars['String']>;
   duration: Scalars['Int'];
@@ -109,7 +109,14 @@ export type QueryTrackArgs = {
   id: Scalars['ID'];
 };
 
-export type Track = {
+export type Tile = {
+  cover_image?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  type: EType;
+};
+
+export type Track = Tile & {
   __typename?: 'Track';
   album?: Maybe<Album>;
   artists: Array<Artist>;
@@ -119,6 +126,7 @@ export type Track = {
   name: Scalars['String'];
   popularity?: Maybe<Scalars['Int']>;
   type: EType;
+  uri: Scalars['String'];
 };
 
 export type User = {
@@ -207,6 +215,7 @@ export type ResolversTypes = {
   PlaylistTrack: ResolverTypeWrapper<PlaylistTrack>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Tile: ResolversTypes['Album'] | ResolversTypes['Artist'] | ResolversTypes['Playlist'] | ResolversTypes['Track'];
   Track: ResolverTypeWrapper<Track>;
   User: ResolverTypeWrapper<User>;
 };
@@ -222,6 +231,7 @@ export type ResolversParentTypes = {
   PlaylistTrack: PlaylistTrack;
   Query: {};
   String: Scalars['String'];
+  Tile: ResolversParentTypes['Album'] | ResolversParentTypes['Artist'] | ResolversParentTypes['Playlist'] | ResolversParentTypes['Track'];
   Track: Track;
   User: User;
 };
@@ -291,6 +301,14 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
 
+export type TileResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tile'] = ResolversParentTypes['Tile']> = {
+  __resolveType: TypeResolveFn<'Album' | 'Artist' | 'Playlist' | 'Track', ParentType, ContextType>;
+  cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
+};
+
 export type TrackResolvers<ContextType = any, ParentType extends ResolversParentTypes['Track'] = ResolversParentTypes['Track']> = {
   album?: Resolver<Maybe<ResolversTypes['Album']>, ParentType, ContextType>;
   artists?: Resolver<Array<ResolversTypes['Artist']>, ParentType, ContextType>;
@@ -300,6 +318,7 @@ export type TrackResolvers<ContextType = any, ParentType extends ResolversParent
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   popularity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
+  uri?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -316,6 +335,7 @@ export type Resolvers<ContextType = any> = {
   Playlist?: PlaylistResolvers<ContextType>;
   PlaylistTrack?: PlaylistTrackResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Tile?: TileResolvers<ContextType>;
   Track?: TrackResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };

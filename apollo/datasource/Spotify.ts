@@ -167,6 +167,7 @@ export default class SpotifyAPI extends DataSource<IContext> {
       artists: track.artists.map(artist => this.artistReducer(artist)),
       duration: track.duration_ms,
       type: EType["Track"],
+      uri: track.uri,
       cover_image:
         track.album?.images[1]?.url ||
         track.album?.images[0]?.url ||

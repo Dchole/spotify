@@ -1,22 +1,26 @@
+import { spotifyApi } from "@/lib"
 import { VolumeMute, VolumeUp } from "@mui/icons-material"
 import { IconButton, Popover, Slider } from "@mui/material"
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 interface IProps {
-  volume?: number
   anchorEl: HTMLButtonElement | null
   handleClose: () => void
-  handleChange: (event: Event, newValue: number | number[]) => void
 }
 
-const Volume: React.FC<IProps> = ({
-  volume,
-  anchorEl,
-  handleClose,
-  handleChange
-}) => {
+const Volume: React.FC<IProps> = ({ anchorEl, handleClose }) => {
+  const [volume, setVolume] = useState(50)
+
+  useEffect(() => {
+    spotifyApi.setVolume(volume)
+  }, [volume])
+
   const mute = (event: never) => handleChange(event, 0)
   const fullVolume = (event: never) => handleChange(event, 100)
+
+  const handleChange = (_event: Event, newValue: number | number[]) => {
+    setVolume(newValue as number)
+  }
 
   return (
     <Popover
@@ -59,10 +63,6 @@ const Volume: React.FC<IProps> = ({
       </IconButton>
     </Popover>
   )
-}
-
-Volume.defaultProps = {
-  volume: 50
 }
 
 export default Volume

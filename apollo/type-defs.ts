@@ -17,13 +17,20 @@ export const typeDefs = gql`
     followed_artists: [Artist!]!
   }
 
+  interface Tile {
+    id: ID!
+    name: String!
+    type: EType!
+    cover_image: String
+  }
+
   type User {
     id: ID!
     name: String!
     photoURL: String
   }
 
-  type Track {
+  type Track implements Tile {
     id: ID!
     name: String!
     album: Album
@@ -32,9 +39,10 @@ export const typeDefs = gql`
     cover_image: String
     popularity: Int
     type: EType!
+    uri: String!
   }
 
-  type Album {
+  type Album implements Tile {
     id: ID!
     name: String!
     genres: [String!]
@@ -49,7 +57,7 @@ export const typeDefs = gql`
     numberOfTracks: Int
   }
 
-  type Playlist {
+  type Playlist implements Tile {
     id: ID!
     name: String!
     cover_image: String
@@ -62,7 +70,7 @@ export const typeDefs = gql`
     total: Int!
   }
 
-  type Artist {
+  type Artist implements Tile {
     id: ID!
     name: String!
     type: EType!

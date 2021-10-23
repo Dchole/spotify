@@ -4,6 +4,7 @@ query getTrack($id: ID!) {
     name
     cover_image
     duration
+    uri
     artists {
       id
       name

@@ -4,10 +4,14 @@ import { spotifyApi } from "../spotify-api"
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
   const scopes = [
-    "user-read-private",
+    "streaming",
+    "user-read-email",
     "user-follow-read",
     "user-library-read",
-    "user-read-email"
+    "user-read-private",
+    "user-read-playback-state",
+    "user-modify-playback-state",
+    "user-read-currently-playing"
   ]
 
   if (req.cookies.refresh_token) {
