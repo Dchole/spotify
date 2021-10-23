@@ -110,6 +110,7 @@ const Playlist = () => {
         name={album?.name || "Unknown"}
         release_date={album?.release_date}
         tracks={album?.tracks || []}
+        setPlaying={setPlaying}
       />
     </main>
   )

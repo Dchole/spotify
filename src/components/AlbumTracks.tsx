@@ -23,6 +23,7 @@ interface IProps {
   isAlbumPlaying?: boolean
   tracks: GetAlbumQuery["album"]["tracks"]
   gutters?: number
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const AlbumTracks: React.FC<IProps> = ({
@@ -32,19 +33,34 @@ const AlbumTracks: React.FC<IProps> = ({
   album_type,
   isAlbumPlaying,
   release_date,
-  gutters = 0
+  gutters = 0,
+  setPlaying
 }) => {
   const { device_id } = usePlayback()
   const [playingTrack, setPlayingTrack] = useState("")
 
-  const playTrack = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const playTrack =
+    (track_id: string) =>
+    async (event: React.MouseEvent<HTMLButtonElement>) => {
+      try {
+        const { dataset } = event.currentTarget
+        await spotifyApi.play({
+          context_uri: album_uri,
+          offset: { uri: String(dataset.track_uri) },
+          device_id
+        })
+        setPlayingTrack(track_id)
+        setPlaying(true)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+  const pauseTrack = async () => {
     try {
-      const { dataset } = event.currentTarget
-      spotifyApi.play({
-        context_uri: album_uri,
-        offset: { uri: String(dataset.track_uri) },
-        device_id
-      })
+      await spotifyApi.pause()
+      setPlayingTrack("")
+      setPlaying(false)
     } catch (error) {
       console.log(error)
     }
@@ -102,7 +118,9 @@ const AlbumTracks: React.FC<IProps> = ({
           <IconButton
             data-track_uri={track.uri}
             aria-label={`play ${track.name}`}
-            onClick={playTrack}
+            onClick={
+              playingTrack === track.id ? pauseTrack : playTrack(track.id)
+            }
           >
             {playingTrack === track.id ? <Pause /> : <PlayArrow />}
           </IconButton>
