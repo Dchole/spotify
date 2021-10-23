@@ -1,4 +1,4 @@
-import { PlayArrow } from "@mui/icons-material"
+import { Pause, PlayArrow } from "@mui/icons-material"
 import {
   Avatar,
   IconButton,
@@ -11,22 +11,51 @@ import { Link } from "react-router-dom"
 import { GetAlbumQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 import coverFallback from "@/assets/track.svg"
+import { useEffect, useState } from "react"
+import { spotifyApi } from "@/lib"
+import { usePlayback } from "./context/Playback"
 
 interface IProps {
-  album_type?: string
   name: string
+  album_uri?: string
+  album_type?: string
   release_date?: string
+  isAlbumPlaying?: boolean
   tracks: GetAlbumQuery["album"]["tracks"]
   gutters?: number
 }
 
 const AlbumTracks: React.FC<IProps> = ({
   name,
-  album_type,
   tracks,
+  album_uri,
+  album_type,
+  isAlbumPlaying,
   release_date,
   gutters = 0
 }) => {
+  const { device_id } = usePlayback()
+  const [playingTrack, setPlayingTrack] = useState("")
+
+  const playTrack = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      const { dataset } = event.currentTarget
+      spotifyApi.play({
+        context_uri: album_uri,
+        offset: { uri: String(dataset.track_uri) },
+        device_id
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    spotifyApi
+      .getMyCurrentPlayingTrack()
+      .then(({ body }) => body.item?.id && setPlayingTrack(body.item.id))
+  }, [isAlbumPlaying])
+
   return (
     <List>
       {tracks?.map(track => (
@@ -70,8 +99,12 @@ const AlbumTracks: React.FC<IProps> = ({
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
           />
-          <IconButton aria-label={`play ${track.name}`}>
-            <PlayArrow />
+          <IconButton
+            data-track_uri={track.uri}
+            aria-label={`play ${track.name}`}
+            onClick={playTrack}
+          >
+            {playingTrack === track.id ? <Pause /> : <PlayArrow />}
           </IconButton>
         </ListItem>
       ))}

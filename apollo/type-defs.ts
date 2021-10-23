@@ -55,6 +55,7 @@ export const typeDefs = gql`
     tracks: [Track!]
     type: EType!
     numberOfTracks: Int
+    uri: String!
   }
 
   type Playlist implements Tile {
@@ -68,6 +69,7 @@ export const typeDefs = gql`
     followers: Int
     tracks: [PlaylistTrack!]!
     total: Int!
+    uri: String!
   }
 
   type Artist implements Tile {
@@ -78,6 +80,7 @@ export const typeDefs = gql`
     cover_image: String
     tracks: [Track!]!
     albums: [Album!]!
+    uri: String!
   }
 
   type PlaylistTrack {

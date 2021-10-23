@@ -27,6 +27,7 @@ export type Album = Tile & {
   release_date: Scalars['String'];
   tracks?: Maybe<Array<Track>>;
   type: EType;
+  uri: Scalars['String'];
 };
 
 export type Artist = Tile & {
@@ -38,6 +39,7 @@ export type Artist = Tile & {
   popularity?: Maybe<Scalars['Int']>;
   tracks: Array<Track>;
   type: EType;
+  uri: Scalars['String'];
 };
 
 export enum EType {
@@ -62,6 +64,7 @@ export type Playlist = Tile & {
   total: Scalars['Int'];
   tracks: Array<PlaylistTrack>;
   type: EType;
+  uri: Scalars['String'];
 };
 
 export type PlaylistTrack = {
@@ -249,6 +252,7 @@ export type AlbumResolvers<ContextType = any, ParentType extends ResolversParent
   release_date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tracks?: Resolver<Maybe<Array<ResolversTypes['Track']>>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
+  uri?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -260,6 +264,7 @@ export type ArtistResolvers<ContextType = any, ParentType extends ResolversParen
   popularity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   tracks?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
+  uri?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -274,6 +279,7 @@ export type PlaylistResolvers<ContextType = any, ParentType extends ResolversPar
   total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   tracks?: Resolver<Array<ResolversTypes['PlaylistTrack']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
+  uri?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

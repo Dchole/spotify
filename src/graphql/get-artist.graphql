@@ -1,6 +1,7 @@
 query getArtist($id: ID!) {
   artist(id: $id) {
     id
+    uri
     name
     type
     popularity

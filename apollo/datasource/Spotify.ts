@@ -31,6 +31,7 @@ export default class SpotifyAPI extends DataSource<IContext> {
 
     return {
       id: artist.id,
+      uri: artist.uri,
       name: artist.name,
       type: EType["Artist"],
       tracks: tracks?.map(track => this.trackReducer(track)) || [],
@@ -72,6 +73,7 @@ export default class SpotifyAPI extends DataSource<IContext> {
 
     return {
       id: album.id,
+      uri: album.uri,
       album_type: album.album_type,
       artists: album.artists.map(artist => this.artistReducer(artist)),
       name: album.name,
@@ -132,6 +134,7 @@ export default class SpotifyAPI extends DataSource<IContext> {
 
     return {
       id: playlist.id,
+      uri: playlist.uri,
       name: playlist.name,
       owner: ownerReducer(playlist.owner),
       type: EType["Playlist"],
