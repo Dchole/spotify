@@ -64,8 +64,9 @@ const Track = () => {
 
   const pause = async () => {
     try {
+      setLoading(true)
+      await spotifyApi.pause()
       setIsPlaying(false)
-      spotifyApi.pause()
     } catch (error) {
       console.log(error)
     } finally {
@@ -124,17 +125,21 @@ const Track = () => {
     if (currentlyPlayingTrack?.item?.uri === track?.uri) {
       const progress = currentlyPlayingTrack?.progress_ms ?? 0
 
-      setIsPlaying(Boolean(!currentlyPlayingTrack?.is_paused))
-
       setProgress(progress / 1000)
 
-      timer = setInterval((event: never) => {
-        spotifyApi.getMyCurrentPlaybackState().then(({ body }) => {
-          const progress = body?.progress_ms ?? 0
+      const isPlaying = !currentlyPlayingTrack?.is_paused
+      if (isPlaying) {
+        console.log({ isPlaying })
+        setIsPlaying(isPlaying)
 
-          isPlaying && updateTimeline(event, progress / 1000)
-        })
-      }, 1000)
+        timer = setInterval((event: never) => {
+          spotifyApi.getMyCurrentPlaybackState().then(({ body }) => {
+            const progress = body?.progress_ms ?? 0
+
+            isPlaying && updateTimeline(event, progress / 1000)
+          })
+        }, 1000)
+      }
     }
 
     return () => clearInterval(timer)
@@ -233,6 +238,7 @@ const Track = () => {
           onClick={isPlaying ? pause : play}
           disabled={loading}
         >
+          {console.log(isPlaying)}
           {currentlyPlayingTrack?.item?.uri === track?.uri && isPlaying ? (
             <PauseCircle
               color={loading ? undefined : "primary"}

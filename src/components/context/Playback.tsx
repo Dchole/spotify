@@ -89,6 +89,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
     })
 
     player?.addListener("player_state_changed", state => {
+      console.log(state?.paused)
       setCurrentlyPlayingTrack(prevState => {
         if (!prevState) return null
 
