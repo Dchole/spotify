@@ -18,6 +18,7 @@ interface IContextProps {
   pause: () => Promise<void>
   next: () => Promise<void>
   prev: () => Promise<void>
+  seek: (positionMs: number) => Promise<void>
   fastRewind: () => Promise<void>
   fastForward: () => Promise<void>
   syncProgress: (progress: number) => void
@@ -76,8 +77,6 @@ const PlaybackProvider: React.FC = ({ children }) => {
     })
 
     player?.addListener("player_state_changed", state => {
-      console.log(state)
-
       if (state) {
         dispatch({
           type: "SET_PLAYBACK",
@@ -102,9 +101,11 @@ const PlaybackProvider: React.FC = ({ children }) => {
    * @param params
    */
   const play = async (params?: SpotifyApi.PlayParameterObject) => {
+    const options = params ? { ...params, device_id } : undefined
+
     try {
       setLoading(true)
-      await spotifyApi.play(params as Record<string, unknown>)
+      await spotifyApi.play(options as Record<string, unknown>)
       dispatch({ type: params ? "PLAY" : "RESUME" })
     } catch (error) {
       console.log(error)
@@ -153,8 +154,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
 
   const fastForward = async () => {
     try {
-      const progress_sec = playback.progress / 1000
-      const position = Math.round(progress_sec + 10)
+      const position = playback.progress - 10_000
       await spotifyApi.seek(position)
       dispatch({ type: "PROGRESS", payload: { progress: position } })
     } catch (error) {
@@ -164,10 +164,18 @@ const PlaybackProvider: React.FC = ({ children }) => {
 
   const fastRewind = async () => {
     try {
-      const progress_sec = playback.progress / 1000
-      const position = Math.round(progress_sec - 10)
+      const position = playback.progress + 10_000
       await spotifyApi.seek(position)
       dispatch({ type: "PROGRESS", payload: { progress: position } })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const seek = async (positionMs: number) => {
+    try {
+      await spotifyApi.seek(positionMs)
+      dispatch({ type: "PROGRESS", payload: { progress: positionMs } })
     } catch (error) {
       console.log(error)
     }
@@ -184,6 +192,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
         pause,
         next,
         prev,
+        seek,
         fastRewind,
         fastForward,
         syncProgress,

@@ -30,8 +30,17 @@ const Track = () => {
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volumeEl, setVolumeEl] = useState<HTMLButtonElement | null>(null)
-  const { loading, playback, play, pause, next, prev, device_id } =
-    usePlayback()
+  const {
+    loading,
+    playback,
+    play,
+    pause,
+    next,
+    prev,
+    seek,
+    fastForward,
+    fastRewind
+  } = usePlayback()
 
   useProgress()
 
@@ -45,7 +54,7 @@ const Track = () => {
 
   useEffect(() => {
     if (playback.current_track === track?.id) {
-      setIsPlaying(playback.is_paused)
+      setIsPlaying(!playback.is_paused)
       setProgress(playback.progress / 1000)
     }
   }, [playback])
@@ -76,41 +85,16 @@ const Track = () => {
     (event: Event, newValue: number | number[]) => {
       const value = newValue as number
       setProgress(value)
-      event && spotifyApi.seek(value * 1000)
+      seek(value * 1000)
     },
     []
   )
-
-  const fastForward = () => {
-    const position = progress + 10
-    const positionMs = position * 1000
-    const durationMs = duration * 1000
-
-    setProgress(position > duration ? duration : position)
-    spotifyApi.seek(positionMs > durationMs ? durationMs : positionMs)
-  }
-
-  const fastRewind = () => {
-    const position = progress - 10
-    const positionMs = position * 1000
-
-    setProgress(position < 0 ? 0 : position)
-    spotifyApi.seek(positionMs < 0 ? 0 : positionMs)
-  }
 
   const formatDuration = (value: number) => {
     const minute = Math.floor(value / 60)
     const secondLeft = Math.round(value - minute * 60)
 
     return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`
-  }
-
-  const nextTrack = () => {
-    spotifyApi.skipToNext({ device_id })
-  }
-
-  const prevTrack = () => {
-    spotifyApi.skipToPrevious({ device_id })
   }
 
   const addToFavourite = () => {
@@ -173,7 +157,7 @@ const Track = () => {
           {formatDuration(progress)}
         </Typography>
         <Typography component={Grid} variant="caption" item>
-          -{formatDuration(duration - progress)}
+          {formatDuration(duration)}
         </Typography>
       </Grid>
       <Grid
@@ -195,9 +179,9 @@ const Track = () => {
         </IconButton>
         <IconButton
           component={Link}
-          to={`/tracks/${prev}`}
+          to={`/tracks/${playback.prev_track}`}
           aria-label="play previous track"
-          onClick={prevTrack}
+          onClick={prev}
         >
           <SkipPrevious fontSize="large" />
         </IconButton>
@@ -220,9 +204,9 @@ const Track = () => {
         </IconButton>
         <IconButton
           component={Link}
-          to={`/tracks/${next}`}
+          to={`/tracks/${playback.next_track}`}
           aria-label="play next track"
-          onClick={nextTrack}
+          onClick={next}
         >
           <SkipNext fontSize="large" />
         </IconButton>

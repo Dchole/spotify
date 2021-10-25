@@ -1,5 +1,4 @@
 import { EType, useGetAlbumQuery } from "@/generated/graphql"
-import { spotifyApi } from "@/lib"
 import {
   FavoriteBorder,
   PauseCircle,
@@ -7,60 +6,25 @@ import {
   Share
 } from "@mui/icons-material"
 import { Container, IconButton, Stack } from "@mui/material"
-import { useState } from "react"
 import { useParams } from "react-router"
-import AlbumTracks from "~/AlbumTracks"
 import { usePlayback } from "~/context/Playback"
+import AlbumTracks from "~/AlbumTracks"
 import Showcase from "~/Showcase"
+import useGroupPlay from "@/hooks/useGroupPlay"
 
 const Playlist = () => {
   const { id } = useParams<{ id: string }>()
   const album = useGetAlbumQuery({ variables: { id } }).data?.album
-  const { device_id, player } = usePlayback()
-  const [loading, setLoading] = useState(false)
-  const [playing, setPlaying] = useState(false)
-  const [started, setStarted] = useState(false)
-  const [isAlbumPlaying, setIsAlbumPlaying] = useState(false)
-
-  const play = async () => {
-    try {
-      setLoading(true)
-      await spotifyApi.play({ context_uri: album?.uri, device_id })
-      setStarted(true)
-      setPlaying(true)
-
-      spotifyApi
-        .getMyCurrentPlayingTrack()
-        .then(({ body }) => setIsAlbumPlaying(body.context?.uri === album?.uri))
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const pause = async () => {
-    try {
-      setLoading(true)
-      await spotifyApi.pause()
-      setPlaying(false)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const resume = async () => {
-    try {
-      setLoading(true)
-      await player?.resume()
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { loading, playback } = usePlayback()
+  const {
+    groupPlaying,
+    handlePlay,
+    handlePause,
+    playTrack,
+    pauseTrack,
+    playingTrack,
+    isTrackPlaying
+  } = useGroupPlay(album?.uri || "")
 
   return (
     <main>
@@ -88,15 +52,21 @@ const Playlist = () => {
               <Share />
             </IconButton>
           </Stack>
-          {playing ? (
-            <IconButton aria-label="pause" disabled={loading} onClick={pause}>
+          {groupPlaying ? (
+            <IconButton
+              aria-label="pause"
+              disabled={loading}
+              onClick={handlePause}
+            >
               <PauseCircle color="primary" sx={{ fontSize: "3.5rem" }} />
             </IconButton>
           ) : (
             <IconButton
-              aria-label={started ? "resume playing" : "play all"}
+              aria-label={
+                playback.started_playing ? "resume playing" : "play all"
+              }
               disabled={loading}
-              onClick={started ? resume : play}
+              onClick={handlePlay}
             >
               <PlayCircle color="primary" sx={{ fontSize: "3.5rem" }} />
             </IconButton>
@@ -105,12 +75,13 @@ const Playlist = () => {
       </Container>
       <AlbumTracks
         gutters={1}
-        album_uri={album?.uri}
-        isAlbumPlaying={isAlbumPlaying}
         name={album?.name || "Unknown"}
         release_date={album?.release_date}
         tracks={album?.tracks || []}
-        setPlaying={setPlaying}
+        playTrack={playTrack}
+        pauseTrack={pauseTrack}
+        playingTrack={playingTrack}
+        isTrackPlaying={isTrackPlaying}
       />
     </main>
   )

@@ -11,67 +11,30 @@ import { Link } from "react-router-dom"
 import { GetAlbumQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 import coverFallback from "@/assets/track.svg"
-import { useEffect, useState } from "react"
-import { spotifyApi } from "@/lib"
-import { usePlayback } from "./context/Playback"
 
 interface IProps {
   name: string
-  album_uri?: string
   album_type?: string
   release_date?: string
-  isAlbumPlaying?: boolean
   tracks: GetAlbumQuery["album"]["tracks"]
   gutters?: number
-  setPlaying: React.Dispatch<React.SetStateAction<boolean>>
+  playingTrack: string
+  isTrackPlaying: boolean
+  playTrack: (event: React.MouseEvent<HTMLButtonElement>) => void
+  pauseTrack: () => void
 }
 
 const AlbumTracks: React.FC<IProps> = ({
   name,
   tracks,
-  album_uri,
   album_type,
-  isAlbumPlaying,
   release_date,
   gutters = 0,
-  setPlaying
+  playingTrack,
+  isTrackPlaying,
+  playTrack,
+  pauseTrack
 }) => {
-  const { device_id } = usePlayback()
-  const [playingTrack, setPlayingTrack] = useState("")
-
-  const playTrack =
-    (track_id: string) =>
-    async (event: React.MouseEvent<HTMLButtonElement>) => {
-      try {
-        const { dataset } = event.currentTarget
-        await spotifyApi.play({
-          context_uri: album_uri,
-          offset: { uri: String(dataset.track_uri) },
-          device_id
-        })
-        setPlayingTrack(track_id)
-        setPlaying(true)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-  const pauseTrack = async () => {
-    try {
-      await spotifyApi.pause()
-      setPlayingTrack("")
-      setPlaying(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    spotifyApi
-      .getMyCurrentPlayingTrack()
-      .then(({ body }) => body.item?.id && setPlayingTrack(body.item.id))
-  }, [isAlbumPlaying])
-
   return (
     <List>
       {tracks?.map(track => (
@@ -116,13 +79,19 @@ const AlbumTracks: React.FC<IProps> = ({
             }}
           />
           <IconButton
-            data-track_uri={track.uri}
+            data-track={JSON.stringify({ uri: track.uri, id: track.id })}
             aria-label={`play ${track.name}`}
             onClick={
-              playingTrack === track.id ? pauseTrack : playTrack(track.id)
+              playingTrack === track.id && isTrackPlaying
+                ? pauseTrack
+                : playTrack
             }
           >
-            {playingTrack === track.id ? <Pause /> : <PlayArrow />}
+            {playingTrack === track.id && isTrackPlaying ? (
+              <Pause />
+            ) : (
+              <PlayArrow />
+            )}
           </IconButton>
         </ListItem>
       ))}
