@@ -154,7 +154,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
 
   const fastForward = async () => {
     try {
-      const position = playback.progress - 10_000
+      const position = playback.progress + 10_000
       await spotifyApi.seek(position)
       dispatch({ type: "PROGRESS", payload: { progress: position } })
     } catch (error) {
@@ -164,7 +164,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
 
   const fastRewind = async () => {
     try {
-      const position = playback.progress + 10_000
+      const position = playback.progress - 10_000
       await spotifyApi.seek(position)
       dispatch({ type: "PROGRESS", payload: { progress: position } })
     } catch (error) {
