@@ -12,6 +12,7 @@ query getTrack($id: ID!) {
     album {
       id
       name
+      uri
     }
   }
 }

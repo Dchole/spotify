@@ -17,6 +17,7 @@ import { useParams } from "react-router"
 import { usePlayback } from "~/context/Playback"
 import { spotifyApi } from "@/lib"
 import { Link } from "react-router-dom"
+import useProgress from "@/hooks/useProgress"
 
 const Volume = lazy(() => import("~/Volume"))
 
@@ -24,19 +25,30 @@ const Track = () => {
   const { id } = useParams<{ id: string }>()
   const track = useGetTrackQuery({ variables: { id } }).data?.track
   const savedTracks = useGetLikedSongsQuery().data?.liked_songs
-  const [progress, setProgress] = useState(0)
-  const [duration, setDuration] = useState(200)
   const [saved, setSaved] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [duration, setDuration] = useState(0)
   const [volumeEl, setVolumeEl] = useState<HTMLButtonElement | null>(null)
-  const {
-    next,
-    prev,
-    device_id,
-    currentlyPlayingTrack,
-    updateCurrentlyPlaying
-  } = usePlayback()
+  const { loading, playback, play, pause, next, prev, device_id } =
+    usePlayback()
+
+  useProgress()
+
+  useEffect(() => {
+    const thisTrack = savedTracks?.find(({ id }) => id === track?.id)
+    thisTrack && setSaved(true)
+
+    const duration = track?.duration ?? 0
+    setDuration(duration / 1000)
+  }, [track, savedTracks])
+
+  useEffect(() => {
+    if (playback.current_track === track?.id) {
+      setIsPlaying(playback.is_paused)
+      setProgress(playback.progress / 1000)
+    }
+  }, [playback])
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setVolumeEl(event.currentTarget)
@@ -44,34 +56,20 @@ const Track = () => {
 
   const handleClose = () => setVolumeEl(null)
 
-  const play = async () => {
-    try {
-      setLoading(true)
-      await spotifyApi.play({
-        uris: track?.uri ? [track.uri] : undefined,
-        device_id
-      })
+  const handlePlay = async () => {
+    playback.started_playing
+      ? await play()
+      : await play({
+          context_uri: track?.album?.uri,
+          offset: { uri: track?.uri }
+        })
 
-      setIsPlaying(true)
-
-      updateCurrentlyPlaying()
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
+    setIsPlaying(true)
   }
 
-  const pause = async () => {
-    try {
-      setLoading(true)
-      await spotifyApi.pause()
-      setIsPlaying(false)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
+  const handlePause = async () => {
+    await pause()
+    setIsPlaying(false)
   }
 
   const updateTimeline = useCallback(
@@ -114,37 +112,6 @@ const Track = () => {
   const prevTrack = () => {
     spotifyApi.skipToPrevious({ device_id })
   }
-
-  useEffect(() => {
-    let timer: number | undefined = undefined
-
-    const thisTrack = savedTracks?.find(({ id }) => id === track?.id)
-    thisTrack && setSaved(true)
-
-    const duration = track?.duration ?? 0
-    setDuration(duration / 1000)
-
-    if (currentlyPlayingTrack?.item?.uri === track?.uri) {
-      const progress = currentlyPlayingTrack?.progress_ms ?? 0
-
-      setProgress(progress / 1000)
-
-      const isPlaying = !currentlyPlayingTrack?.is_paused
-      if (isPlaying) {
-        setIsPlaying(isPlaying)
-
-        timer = setInterval((event: never) => {
-          spotifyApi.getMyCurrentPlaybackState().then(({ body }) => {
-            const progress = body?.progress_ms ?? 0
-
-            isPlaying && updateTimeline(event, progress / 1000)
-          })
-        }, 1000)
-      }
-    }
-
-    return () => clearInterval(timer)
-  }, [isPlaying, currentlyPlayingTrack, updateTimeline])
 
   const addToFavourite = () => {
     setSaved(true)
@@ -236,10 +203,10 @@ const Track = () => {
         </IconButton>
         <IconButton
           aria-label={`play ${track?.name}`}
-          onClick={isPlaying ? pause : play}
+          onClick={isPlaying ? handlePause : handlePlay}
           disabled={loading}
         >
-          {currentlyPlayingTrack?.item?.uri === track?.uri && isPlaying ? (
+          {isPlaying ? (
             <PauseCircle
               color={loading ? undefined : "primary"}
               sx={{ fontSize: "4rem" }}

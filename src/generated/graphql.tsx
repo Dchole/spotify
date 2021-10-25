@@ -206,7 +206,7 @@ export type GetTrackQueryVariables = Exact<{
 }>;
 
 
-export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, uri: string, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album?: { __typename?: 'Album', id: string, name: string } | null | undefined } };
+export type GetTrackQuery = { __typename?: 'Query', track: { __typename?: 'Track', id: string, name: string, cover_image?: string | null | undefined, duration: number, uri: string, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album?: { __typename?: 'Album', id: string, name: string, uri: string } | null | undefined } };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -717,6 +717,7 @@ export const GetTrackDocument = gql`
     album {
       id
       name
+      uri
     }
   }
 }
