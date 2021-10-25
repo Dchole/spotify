@@ -66,7 +66,7 @@ const Track = () => {
   const handleClose = () => setVolumeEl(null)
 
   const handlePlay = async () => {
-    playback.started_playing
+    playback.started_playing && playback.current_track === track?.id
       ? await play()
       : await play({
           context_uri: track?.album?.uri,

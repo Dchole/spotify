@@ -32,7 +32,7 @@ const Header = () => {
 
   return (
     <AppBar
-      elevation={palette.mode === "light" ? 0 : 2}
+      elevation={palette.mode === "light" ? 0 : 5}
       sx={{ boxShadow: "none" }}
     >
       <Toolbar>
@@ -45,7 +45,7 @@ const Header = () => {
           position="relative"
           flexGrow={1}
           zIndex={1}
-          bgcolor={palette.mode === "light" ? "primary.main" : "grey.900"}
+          bgcolor={palette.mode === "light" ? "primary.main" : "#2a2a2a"}
           sx={{
             transform:
               deepLevel || pathname === "/search"
