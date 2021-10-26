@@ -17,6 +17,7 @@ query getPlaylist($id: ID!) {
       track {
         id
         name
+        uri
         cover_image
         artists {
           id

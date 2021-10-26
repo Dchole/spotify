@@ -1,30 +1,25 @@
 import { EType, useGetAlbumQuery } from "@/generated/graphql"
-import {
-  FavoriteBorder,
-  PauseCircle,
-  PlayCircle,
-  Share
-} from "@mui/icons-material"
+import { FavoriteBorder, Share } from "@mui/icons-material"
 import { Container, IconButton, Stack } from "@mui/material"
 import { useParams } from "react-router"
-import { usePlayback } from "~/context/Playback"
 import AlbumTracks from "~/AlbumTracks"
 import Showcase from "~/Showcase"
 import useGroupPlay from "@/hooks/useGroupPlay"
+import GroupPlayButton from "~/GroupPlayButton"
 
-const Playlist = () => {
+const Album = () => {
   const { id } = useParams<{ id: string }>()
   const album = useGetAlbumQuery({ variables: { id } }).data?.album
-  const { loading, playback } = usePlayback()
+
   const {
-    groupPlaying,
-    handlePlay,
-    handlePause,
     playTrack,
     pauseTrack,
+    handlePlay,
+    handlePause,
     playingTrack,
+    groupPlaying,
     isTrackPlaying
-  } = useGroupPlay(album?.uri || "")
+  } = useGroupPlay(album?.uri)
 
   return (
     <main>
@@ -52,25 +47,11 @@ const Playlist = () => {
               <Share />
             </IconButton>
           </Stack>
-          {groupPlaying ? (
-            <IconButton
-              aria-label="pause"
-              disabled={loading}
-              onClick={handlePause}
-            >
-              <PauseCircle color="primary" sx={{ fontSize: "3.5rem" }} />
-            </IconButton>
-          ) : (
-            <IconButton
-              aria-label={
-                playback.started_playing ? "resume playing" : "play all"
-              }
-              disabled={loading}
-              onClick={handlePlay}
-            >
-              <PlayCircle color="primary" sx={{ fontSize: "3.5rem" }} />
-            </IconButton>
-          )}
+          <GroupPlayButton
+            handlePlay={handlePlay}
+            handlePause={handlePause}
+            groupPlaying={groupPlaying}
+          />
         </Stack>
       </Container>
       <AlbumTracks
@@ -87,4 +68,4 @@ const Playlist = () => {
   )
 }
 
-export default Playlist
+export default Album

@@ -1,23 +1,33 @@
-import { PlayArrow } from "@mui/icons-material"
 import {
   Avatar,
-  IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import { GetArtistQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
+import { GetArtistQuery } from "@/generated/graphql"
 import coverFallback from "@/assets/track.svg"
+import GroupTrackButton from "./GroupTrackButton"
 
 interface IProps {
   tracks?: GetArtistQuery["artist"]["tracks"]
   gutters?: number
+  playingTrack: string
+  isTrackPlaying: boolean
+  playTrack: (event: React.MouseEvent<HTMLButtonElement>) => void
+  pauseTrack: () => void
 }
 
-const AlbumTracks: React.FC<IProps> = ({ tracks, gutters = 0 }) => {
+const AlbumTracks: React.FC<IProps> = ({
+  tracks,
+  playingTrack,
+  isTrackPlaying,
+  playTrack,
+  pauseTrack,
+  gutters = 0
+}) => {
   return (
     <List>
       {tracks?.map(track => (
@@ -63,9 +73,13 @@ const AlbumTracks: React.FC<IProps> = ({ tracks, gutters = 0 }) => {
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
           />
-          <IconButton aria-label={`play ${track.name}`}>
-            <PlayArrow />
-          </IconButton>
+          <GroupTrackButton
+            track={track}
+            playTrack={playTrack}
+            pauseTrack={pauseTrack}
+            playingTrack={playingTrack}
+            isTrackPlaying={isTrackPlaying}
+          />
         </ListItem>
       ))}
     </List>

@@ -1,18 +1,29 @@
 import { TOrder } from "#/Playlist"
 import { EType } from "@/generated/graphql"
-import { FavoriteBorder, PlayCircle, Share } from "@mui/icons-material"
+import { FavoriteBorder, Share } from "@mui/icons-material"
 import { Grid, IconButton, SelectChangeEvent, Skeleton } from "@mui/material"
 import { lazy, Suspense } from "react"
+import GroupPlayButton from "./GroupPlayButton"
 
 const SortingOrder = lazy(() => import("./SortingOrder"))
 
 interface IProps {
   type: EType
   order: TOrder
+  groupPlaying: boolean
   handleChange: (event: SelectChangeEvent) => void
+  handlePlay: () => Promise<void>
+  handlePause: () => Promise<void>
 }
 
-const PlaylistControls: React.FC<IProps> = ({ type, order, handleChange }) => {
+const PlaylistControls: React.FC<IProps> = ({
+  type,
+  order,
+  handlePlay,
+  handlePause,
+  groupPlaying,
+  handleChange
+}) => {
   return (
     <Grid
       component="section"
@@ -40,9 +51,11 @@ const PlaylistControls: React.FC<IProps> = ({ type, order, handleChange }) => {
           </IconButton>
         )}
       </Grid>
-      <IconButton color="primary" aria-label="Play all">
-        <PlayCircle sx={{ fontSize: "3rem" }} />
-      </IconButton>
+      <GroupPlayButton
+        handlePlay={handlePlay}
+        handlePause={handlePause}
+        groupPlaying={groupPlaying}
+      />
     </Grid>
   )
 }

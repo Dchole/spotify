@@ -5,6 +5,7 @@ import { Container, SelectChangeEvent } from "@mui/material"
 import PlaylistTracks from "~/PlaylistTracks"
 import PlaylistControls from "~/PlaylistControls"
 import Showcase from "~/Showcase"
+import useGroupPlay from "@/hooks/useGroupPlay"
 
 export type TOrder =
   | ""
@@ -22,6 +23,16 @@ const Playlist = () => {
   const playlist = data?.playlist
   const [order, setOrder] = useState<TOrder>("")
 
+  const {
+    groupPlaying,
+    handlePlay,
+    handlePause,
+    playTrack,
+    pauseTrack,
+    playingTrack,
+    isTrackPlaying
+  } = useGroupPlay(playlist?.uri)
+
   const handleChange = (event: SelectChangeEvent) => {
     setOrder(event.target.value as TOrder)
   }
@@ -38,12 +49,21 @@ const Playlist = () => {
           duration={playlist?.duration || 0}
         />
         <PlaylistControls
+          handlePlay={handlePlay}
+          handlePause={handlePause}
+          groupPlaying={groupPlaying}
           type={playlist?.type || EType["Playlist"]}
           order={order}
           handleChange={handleChange}
         />
       </Container>
-      <PlaylistTracks tracks={playlist?.tracks || []} />
+      <PlaylistTracks
+        tracks={playlist?.tracks || []}
+        playTrack={playTrack}
+        pauseTrack={pauseTrack}
+        playingTrack={playingTrack}
+        isTrackPlaying={isTrackPlaying}
+      />
     </main>
   )
 }

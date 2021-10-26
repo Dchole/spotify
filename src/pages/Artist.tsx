@@ -1,5 +1,5 @@
 import { EType, GetArtistQuery, useGetArtistQuery } from "@/generated/graphql"
-import { ChevronRight, PlayCircle, Share } from "@mui/icons-material"
+import { ChevronRight, Share } from "@mui/icons-material"
 import { Button, Container, IconButton, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
@@ -7,6 +7,8 @@ import { useParams } from "react-router"
 import ArtistTracks from "~/ArtistTracks"
 import Showcase from "~/Showcase"
 import Tile from "~/Tile"
+import useGroupPlay from "@/hooks/useGroupPlay"
+import GroupPlayButton from "~/GroupPlayButton"
 
 const Artist = () => {
   const { id } = useParams<{ id: string }>()
@@ -16,6 +18,16 @@ const Artist = () => {
   const [showingTracks, setShowingTracks] = useState<
     GetArtistQuery["artist"]["tracks"] | undefined
   >(undefined)
+
+  const {
+    groupPlaying,
+    handlePlay,
+    handlePause,
+    playTrack,
+    pauseTrack,
+    playingTrack,
+    isTrackPlaying
+  } = useGroupPlay(artist?.id)
 
   const showMore = () => setShowingMore(!showingMore)
 
@@ -46,9 +58,11 @@ const Artist = () => {
               <Share />
             </IconButton>
           </Stack>
-          <IconButton color="primary" aria-label="play all">
-            <PlayCircle sx={{ fontSize: "4rem" }} />
-          </IconButton>
+          <GroupPlayButton
+            handlePlay={handlePlay}
+            handlePause={handlePause}
+            groupPlaying={groupPlaying}
+          />
         </Stack>
       </Container>
       <Box
@@ -58,9 +72,16 @@ const Artist = () => {
         aria-label={`top songs by ${artist?.name}`}
       >
         <Typography variant="h4" sx={{ ml: 2 }}>
-          All Tracks
+          Top Tracks
         </Typography>
-        <ArtistTracks tracks={showingTracks} gutters={1} />
+        <ArtistTracks
+          tracks={showingTracks}
+          gutters={1}
+          playTrack={playTrack}
+          pauseTrack={pauseTrack}
+          playingTrack={playingTrack}
+          isTrackPlaying={isTrackPlaying}
+        />
         <Button
           color="inherit"
           endIcon={

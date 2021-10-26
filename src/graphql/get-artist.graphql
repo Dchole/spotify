@@ -8,6 +8,7 @@ query getArtist($id: ID!) {
     cover_image
     tracks {
       id
+      uri
       name
       type
       cover_image

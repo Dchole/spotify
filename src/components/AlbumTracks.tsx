@@ -1,7 +1,5 @@
-import { Pause, PlayArrow } from "@mui/icons-material"
 import {
   Avatar,
-  IconButton,
   List,
   ListItem,
   ListItemAvatar,
@@ -11,6 +9,7 @@ import { Link } from "react-router-dom"
 import { GetAlbumQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 import coverFallback from "@/assets/track.svg"
+import GroupTrackButton from "./GroupTrackButton"
 
 interface IProps {
   name: string
@@ -78,21 +77,13 @@ const AlbumTracks: React.FC<IProps> = ({
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
           />
-          <IconButton
-            data-track={JSON.stringify({ uri: track.uri, id: track.id })}
-            aria-label={`play ${track.name}`}
-            onClick={
-              playingTrack === track.id && isTrackPlaying
-                ? pauseTrack
-                : playTrack
-            }
-          >
-            {playingTrack === track.id && isTrackPlaying ? (
-              <Pause />
-            ) : (
-              <PlayArrow />
-            )}
-          </IconButton>
+          <GroupTrackButton
+            track={track}
+            playTrack={playTrack}
+            pauseTrack={pauseTrack}
+            playingTrack={playingTrack}
+            isTrackPlaying={isTrackPlaying}
+          />
         </ListItem>
       ))}
     </List>

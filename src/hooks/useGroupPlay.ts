@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { usePlayback } from "~/context/Playback"
 
-const useGroupPlay = (group_uri: string) => {
+const useGroupPlay = (group_uri?: string) => {
   const { play, pause, playback } = usePlayback()
   const [playingTrack, setPlayingTrack] = useState("")
   const [isTrackPlaying, setIsTrackPlaying] = useState(false)
@@ -12,14 +12,16 @@ const useGroupPlay = (group_uri: string) => {
       setPlayingTrack(playback.current_track)
       setIsTrackPlaying(playback.started_playing && !playback.is_paused)
     }
-  }, [playback])
+  }, [playback, group_uri])
 
   useEffect(() => {
     setGroupPlaying(isTrackPlaying)
   }, [isTrackPlaying])
 
   const handlePlay = async () => {
-    playback.started_playing
+    console.log(playback.context_uri, group_uri)
+
+    playback.context_uri === group_uri && playback.started_playing
       ? await play()
       : await play({ context_uri: group_uri })
 
@@ -39,7 +41,7 @@ const useGroupPlay = (group_uri: string) => {
 
       const track = dataset.track ? JSON.parse(dataset.track) : {}
 
-      playingTrack === track.id
+      playingTrack === track.id && playback.started_playing
         ? await play()
         : await play({
             context_uri: group_uri,
