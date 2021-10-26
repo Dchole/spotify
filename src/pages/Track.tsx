@@ -2,30 +2,26 @@ import { Container, Grid, IconButton, Slider, Typography } from "@mui/material"
 import {
   FastForward,
   FastRewind,
-  Favorite,
-  FavoriteBorder,
   PauseCircle,
   PlayCircle,
   SkipNext,
   SkipPrevious,
   VolumeUp
 } from "@mui/icons-material"
-import TrackShowcase from "~/TrackShowcase"
 import { lazy, useCallback, useEffect, useState } from "react"
-import { useGetLikedSongsQuery, useGetTrackQuery } from "@/generated/graphql"
+import { useGetTrackQuery } from "@/generated/graphql"
 import { useParams } from "react-router"
 import { usePlayback } from "~/context/Playback"
-import { spotifyApi } from "@/lib"
 import { Link } from "react-router-dom"
 import useProgress from "@/hooks/useProgress"
+import TrackShowcase from "~/TrackShowcase"
+import SaveTrackButton from "~/SaveTrackButton"
 
 const Volume = lazy(() => import("~/Volume"))
 
 const Track = () => {
   const { id } = useParams<{ id: string }>()
   const track = useGetTrackQuery({ variables: { id } }).data?.track
-  const savedTracks = useGetLikedSongsQuery().data?.liked_songs
-  const [saved, setSaved] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -45,12 +41,9 @@ const Track = () => {
   useProgress()
 
   useEffect(() => {
-    const thisTrack = savedTracks?.find(({ id }) => id === track?.id)
-    thisTrack && setSaved(true)
-
     const duration = track?.duration ?? 0
     setDuration(duration / 1000)
-  }, [track, savedTracks])
+  }, [track])
 
   useEffect(() => {
     if (playback.current_track === track?.id) {
@@ -82,7 +75,7 @@ const Track = () => {
   }
 
   const updateTimeline = useCallback(
-    (event: Event, newValue: number | number[]) => {
+    (_event: Event, newValue: number | number[]) => {
       const value = newValue as number
       setProgress(value)
       seek(value * 1000)
@@ -95,16 +88,6 @@ const Track = () => {
     const secondLeft = Math.round(value - minute * 60)
 
     return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`
-  }
-
-  const addToFavourite = () => {
-    setSaved(true)
-    track?.id && spotifyApi.addToMySavedTracks([track.id])
-  }
-
-  const removeFromFavourite = () => {
-    setSaved(false)
-    track?.id && spotifyApi.removeFromMySavedTracks([track.id])
   }
 
   return (
@@ -170,13 +153,7 @@ const Track = () => {
         container
         sx={{ mt: 2 }}
       >
-        <IconButton
-          aria-label={`add ${track?.name} to liked songs`}
-          onClick={saved ? removeFromFavourite : addToFavourite}
-          color={saved ? "secondary" : undefined}
-        >
-          {saved ? <Favorite /> : <FavoriteBorder />}
-        </IconButton>
+        <SaveTrackButton track={track} />
         <IconButton
           component={Link}
           to={`/tracks/${playback.prev_track}`}

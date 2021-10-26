@@ -162,7 +162,7 @@ export type GetFollowedArtistsQuery = { __typename?: 'Query', followed_artists: 
 export type GetLikedSongsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLikedSongsQuery = { __typename?: 'Query', liked_songs: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined }> };
+export type GetLikedSongsQuery = { __typename?: 'Query', liked_songs: Array<{ __typename?: 'Track', id: string, name: string, uri: string, cover_image?: string | null | undefined, artists: Array<{ __typename?: 'Artist', id: string, name: string }>, album?: { __typename?: 'Album', id: string, name: string, release_date: string } | null | undefined }> };
 
 export type GetNewReleasesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -386,8 +386,17 @@ export const GetLikedSongsDocument = gql`
   liked_songs {
     id
     name
-    type
+    uri
     cover_image
+    artists {
+      id
+      name
+    }
+    album {
+      id
+      name
+      release_date
+    }
   }
 }
     `;

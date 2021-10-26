@@ -6,13 +6,13 @@ import {
   ListItemText
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import { GetPlaylistQuery } from "@/generated/graphql"
+import { GetLikedSongsQuery } from "@/generated/graphql"
 import { slugify } from "@/utils"
 import coverFallback from "@/assets/track.svg"
 import GroupTrackButton from "./GroupTrackButton"
 
 interface IProps {
-  tracks?: GetPlaylistQuery["playlist"]["tracks"]
+  tracks?: GetLikedSongsQuery["liked_songs"]
   gutters?: number
   playingTrack: string
   isTrackPlaying: boolean
@@ -20,7 +20,7 @@ interface IProps {
   pauseTrack: () => void
 }
 
-const PlaylistTracks: React.FC<IProps> = ({
+const LikedTracks: React.FC<IProps> = ({
   tracks,
   playingTrack,
   playTrack,
@@ -37,8 +37,8 @@ const PlaylistTracks: React.FC<IProps> = ({
               component={Link}
               to={`/tracks/${track.id}`}
               variant="square"
-              src={track.track.cover_image || coverFallback}
-              alt={track.track.name}
+              src={track.cover_image || coverFallback}
+              alt={track.name}
               imgProps={{
                 width: "50",
                 height: "50",
@@ -47,7 +47,7 @@ const PlaylistTracks: React.FC<IProps> = ({
             />
           </ListItemAvatar>
           <ListItemText
-            primary={track.track.name}
+            primary={track.name}
             primaryTypographyProps={{
               component: Link,
               color: "textPrimary",
@@ -56,15 +56,15 @@ const PlaylistTracks: React.FC<IProps> = ({
             }}
             secondary={
               <>
-                <span>{track.track.artists[0].name}</span>&bull;
-                <span>{track.track.album?.name}</span>
+                <span>{track.artists[0].name}</span>&bull;
+                <span>{track.album?.name}</span>
               </>
             }
             secondaryTypographyProps={{
               component: Link,
               color: "textSecondary",
-              to: `/artists/${track.track.artists[0].id}#${slugify(
-                track.track.album?.name || ""
+              to: `/artists/${track.artists[0].id}#${slugify(
+                track.album?.name || ""
               )}`,
               sx: { display: "flex", gap: 0.6, textDecoration: "none" }
             }}
@@ -76,8 +76,8 @@ const PlaylistTracks: React.FC<IProps> = ({
             isTrackPlaying={isTrackPlaying}
             track={{
               id: track.id,
-              uri: track.track.uri,
-              name: track.track.name
+              uri: track.uri,
+              name: track.name
             }}
           />
         </ListItem>
@@ -86,4 +86,4 @@ const PlaylistTracks: React.FC<IProps> = ({
   )
 }
 
-export default PlaylistTracks
+export default LikedTracks

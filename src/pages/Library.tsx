@@ -89,7 +89,7 @@ const Library = () => {
               {index === 0 && (
                 <Box mb={2.5}>
                   <Tile
-                    path="/liked-songs"
+                    path="/playlists/liked-songs"
                     id="liked-songs"
                     name="Liked Songs"
                     type={EType["Playlist"]}

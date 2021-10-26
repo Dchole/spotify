@@ -2,7 +2,16 @@ query getLikedSongs {
   liked_songs {
     id
     name
-    type
+    uri
     cover_image
+    artists {
+      id
+      name
+    }
+    album {
+      id
+      name
+      release_date
+    }
   }
 }

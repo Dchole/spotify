@@ -82,9 +82,8 @@ const Showcase: React.FC<IProps> = ({
                   <span>{new Date(release_date).getFullYear()}</span>&bull;
                 </>
               )}
-              <span>
-                {numberOfTracks} songs, {duration} mins
-              </span>
+              <span>{numberOfTracks} songs</span>
+              {duration && <span>,&nbsp;{duration} mins</span>}
             </>
           )}
         </Typography>

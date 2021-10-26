@@ -1,15 +1,17 @@
 import { TOrder } from "#/Playlist"
 import { EType } from "@/generated/graphql"
-import { FavoriteBorder, Share } from "@mui/icons-material"
+import { Share } from "@mui/icons-material"
 import { Grid, IconButton, SelectChangeEvent, Skeleton } from "@mui/material"
 import { lazy, Suspense } from "react"
 import GroupPlayButton from "./GroupPlayButton"
+import SaveGroupButton from "./SaveGroupButton"
 
 const SortingOrder = lazy(() => import("./SortingOrder"))
 
 interface IProps {
   type: EType
   order: TOrder
+  playlist_id?: string
   groupPlaying: boolean
   handleChange: (event: SelectChangeEvent) => void
   handlePlay: () => Promise<void>
@@ -19,6 +21,7 @@ interface IProps {
 const PlaylistControls: React.FC<IProps> = ({
   type,
   order,
+  playlist_id,
   handlePlay,
   handlePause,
   groupPlaying,
@@ -42,9 +45,7 @@ const PlaylistControls: React.FC<IProps> = ({
             <SortingOrder order={order} handleChange={handleChange} />
           </Suspense>
         )}
-        <IconButton aria-label="add playlist to favorite">
-          <FavoriteBorder />
-        </IconButton>
+        <SaveGroupButton group_id={playlist_id} />
         {type === EType["Album"] && (
           <IconButton aria-label="share album">
             <Share />
