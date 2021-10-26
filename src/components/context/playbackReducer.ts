@@ -5,6 +5,7 @@ export const initialState = {
   current_track: "",
   next_track: "",
   prev_track: "",
+  volume: 50,
   progress: 0,
   duration: 0
 }
@@ -21,6 +22,7 @@ interface IAction {
       | "progress"
       | "duration"
       | "context_uri"
+      | "volume"
     >
   >
   type:
@@ -30,6 +32,7 @@ interface IAction {
     | "NEXT"
     | "PREV"
     | "PROGRESS"
+    | "SET_VOLUME"
     | "SET_PLAYBACK"
 }
 
@@ -41,6 +44,9 @@ export const playbackReducer = (state = initialState, action: IAction) => {
         started_playing: true,
         is_paused: false
       }
+
+    case "SET_VOLUME":
+      return { ...state, ...action.payload }
 
     case "SET_PLAYBACK":
       return { ...state, ...action.payload }

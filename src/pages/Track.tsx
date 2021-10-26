@@ -57,7 +57,7 @@ const Track = () => {
       setIsPlaying(!playback.is_paused)
       setProgress(playback.progress / 1000)
     }
-  }, [playback])
+  }, [playback, track])
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setVolumeEl(event.currentTarget)

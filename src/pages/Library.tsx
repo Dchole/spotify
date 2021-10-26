@@ -44,7 +44,7 @@ const Library = () => {
       default:
         break
     }
-  }, [value])
+  }, [value, getAlbums, getArtists, getPlaylists])
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)

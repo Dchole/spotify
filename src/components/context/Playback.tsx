@@ -1,6 +1,7 @@
 import { spotifyApi } from "@/lib"
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useReducer,
@@ -23,6 +24,7 @@ interface IContextProps {
   fastRewind: () => Promise<void>
   fastForward: () => Promise<void>
   syncProgress: (progress: number) => void
+  changeVolume: (volume: number) => Promise<void>
 }
 
 const PlaybackContext = createContext<IContextProps | null>(null)
@@ -74,6 +76,12 @@ const PlaybackProvider: React.FC = ({ children }) => {
   }, [token])
 
   useEffect(() => {
+    player
+      ?.getVolume()
+      .then(volume_dec =>
+        dispatch({ type: "SET_VOLUME", payload: { volume: volume_dec * 100 } })
+      )
+
     player?.addListener("ready", ({ device_id }) => {
       setDevice_id(device_id)
     })
@@ -192,9 +200,18 @@ const PlaybackProvider: React.FC = ({ children }) => {
     }
   }
 
-  const syncProgress = async (progress: number) => {
+  const changeVolume = useCallback(async (volume: number) => {
+    try {
+      dispatch({ type: "SET_VOLUME", payload: { volume } })
+      await spotifyApi.setVolume(volume)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
+
+  const syncProgress = useCallback(async (progress: number) => {
     dispatch({ type: "PROGRESS", payload: { progress } })
-  }
+  }, [])
 
   return (
     <PlaybackContext.Provider
@@ -207,6 +224,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
         fastRewind,
         fastForward,
         syncProgress,
+        changeVolume,
         player,
         loading,
         playback,

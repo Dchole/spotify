@@ -19,7 +19,7 @@ const useProgress = () => {
     }, 1000)
 
     return () => clearInterval(timer as unknown as number)
-  }, [playback])
+  }, [playback, syncProgress])
 }
 
 export default useProgress

@@ -1,7 +1,7 @@
-import { spotifyApi } from "@/lib"
+import { useEffect, useState } from "react"
 import { VolumeMute, VolumeUp } from "@mui/icons-material"
 import { IconButton, Popover, Slider } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import { usePlayback } from "./context/Playback"
 
 interface IProps {
   anchorEl: HTMLButtonElement | null
@@ -9,11 +9,12 @@ interface IProps {
 }
 
 const Volume: React.FC<IProps> = ({ anchorEl, handleClose }) => {
-  const [volume, setVolume] = useState(50)
+  const { playback, changeVolume } = usePlayback()
+  const [volume, setVolume] = useState(playback.volume)
 
   useEffect(() => {
-    spotifyApi.setVolume(volume)
-  }, [volume])
+    changeVolume(volume)
+  }, [volume, changeVolume])
 
   const mute = (event: never) => handleChange(event, 0)
   const fullVolume = (event: never) => handleChange(event, 100)
