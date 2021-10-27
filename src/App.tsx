@@ -14,6 +14,7 @@ import SearchProvider from "~/context/SearchContext"
 import AuthProvider from "~/context/AuthContext"
 import PlaybackProvider from "~/context/Playback"
 import { useColorMode } from "~/context/ColorMode"
+import { SnackbarProvider } from "notistack"
 
 const Track = lazy(() => import("#/Track"))
 const Auth = lazy(() => import("#/Auth"))
@@ -29,25 +30,27 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <PlaybackProvider>
-          <SearchProvider>
-            <Layout>
-              <CssBaseline />
-              <Suspense fallback={<PageSpinner />}>
-                <Switch>
-                  <Route path="/" component={Home} exact />
-                  <Route path="/auth" component={Auth} />
-                  <Route path="/search" component={Search} />
-                  <Route path="/library" component={Library} />
-                  <Route path="/tracks/:id" component={Track} />
-                  <Route path="/albums/:id" component={Album} />
-                  <Route path="/artists/:id" component={Artist} />
-                  <Route path="/playlists/:id" component={Playlist} />
-                </Switch>
-              </Suspense>
-            </Layout>
-          </SearchProvider>
-        </PlaybackProvider>
+        <SnackbarProvider maxSnack={2}>
+          <PlaybackProvider>
+            <SearchProvider>
+              <Layout>
+                <CssBaseline />
+                <Suspense fallback={<PageSpinner />}>
+                  <Switch>
+                    <Route path="/" component={Home} exact />
+                    <Route path="/auth" component={Auth} />
+                    <Route path="/search" component={Search} />
+                    <Route path="/library" component={Library} />
+                    <Route path="/tracks/:id" component={Track} />
+                    <Route path="/albums/:id" component={Album} />
+                    <Route path="/artists/:id" component={Artist} />
+                    <Route path="/playlists/:id" component={Playlist} />
+                  </Switch>
+                </Suspense>
+              </Layout>
+            </SearchProvider>
+          </PlaybackProvider>
+        </SnackbarProvider>
       </AuthProvider>
     </ThemeProvider>
   )

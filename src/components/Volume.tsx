@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { VolumeMute, VolumeUp } from "@mui/icons-material"
 import { IconButton, Popover, Slider } from "@mui/material"
 import { usePlayback } from "./context/Playback"
@@ -10,17 +9,12 @@ interface IProps {
 
 const Volume: React.FC<IProps> = ({ anchorEl, handleClose }) => {
   const { playback, changeVolume } = usePlayback()
-  const [volume, setVolume] = useState(playback.volume)
-
-  useEffect(() => {
-    changeVolume(volume)
-  }, [volume, changeVolume])
 
   const mute = (event: never) => handleChange(event, 0)
   const fullVolume = (event: never) => handleChange(event, 100)
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
-    setVolume(newValue as number)
+    changeVolume(newValue as number)
   }
 
   return (
@@ -52,7 +46,7 @@ const Volume: React.FC<IProps> = ({ anchorEl, handleClose }) => {
       <Slider
         size="small"
         color="secondary"
-        value={volume}
+        value={playback.volume}
         aria-label="volume"
         orientation="vertical"
         valueLabelDisplay="auto"

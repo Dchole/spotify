@@ -10,6 +10,7 @@ import {
 import { useHistory } from "react-router"
 import { useAuth } from "./AuthContext"
 import { initialState, playbackReducer, TState } from "./playbackReducer"
+import { useSnackbar } from "notistack"
 
 interface IContextProps {
   playback: TState
@@ -31,6 +32,7 @@ const PlaybackContext = createContext<IContextProps | null>(null)
 
 const PlaybackProvider: React.FC = ({ children }) => {
   const { token } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
   const { push, location } = useHistory()
   const [loading, setLoading] = useState(false)
   const [player, setPlayer] = useState<Spotify.Player | null>(null)
@@ -76,12 +78,6 @@ const PlaybackProvider: React.FC = ({ children }) => {
   }, [token])
 
   useEffect(() => {
-    player
-      ?.getVolume()
-      .then(volume_dec =>
-        dispatch({ type: "SET_VOLUME", payload: { volume: volume_dec * 100 } })
-      )
-
     player?.addListener("ready", ({ device_id }) => {
       setDevice_id(device_id)
     })
@@ -128,6 +124,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: params ? "PLAY" : "RESUME" })
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     } finally {
       setLoading(false)
     }
@@ -140,6 +139,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PAUSE" })
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     } finally {
       setLoading(false)
     }
@@ -153,6 +155,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PLAY" })
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     } finally {
       setLoading(false)
     }
@@ -166,6 +171,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PLAY" })
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     } finally {
       setLoading(false)
     }
@@ -178,6 +186,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PROGRESS", payload: { progress: position } })
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     }
   }
 
@@ -188,6 +199,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PROGRESS", payload: { progress: position } })
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     }
   }
 
@@ -197,6 +211,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PROGRESS", payload: { progress: positionMs } })
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     }
   }
 
@@ -206,6 +223,9 @@ const PlaybackProvider: React.FC = ({ children }) => {
       await spotifyApi.setVolume(volume)
     } catch (error) {
       console.log(error)
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: "error" })
+      }
     }
   }, [])
 

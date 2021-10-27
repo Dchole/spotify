@@ -48,7 +48,10 @@ const Playlist = () => {
     pauseTrack,
     playingTrack,
     isTrackPlaying
-  } = useGroupPlay(playlist?.uri)
+  } = useGroupPlay(
+    playlist?.uri,
+    likedSongs?.map(track => ({ id: track.id, uri: track.uri }))
+  )
 
   const handleChange = (event: SelectChangeEvent) => {
     setOrder(event.target.value as TOrder)

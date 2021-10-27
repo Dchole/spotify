@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
 import { usePlayback } from "~/context/Playback"
 
-const useGroupPlay = (group_uri?: string) => {
+const useGroupPlay = (
+  group_uri?: string,
+  tracks?: { id?: string; uri?: string }[]
+) => {
   const { play, pause, playback } = usePlayback()
   const [playingTrack, setPlayingTrack] = useState("")
   const [isTrackPlaying, setIsTrackPlaying] = useState(false)
@@ -18,12 +21,29 @@ const useGroupPlay = (group_uri?: string) => {
     setGroupPlaying(isTrackPlaying)
   }, [isTrackPlaying])
 
+  useEffect(() => {
+    if (tracks?.length && groupPlaying) {
+      setPlayingTrack(playback.current_track)
+    }
+  }, [tracks, groupPlaying])
+
   const handlePlay = async () => {
     console.log(playback.context_uri, group_uri)
 
-    playback.context_uri === group_uri && playback.started_playing
-      ? await play()
-      : await play({ context_uri: group_uri })
+    if (tracks) {
+      playback.started_playing &&
+      tracks.some(track => track.id === playback.current_track)
+        ? await play()
+        : await play({
+            uris: tracks?.map(track => track.uri || "")
+          })
+    } else {
+      playback.context_uri === group_uri && playback.started_playing
+        ? await play()
+        : await play({
+            context_uri: group_uri
+          })
+    }
 
     setGroupPlaying(true)
     setIsTrackPlaying(true)
@@ -45,6 +65,7 @@ const useGroupPlay = (group_uri?: string) => {
         ? await play()
         : await play({
             context_uri: group_uri,
+            uris: tracks?.map(track => track.uri || ""),
             offset: { uri: track.uri }
           })
 
