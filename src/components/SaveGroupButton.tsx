@@ -7,17 +7,21 @@ import { useLocation } from "react-router"
 import { spotifyApi } from "@/lib"
 import { Favorite, FavoriteBorder } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
+import { useSnackbar } from "notistack"
 
 interface IProps {
   group_id?: string
 }
 
 const SaveGroupButton: React.FC<IProps> = ({ group_id }) => {
+  const { enqueueSnackbar } = useSnackbar()
   const { pathname } = useLocation()
   const [type, setType] = useState("")
   const [saved, setSaved] = useState(false)
-  const [getAlbums, { data: albumsData }] = useGetSavedAlbumsLazyQuery()
-  const [getPlaylists, { data: playlistsData }] = useGetPlaylistsLazyQuery()
+  const [getAlbums, { data: albumsData, refetch: refetchAlbums }] =
+    useGetSavedAlbumsLazyQuery()
+  const [getPlaylists, { data: playlistsData, refetch: refetchPlaylists }] =
+    useGetPlaylistsLazyQuery()
 
   useEffect(() => {
     const type = pathname.split("/")[1]
@@ -48,29 +52,37 @@ const SaveGroupButton: React.FC<IProps> = ({ group_id }) => {
     setSaved(Boolean(albumSaved || playlistSaved))
   }, [albumsData, playlistsData, group_id])
 
-  const addToFavourite = () => {
+  const addToFavourite = async () => {
     setSaved(true)
     try {
       if (group_id) {
-        type === "album"
-          ? spotifyApi.addToMySavedAlbums([group_id])
-          : spotifyApi.followPlaylist(group_id)
+        if (type === "album") {
+          await spotifyApi.addToMySavedAlbums([group_id])
+          refetchAlbums?.()
+        } else {
+          await spotifyApi.followPlaylist(group_id)
+          refetchPlaylists?.()
+        }
       }
     } catch (error) {
-      console.log(error)
+      enqueueSnackbar("failed to save", { variant: "error" })
     }
   }
 
-  const removeFromFavourite = () => {
+  const removeFromFavourite = async () => {
     setSaved(false)
     try {
       if (group_id) {
-        type === "album"
-          ? spotifyApi.removeFromMySavedAlbums([group_id])
-          : spotifyApi.unfollowPlaylist(group_id)
+        if (type === "album") {
+          await spotifyApi.removeFromMySavedAlbums([group_id])
+          refetchAlbums?.()
+        } else {
+          await spotifyApi.unfollowPlaylist(group_id)
+          refetchPlaylists?.()
+        }
       }
     } catch (error) {
-      console.log(error)
+      enqueueSnackbar("failed to remove", { variant: "error" })
     }
   }
 

@@ -137,9 +137,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: params ? "PLAY" : "RESUME" })
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
+      enqueueSnackbar("Failed to play", { variant: "error" })
     } finally {
       setLoading(false)
     }
@@ -152,9 +150,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PAUSE" })
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
+      enqueueSnackbar("Failed to pause", { variant: "error" })
     } finally {
       setLoading(false)
     }
@@ -168,9 +164,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PLAY" })
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
+      enqueueSnackbar("Failed to skip", { variant: "error" })
     } finally {
       setLoading(false)
     }
@@ -184,25 +178,16 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PLAY" })
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
+      enqueueSnackbar("Failed to play previous track", { variant: "error" })
     } finally {
       setLoading(false)
     }
   }
 
   const fastForward = async () => {
-    try {
-      const position = playback.progress + 10_000
-      await spotifyApi.seek(position)
-      dispatch({ type: "PROGRESS", payload: { progress: position } })
-    } catch (error) {
-      console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
-    }
+    const position = playback.progress + 10_000
+    await spotifyApi.seek(position)
+    dispatch({ type: "PROGRESS", payload: { progress: position } })
   }
 
   const fastRewind = async () => {
@@ -212,9 +197,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PROGRESS", payload: { progress: position } })
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
+      enqueueSnackbar("Failed to rewind", { variant: "error" })
     }
   }
 
@@ -224,22 +207,13 @@ const PlaybackProvider: React.FC = ({ children }) => {
       dispatch({ type: "PROGRESS", payload: { progress: positionMs } })
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
+      enqueueSnackbar("Failed to seek", { variant: "error" })
     }
   }
 
   const changeVolume = useCallback(async (volume: number) => {
-    try {
-      dispatch({ type: "SET_VOLUME", payload: { volume } })
-      await spotifyApi.setVolume(volume)
-    } catch (error) {
-      console.log(error)
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: "error" })
-      }
-    }
+    dispatch({ type: "SET_VOLUME", payload: { volume } })
+    spotifyApi.setVolume(volume)
   }, [])
 
   const syncProgress = useCallback(async (progress: number) => {

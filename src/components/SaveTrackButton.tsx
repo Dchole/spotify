@@ -2,6 +2,7 @@ import { Track, useGetLikedSongsQuery } from "@/generated/graphql"
 import { spotifyApi } from "@/lib"
 import { Favorite, FavoriteBorder } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
+import { useSnackbar } from "notistack"
 import { useEffect, useState } from "react"
 
 interface IProps {
@@ -9,22 +10,41 @@ interface IProps {
 }
 
 const SaveTrackButton: React.FC<IProps> = ({ track }) => {
+  const { enqueueSnackbar } = useSnackbar()
   const [saved, setSaved] = useState(false)
-  const savedTracks = useGetLikedSongsQuery().data?.liked_songs
+  const { data, refetch } = useGetLikedSongsQuery()
+
+  const savedTracks = data?.liked_songs
 
   useEffect(() => {
     const thisTrack = savedTracks?.find(({ id }) => id === track?.id)
     thisTrack && setSaved(true)
   }, [track, savedTracks])
 
-  const addToFavourite = () => {
+  const addToFavourite = async () => {
     setSaved(true)
-    track?.id && spotifyApi.addToMySavedTracks([track.id])
+
+    if (track?.id) {
+      try {
+        await spotifyApi.addToMySavedTracks([track.id])
+        refetch()
+      } catch (error) {
+        enqueueSnackbar("Failed to save track", { variant: "error" })
+      }
+    }
   }
 
-  const removeFromFavourite = () => {
+  const removeFromFavourite = async () => {
     setSaved(false)
-    track?.id && spotifyApi.removeFromMySavedTracks([track.id])
+
+    if (track?.id) {
+      try {
+        await spotifyApi.removeFromMySavedTracks([track.id])
+        refetch()
+      } catch (error) {
+        enqueueSnackbar("Failed to remove saved track", { variant: "error" })
+      }
+    }
   }
 
   return (
