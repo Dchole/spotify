@@ -82,6 +82,19 @@ const PlaybackProvider: React.FC = ({ children }) => {
       setDevice_id(device_id)
     })
 
+    player?.addListener("initialization_error", ({ message }) => {
+      console.error("init", message)
+      enqueueSnackbar(message, { variant: "error" })
+    })
+
+    player?.addListener("authentication_error", ({ message }) => {
+      console.error("auth", message)
+      enqueueSnackbar(message, {
+        variant: "error",
+        anchorOrigin: { vertical: "bottom", horizontal: "center" }
+      })
+    })
+
     player?.addListener("player_state_changed", state => {
       if (state) {
         const trackPage = location.pathname.split("/")[1] === "tracks"

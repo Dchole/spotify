@@ -50,19 +50,27 @@ const SaveGroupButton: React.FC<IProps> = ({ group_id }) => {
 
   const addToFavourite = () => {
     setSaved(true)
-    if (group_id) {
-      type === "album"
-        ? spotifyApi.addToMySavedAlbums([group_id])
-        : spotifyApi.followPlaylist(group_id)
+    try {
+      if (group_id) {
+        type === "album"
+          ? spotifyApi.addToMySavedAlbums([group_id])
+          : spotifyApi.followPlaylist(group_id)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
   const removeFromFavourite = () => {
     setSaved(false)
-    if (group_id) {
-      type === "album"
-        ? spotifyApi.removeFromMySavedAlbums([group_id])
-        : spotifyApi.unfollowPlaylist(group_id)
+    try {
+      if (group_id) {
+        type === "album"
+          ? spotifyApi.removeFromMySavedAlbums([group_id])
+          : spotifyApi.unfollowPlaylist(group_id)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

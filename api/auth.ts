@@ -8,6 +8,7 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
     "user-read-email",
     "user-follow-read",
     "user-library-read",
+    "user-library-modify",
     "user-read-private",
     "user-read-playback-state",
     "user-modify-playback-state",

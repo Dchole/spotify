@@ -63,7 +63,7 @@ const Showcase: React.FC<IProps> = ({
         />
       </Grid>
       <Grid item xs zeroMinWidth>
-        <Typography title={name} align="center" variant="h4" noWrap>
+        <Typography component="h1" align="center" variant="h4" noWrap>
           {name}
         </Typography>
         <Typography

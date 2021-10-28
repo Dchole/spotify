@@ -78,6 +78,7 @@ const Playlist = () => {
           />
         )}
         <PlaylistControls
+          playlist_id={playlist?.id}
           handlePlay={handlePlay}
           handlePause={handlePause}
           groupPlaying={groupPlaying}

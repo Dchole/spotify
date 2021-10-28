@@ -28,8 +28,6 @@ const useGroupPlay = (
   }, [tracks, groupPlaying])
 
   const handlePlay = async () => {
-    console.log(playback.context_uri, group_uri)
-
     if (tracks) {
       playback.started_playing &&
       tracks.some(track => track.id === playback.current_track)

@@ -45,7 +45,7 @@ const PlaylistControls: React.FC<IProps> = ({
             <SortingOrder order={order} handleChange={handleChange} />
           </Suspense>
         )}
-        <SaveGroupButton group_id={playlist_id} />
+        {playlist_id && <SaveGroupButton group_id={playlist_id} />}
         {type === EType["Album"] && (
           <IconButton aria-label="share album">
             <Share />
