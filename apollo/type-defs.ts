@@ -14,6 +14,7 @@ export const typeDefs = gql`
     playlist(id: ID!): Playlist!
     playlists: [Playlist!]!
     artist(id: ID!): Artist!
+    search(query: String!): [Search!]!
     followed_artists: [Artist!]!
   }
 
@@ -81,6 +82,14 @@ export const typeDefs = gql`
     tracks: [Track!]!
     albums: [Album!]!
     uri: String!
+  }
+
+  type Search implements Tile {
+    id: ID!
+    name: String!
+    type: EType!
+    cover_image: String
+    artist_name: String
   }
 
   type PlaylistTrack {

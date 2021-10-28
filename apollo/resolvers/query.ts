@@ -40,5 +40,8 @@ export const Query: QueryResolvers<IContext> = {
   },
   new_releases: async (_parent, _args, { dataSources }) => {
     return dataSources.spotifyAPI.getNewReleases()
+  },
+  search: async (_parent, { query }, { dataSources }) => {
+    return dataSources.spotifyAPI.search(query)
   }
 }

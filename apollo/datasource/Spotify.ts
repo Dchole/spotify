@@ -4,6 +4,7 @@ import {
   EType,
   Playlist,
   PlaylistTrack,
+  Search,
   Track,
   User
 } from "../types/generated/graphql"
@@ -281,5 +282,51 @@ export default class SpotifyAPI extends DataSource<IContext> {
   async getFollowedArtists(): Promise<Artist[]> {
     const { body } = await this.spotifyAPI.getFollowedArtists()
     return body.artists.items.map(artist => this.artistReducer(artist))
+  }
+
+  async search(query: string): Promise<Search[]> {
+    const { body } = await this.spotifyAPI.search(query, [
+      "album",
+      "artist",
+      "playlist",
+      "track"
+    ])
+
+    const albums: Search[] | undefined =
+      body.albums?.items.map(({ id, name, artists, images }) => ({
+        id,
+        name,
+        type: EType["Album"],
+        artist_name: artists.map(artist => artist.name).join(", "),
+        cover_image: images[1]?.url || images[0]?.url
+      })) || []
+
+    const playlists: Search[] | undefined =
+      body.playlists?.items.map(({ id, name, owner, images }) => ({
+        id,
+        name,
+        type: EType["Playlist"],
+        artist_name: owner.display_name,
+        cover_image: images[1]?.url || images[0]?.url
+      })) || []
+
+    const artists: Search[] | undefined =
+      body.artists?.items.map(({ id, name, images }) => ({
+        id,
+        name,
+        type: EType["Artist"],
+        cover_image: images[1]?.url || images[0]?.url
+      })) || []
+
+    const tracks: Search[] | undefined =
+      body.tracks?.items.map(({ id, name, artists, album }) => ({
+        id,
+        name,
+        type: EType["Track"],
+        artist_name: artists.map(artist => artist.name).join(", "),
+        cover_image: album.images[1]?.url || album.images[0]?.url
+      })) || []
+
+    return [...tracks, ...albums, ...artists, ...playlists]
   }
 }
