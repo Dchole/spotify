@@ -17,6 +17,8 @@ interface IContextProps {
   loading: boolean
   device_id: string
   player: Spotify.Player | null
+  showBanner: boolean
+  hideBanner: () => void
   play: (params?: SpotifyApi.PlayParameterObject) => Promise<void>
   pause: () => Promise<void>
   next: () => Promise<void>
@@ -33,6 +35,7 @@ const PlaybackContext = createContext<IContextProps | null>(null)
 const PlaybackProvider: React.FC = ({ children }) => {
   const { token } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
+  const [showBanner, setShowBanner] = useState(false)
   const { push, location } = useHistory()
   const [loading, setLoading] = useState(false)
   const [player, setPlayer] = useState<Spotify.Player | null>(null)
@@ -82,9 +85,8 @@ const PlaybackProvider: React.FC = ({ children }) => {
       setDevice_id(device_id)
     })
 
-    player?.addListener("initialization_error", ({ message }) => {
-      console.error("init", message)
-      enqueueSnackbar(message, { variant: "error" })
+    player?.addListener("initialization_error", () => {
+      setShowBanner(true)
     })
 
     player?.addListener("authentication_error", ({ message }) => {
@@ -121,6 +123,8 @@ const PlaybackProvider: React.FC = ({ children }) => {
 
     return () => player?.disconnect()
   }, [player])
+
+  const hideBanner = () => setShowBanner(false)
 
   /**
    * Play/Resume Track(s).
@@ -232,6 +236,8 @@ const PlaybackProvider: React.FC = ({ children }) => {
         fastForward,
         syncProgress,
         changeVolume,
+        hideBanner,
+        showBanner,
         player,
         loading,
         playback,

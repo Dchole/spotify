@@ -4,7 +4,7 @@ import "@fontsource/montserrat/600.css"
 import "@fontsource/montserrat/700.css"
 import "@/styles/global.css"
 
-import { lazy, Suspense } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import { Route, Switch } from "react-router"
 import { CssBaseline, ThemeProvider } from "@mui/material"
 import Layout from "~/Layout"
@@ -23,9 +23,18 @@ const Artist = lazy(() => import("#/Artist"))
 const Library = lazy(() => import("#/Library"))
 const Search = lazy(() => import("#/Search"))
 const Playlist = lazy(() => import("#/Playlist"))
+const InfoDialog = lazy(() => import("~/InfoDialog"))
 
 const App = () => {
   const { theme } = useColorMode()
+  const [showDialog, setShowDialog] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowDialog(true), 10_000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleClose = () => setShowDialog(false)
 
   return (
     <ThemeProvider theme={theme}>
@@ -52,6 +61,9 @@ const App = () => {
           </PlaybackProvider>
         </SnackbarProvider>
       </AuthProvider>
+      <Suspense fallback={<div />}>
+        <InfoDialog open={showDialog} handleClose={handleClose} />
+      </Suspense>
     </ThemeProvider>
   )
 }

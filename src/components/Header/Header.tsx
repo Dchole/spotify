@@ -13,13 +13,15 @@ import {
 } from "@mui/material"
 import { ArrowBack } from "@mui/icons-material"
 import { useGetUserQuery } from "@/generated/graphql"
+import { usePlayback } from "~/context/Playback"
 import Search from "./Search"
 
 const AccountMenu = lazy(() => import("./AccountMenu"))
+const UnsupportedBanner = lazy(() => import("~/UnsupportedBanner"))
 
 const Header = () => {
   const { data } = useGetUserQuery()
-
+  const { showBanner, hideBanner } = usePlayback()
   const { palette } = useTheme()
   const { goBack } = useHistory()
   const { pathname } = useLocation()
@@ -79,6 +81,9 @@ const Header = () => {
           />
         </IconButton>
       </Toolbar>
+      <Suspense fallback={<div />}>
+        <UnsupportedBanner show={showBanner} handleClose={hideBanner} />
+      </Suspense>
       <Suspense fallback={<div />}>
         <AccountMenu anchorEl={anchorEl} handleClose={handleClose} />
       </Suspense>
