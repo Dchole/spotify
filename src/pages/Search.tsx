@@ -1,61 +1,84 @@
-import { songs } from "@/data/songs"
+import { EType, useSearchLazyQuery } from "@/generated/graphql"
 import {
   Avatar,
+  Container,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Typography
 } from "@mui/material"
-import { useSearch } from "~/context/SearchContext"
+import { visuallyHidden } from "@mui/utils"
+import { useEffect } from "react"
+import { Link } from "react-router-dom"
 
 const Search = () => {
-  const { autocompleteProps } = useSearch()
-  const { inputValue, getListboxProps, getOptionProps, groupedOptions } =
-    autocompleteProps
+  const searchParams = new URLSearchParams(window.location.search)
+  const query = searchParams.get("query") || ""
+
+  const [search, { data }] = useSearchLazyQuery({
+    variables: { query },
+    fetchPolicy: "cache-only"
+  })
+
+  useEffect(() => {
+    query && search()
+  }, [search])
 
   return (
     <main>
-      <Typography
-        variant="h5"
-        component="h2"
-        sx={{ textTransform: "capitalize", ml: 2 }}
-      >
-        {inputValue ? (
-          <>
-            Result for <q>{inputValue}</q>
-          </>
-        ) : (
-          <>Search for songs, playlists and more...</>
-        )}
-      </Typography>
-      <List {...getListboxProps()}>
-        {(groupedOptions as typeof songs).map((option, index) => (
-          <ListItem
-            key={option.title}
-            {...getOptionProps({ option, index })}
-            sx={{ py: 0 }}
-          >
-            <ListItemAvatar>
-              <Avatar variant="square" src={option.cover} alt={option.title} />
-            </ListItemAvatar>
-            <ListItemText
-              sx={{ textTransform: "capitalize" }}
-              primary={option.title}
-              secondary={
-                <>
-                  <span>{option.album}</span>
-                  &bull;
-                  <span>{option.artist}</span>
-                </>
-              }
-              secondaryTypographyProps={{
-                sx: { display: "flex", gap: 0.6 }
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
+      {data?.search ? (
+        <>
+          <h1 style={visuallyHidden}>Search result</h1>
+          <List>
+            {data.search.map(item => (
+              <ListItem
+                key={item.id}
+                component={Link}
+                to={`/${item.type.toLowerCase()}s/${item.id}`}
+                button
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    variant={
+                      item.type === EType["Artist"] ? "circular" : "square"
+                    }
+                    src={item.cover_image || ""}
+                    alt=""
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={item.name}
+                  secondary={
+                    <>
+                      <span>{item.type.toLowerCase()}</span>
+                      {item.artist_name && (
+                        <>
+                          <span>&bull;</span>
+                          <span>{item.artist_name}</span>
+                        </>
+                      )}
+                    </>
+                  }
+                  secondaryTypographyProps={{
+                    sx: {
+                      display: "flex",
+                      gap: 1,
+                      textTransform: "capitalize"
+                    }
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </>
+      ) : (
+        <Container>
+          <Typography component="h1" variant="h5">
+            Type Something in the search input to search
+          </Typography>
+        </Container>
+      )}
     </main>
   )
 }

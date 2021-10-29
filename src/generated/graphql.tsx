@@ -88,6 +88,7 @@ export type Query = {
   recently_played: Array<Track>;
   recommendation: Array<Track>;
   saved_albums: Array<Album>;
+  search: Array<Search>;
   top_tracks: Array<Track>;
   track: Track;
   user: User;
@@ -109,8 +110,22 @@ export type QueryPlaylistArgs = {
 };
 
 
+export type QuerySearchArgs = {
+  query: Scalars['String'];
+};
+
+
 export type QueryTrackArgs = {
   id: Scalars['ID'];
+};
+
+export type Search = Tile & {
+  __typename?: 'Search';
+  artist_name?: Maybe<Scalars['String']>;
+  cover_image?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  type: EType;
 };
 
 export type Tile = {
@@ -213,15 +228,24 @@ export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, name: string, photoURL?: string | null | undefined } };
 
+export type SearchQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Search', id: string, name: string, type: EType, cover_image?: string | null | undefined, artist_name?: string | null | undefined }> };
+
 type TileParts_Album_Fragment = { __typename?: 'Album', id: string, name: string, type: EType, cover_image?: string | null | undefined };
 
 type TileParts_Artist_Fragment = { __typename?: 'Artist', id: string, name: string, type: EType, cover_image?: string | null | undefined };
 
 type TileParts_Playlist_Fragment = { __typename?: 'Playlist', id: string, name: string, type: EType, cover_image?: string | null | undefined };
 
+type TileParts_Search_Fragment = { __typename?: 'Search', id: string, name: string, type: EType, cover_image?: string | null | undefined };
+
 type TileParts_Track_Fragment = { __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined };
 
-export type TilePartsFragment = TileParts_Album_Fragment | TileParts_Artist_Fragment | TileParts_Playlist_Fragment | TileParts_Track_Fragment;
+export type TilePartsFragment = TileParts_Album_Fragment | TileParts_Artist_Fragment | TileParts_Playlist_Fragment | TileParts_Search_Fragment | TileParts_Track_Fragment;
 
 export const TilePartsFragmentDoc = gql`
     fragment TileParts on Tile {
@@ -797,3 +821,42 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const SearchDocument = gql`
+    query search($query: String!) {
+  search(query: $query) {
+    id
+    name
+    type
+    cover_image
+    artist_name
+  }
+}
+    `;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+      }
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+        }
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;

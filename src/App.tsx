@@ -10,7 +10,6 @@ import { CssBaseline, ThemeProvider } from "@mui/material"
 import Layout from "~/Layout"
 import Home from "#/Home"
 import PageSpinner from "~/PageSpinner"
-import SearchProvider from "~/context/SearchContext"
 import AuthProvider from "~/context/AuthContext"
 import PlaybackProvider from "~/context/Playback"
 import { useColorMode } from "~/context/ColorMode"
@@ -41,23 +40,21 @@ const App = () => {
       <AuthProvider>
         <SnackbarProvider maxSnack={2}>
           <PlaybackProvider>
-            <SearchProvider>
-              <Layout>
-                <CssBaseline />
-                <Suspense fallback={<PageSpinner />}>
-                  <Switch>
-                    <Route path="/" component={Home} exact />
-                    <Route path="/auth" component={Auth} />
-                    <Route path="/search" component={Search} />
-                    <Route path="/library" component={Library} />
-                    <Route path="/tracks/:id" component={Track} />
-                    <Route path="/albums/:id" component={Album} />
-                    <Route path="/artists/:id" component={Artist} />
-                    <Route path="/playlists/:id" component={Playlist} />
-                  </Switch>
-                </Suspense>
-              </Layout>
-            </SearchProvider>
+            <Layout>
+              <CssBaseline />
+              <Suspense fallback={<PageSpinner />}>
+                <Switch>
+                  <Route path="/" component={Home} exact />
+                  <Route path="/auth" component={Auth} />
+                  <Route path="/search" component={Search} />
+                  <Route path="/library" component={Library} />
+                  <Route path="/tracks/:id" component={Track} />
+                  <Route path="/albums/:id" component={Album} />
+                  <Route path="/artists/:id" component={Artist} />
+                  <Route path="/playlists/:id" component={Playlist} />
+                </Switch>
+              </Suspense>
+            </Layout>
           </PlaybackProvider>
         </SnackbarProvider>
       </AuthProvider>

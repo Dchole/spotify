@@ -1,18 +1,47 @@
-import { Collapse, OutlinedInput } from "@mui/material"
+import { useSearchLazyQuery } from "@/generated/graphql"
+import { SearchRounded } from "@mui/icons-material"
+import {
+  CircularProgress,
+  Collapse,
+  InputAdornment,
+  OutlinedInput
+} from "@mui/material"
 import { Box } from "@mui/system"
-import { useLocation } from "react-router"
-import { useSearch } from "~/context/SearchContext"
+import { useEffect, useRef, useState } from "react"
+import { useHistory, useLocation } from "react-router"
 
 const Search = () => {
+  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const { pathname } = useLocation()
-  const { autocompleteProps, searching, startSearch } = useSearch()
-  const { getRootProps, getInputProps } = autocompleteProps
+  const { replace } = useHistory()
+
+  const searchParams = new URLSearchParams(window.location.search)
+
+  const [input, setInput] = useState(() => searchParams.get("query") || "")
+  const [search, { data, loading }] = useSearchLazyQuery({
+    variables: { query: input }
+  })
+
+  useEffect(() => {
+    clearTimeout(timerRef.current as unknown as number)
+    timerRef.current = setTimeout(() => {
+      input && search()
+    }, 500)
+
+    return () => clearTimeout(timerRef.current as unknown as number)
+  }, [input])
+
+  useEffect(() => {
+    if (data?.search) {
+      const url = new URL(window.location.href)
+      url.searchParams.set("query", input)
+
+      input ? replace(url.pathname + url.search) : replace(url.pathname)
+    }
+  }, [data?.search])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    getInputProps().onChange?.(event)
-
-    const value = event.target.value
-    value && !searching && startSearch()
+    setInput(event.target.value)
   }
 
   return (
@@ -23,21 +52,41 @@ const Search = () => {
         mountOnEnter
         unmountOnExit
       >
-        <Box {...getRootProps()} height={40}>
+        <Box height={40}>
           <OutlinedInput
-            {...getInputProps()}
+            type="search"
             color="secondary"
             margin="dense"
+            value={input}
+            placeholder="Songs, Albums, Artists and Playlists"
             onChange={handleChange}
+            inputProps={{
+              "aria-label": "search for songs, albums, artists and playlists"
+            }}
             sx={{
               height: "100%",
-              bgcolor: "#fffa",
+              bgcolor: ({ palette }) =>
+                palette.mode === "light" ? "#fffa" : "GrayText",
               transition: ({ transitions }) =>
                 transitions.create("background-color", {
                   duration: transitions.duration.shortest
                 }),
-              "&:hover": { bgcolor: "#fffc" }
+              "&:hover, &:focus": {
+                bgcolor: ({ palette }) =>
+                  palette.mode === "light" ? "#fffc" : "HighlightText"
+              }
             }}
+            startAdornment={
+              loading ? (
+                <InputAdornment position="start">
+                  <CircularProgress size={24} />
+                </InputAdornment>
+              ) : (
+                <InputAdornment position="start">
+                  <SearchRounded />
+                </InputAdornment>
+              )
+            }
             fullWidth
           />
         </Box>

@@ -11,6 +11,7 @@ import {
 import type { IContext } from "../types/context"
 import { DataSource, DataSourceConfig } from "apollo-datasource"
 import SpotifyWebApi from "spotify-web-api-node"
+import { matchSorter } from "match-sorter"
 
 export default class SpotifyAPI extends DataSource<IContext> {
   private spotifyAPI!: SpotifyWebApi
@@ -219,7 +220,34 @@ export default class SpotifyAPI extends DataSource<IContext> {
 
   async getPlayHistory(): Promise<Track[]> {
     const { body } = await this.spotifyAPI.getMyRecentlyPlayedTracks()
-    return body.items.map(item => this.trackReducer(item.track))
+
+    /**
+     * Remove continuously repeating tracks
+     * When a track is played in loop, only the most recent should be returned
+     * Also make IDs of tracks that may repeat unique by concatenating the ID and the timestamp
+     */
+    const compactList = (
+      tracks: SpotifyApi.PlayHistoryObject[]
+    ): SpotifyApi.PlayHistoryObject[] => {
+      const copiedItems = [...tracks]
+
+      copiedItems.forEach(({ track: currentTrack, played_at }, index) => {
+        const nextItem =
+          index < copiedItems.length ? copiedItems[index + 1] : undefined
+
+        if (currentTrack.id === nextItem?.track.id) {
+          copiedItems.splice(copiedItems.indexOf(nextItem), 1)
+        }
+
+        currentTrack.id = currentTrack.id + played_at
+      })
+
+      return copiedItems
+    }
+
+    const reducedHistory = compactList(body.items)
+
+    return reducedHistory.map(item => this.trackReducer(item.track))
   }
 
   async getTrack(id: string): Promise<Track> {
@@ -327,6 +355,8 @@ export default class SpotifyAPI extends DataSource<IContext> {
         cover_image: album.images[1]?.url || album.images[0]?.url
       })) || []
 
-    return [...tracks, ...albums, ...artists, ...playlists]
+    const joinedList = [...tracks, ...albums, ...artists, ...playlists]
+
+    return matchSorter(joinedList, query, { keys: ["name"] })
   }
 }
