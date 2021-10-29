@@ -3,6 +3,7 @@ import ReactDOM from "react-dom"
 import App from "./App"
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { BrowserRouter } from "react-router-dom"
+import AuthProvider from "~/context/Auth"
 import ColorModeProvider from "~/context/ColorMode"
 
 if (!import.meta.env.PROD) {
@@ -22,7 +23,9 @@ ReactDOM.render(
     <BrowserRouter>
       <ApolloProvider client={client}>
         <ColorModeProvider>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </ColorModeProvider>
       </ApolloProvider>
     </BrowserRouter>

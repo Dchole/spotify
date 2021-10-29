@@ -85,7 +85,7 @@ export type Query = {
   new_releases: Array<Album>;
   playlist: Playlist;
   playlists: Array<Playlist>;
-  recently_played: Array<Track>;
+  recently_played: Array<Recent>;
   recommendation: Array<Track>;
   saved_albums: Array<Album>;
   search: Array<Search>;
@@ -117,6 +117,20 @@ export type QuerySearchArgs = {
 
 export type QueryTrackArgs = {
   id: Scalars['ID'];
+};
+
+export type Recent = {
+  __typename?: 'Recent';
+  album?: Maybe<Album>;
+  artists: Array<Artist>;
+  cover_image?: Maybe<Scalars['String']>;
+  custom_id: Scalars['ID'];
+  duration: Scalars['Int'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  popularity?: Maybe<Scalars['Int']>;
+  type: EType;
+  uri: Scalars['String'];
 };
 
 export type Search = Tile & {
@@ -199,7 +213,7 @@ export type GetPlaylistsQuery = { __typename?: 'Query', playlists: Array<{ __typ
 export type GetRecentlyPlayedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRecentlyPlayedQuery = { __typename?: 'Query', recently_played: Array<{ __typename?: 'Track', id: string, name: string, type: EType, cover_image?: string | null | undefined }> };
+export type GetRecentlyPlayedQuery = { __typename?: 'Query', recently_played: Array<{ __typename?: 'Recent', id: string, name: string, type: EType, custom_id: string, cover_image?: string | null | undefined }> };
 
 export type GetRecommendationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -595,6 +609,7 @@ export const GetRecentlyPlayedDocument = gql`
     id
     name
     type
+    custom_id
     cover_image
   }
 }

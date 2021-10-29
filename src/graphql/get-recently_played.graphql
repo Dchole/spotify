@@ -3,6 +3,7 @@ query getRecentlyPlayed {
     id
     name
     type
+    custom_id
     cover_image
   }
 }

@@ -7,13 +7,13 @@ import "@/styles/global.css"
 import { lazy, Suspense, useEffect, useState } from "react"
 import { Route, Switch } from "react-router"
 import { CssBaseline, ThemeProvider } from "@mui/material"
-import Layout from "~/Layout"
-import Home from "#/Home"
-import PageSpinner from "~/PageSpinner"
-import AuthProvider from "~/context/AuthContext"
-import PlaybackProvider from "~/context/Playback"
-import { useColorMode } from "~/context/ColorMode"
 import { SnackbarProvider } from "notistack"
+import { useAuth } from "~/context/Auth"
+import { useColorMode } from "~/context/ColorMode"
+import Layout from "~/Layout"
+import PageSpinner from "~/PageSpinner"
+import PlaybackProvider from "~/context/Playback"
+import Home from "#/Home"
 
 const Track = lazy(() => import("#/Track"))
 const Auth = lazy(() => import("#/Auth"))
@@ -25,39 +25,37 @@ const Playlist = lazy(() => import("#/Playlist"))
 const InfoDialog = lazy(() => import("~/InfoDialog"))
 
 const App = () => {
+  const { token } = useAuth()
   const { theme } = useColorMode()
   const [showDialog, setShowDialog] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowDialog(true), 10_000)
-    return () => clearTimeout(timer)
-  }, [])
+    token && setShowDialog(true)
+  }, [token])
 
   const handleClose = () => setShowDialog(false)
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <SnackbarProvider maxSnack={2}>
-          <PlaybackProvider>
-            <Layout>
-              <CssBaseline />
-              <Suspense fallback={<PageSpinner />}>
-                <Switch>
-                  <Route path="/" component={Home} exact />
-                  <Route path="/auth" component={Auth} />
-                  <Route path="/search" component={Search} />
-                  <Route path="/library" component={Library} />
-                  <Route path="/tracks/:id" component={Track} />
-                  <Route path="/albums/:id" component={Album} />
-                  <Route path="/artists/:id" component={Artist} />
-                  <Route path="/playlists/:id" component={Playlist} />
-                </Switch>
-              </Suspense>
-            </Layout>
-          </PlaybackProvider>
-        </SnackbarProvider>
-      </AuthProvider>
+      <SnackbarProvider maxSnack={2}>
+        <PlaybackProvider>
+          <Layout>
+            <CssBaseline />
+            <Suspense fallback={<PageSpinner />}>
+              <Switch>
+                <Route path="/" component={Home} exact />
+                <Route path="/auth" component={Auth} />
+                <Route path="/search" component={Search} />
+                <Route path="/library" component={Library} />
+                <Route path="/tracks/:id" component={Track} />
+                <Route path="/albums/:id" component={Album} />
+                <Route path="/artists/:id" component={Artist} />
+                <Route path="/playlists/:id" component={Playlist} />
+              </Switch>
+            </Suspense>
+          </Layout>
+        </PlaybackProvider>
+      </SnackbarProvider>
       <Suspense fallback={<div />}>
         <InfoDialog open={showDialog} handleClose={handleClose} />
       </Suspense>

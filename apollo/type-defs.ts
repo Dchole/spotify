@@ -5,7 +5,7 @@ export const typeDefs = gql`
     user: User!
     track(id: ID!): Track!
     liked_songs: [Track!]!
-    recently_played: [Track!]!
+    recently_played: [Recent!]!
     top_tracks: [Track!]!
     recommendation: [Track!]!
     album(id: ID!): Album!
@@ -82,6 +82,19 @@ export const typeDefs = gql`
     tracks: [Track!]!
     albums: [Album!]!
     uri: String!
+  }
+
+  type Recent {
+    id: ID!
+    name: String!
+    album: Album
+    artists: [Artist!]!
+    duration: Int!
+    cover_image: String
+    popularity: Int
+    type: EType!
+    uri: String!
+    custom_id: ID!
   }
 
   type Search implements Tile {

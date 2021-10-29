@@ -8,7 +8,7 @@ import {
   useState
 } from "react"
 import { useHistory } from "react-router"
-import { useAuth } from "./AuthContext"
+import { useAuth } from "./Auth"
 import { initialState, playbackReducer, TState } from "./playbackReducer"
 import { useSnackbar } from "notistack"
 

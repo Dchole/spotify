@@ -1,16 +1,14 @@
 import { useEffect } from "react"
 import { useHistory } from "react-router"
-import { useAuth } from "~/context/AuthContext"
+import { useAuth } from "~/context/Auth"
 
 const Auth = () => {
-  const { setToken } = useAuth()
+  const { code, setToken } = useAuth()
   const { replace } = useHistory()
 
   useEffect(() => {
-    const url = new URL(window.location.href)
-    const code = url.searchParams.get("code")
-
     if (code) {
+      console.log(code)
       fetch("/api/callback", {
         method: "POST",
         headers: {

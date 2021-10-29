@@ -84,7 +84,7 @@ export type Query = {
   new_releases: Array<Album>;
   playlist: Playlist;
   playlists: Array<Playlist>;
-  recently_played: Array<Track>;
+  recently_played: Array<Recent>;
   recommendation: Array<Track>;
   saved_albums: Array<Album>;
   search: Array<Search>;
@@ -116,6 +116,20 @@ export type QuerySearchArgs = {
 
 export type QueryTrackArgs = {
   id: Scalars['ID'];
+};
+
+export type Recent = {
+  __typename?: 'Recent';
+  album?: Maybe<Album>;
+  artists: Array<Artist>;
+  cover_image?: Maybe<Scalars['String']>;
+  custom_id: Scalars['ID'];
+  duration: Scalars['Int'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  popularity?: Maybe<Scalars['Int']>;
+  type: EType;
+  uri: Scalars['String'];
 };
 
 export type Search = Tile & {
@@ -232,6 +246,7 @@ export type ResolversTypes = {
   Playlist: ResolverTypeWrapper<Playlist>;
   PlaylistTrack: ResolverTypeWrapper<PlaylistTrack>;
   Query: ResolverTypeWrapper<{}>;
+  Recent: ResolverTypeWrapper<Recent>;
   Search: ResolverTypeWrapper<Search>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Tile: ResolversTypes['Album'] | ResolversTypes['Artist'] | ResolversTypes['Playlist'] | ResolversTypes['Search'] | ResolversTypes['Track'];
@@ -249,6 +264,7 @@ export type ResolversParentTypes = {
   Playlist: Playlist;
   PlaylistTrack: PlaylistTrack;
   Query: {};
+  Recent: Recent;
   Search: Search;
   String: Scalars['String'];
   Tile: ResolversParentTypes['Album'] | ResolversParentTypes['Artist'] | ResolversParentTypes['Playlist'] | ResolversParentTypes['Search'] | ResolversParentTypes['Track'];
@@ -316,13 +332,27 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   new_releases?: Resolver<Array<ResolversTypes['Album']>, ParentType, ContextType>;
   playlist?: Resolver<ResolversTypes['Playlist'], ParentType, ContextType, RequireFields<QueryPlaylistArgs, 'id'>>;
   playlists?: Resolver<Array<ResolversTypes['Playlist']>, ParentType, ContextType>;
-  recently_played?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
+  recently_played?: Resolver<Array<ResolversTypes['Recent']>, ParentType, ContextType>;
   recommendation?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
   saved_albums?: Resolver<Array<ResolversTypes['Album']>, ParentType, ContextType>;
   search?: Resolver<Array<ResolversTypes['Search']>, ParentType, ContextType, RequireFields<QuerySearchArgs, 'query'>>;
   top_tracks?: Resolver<Array<ResolversTypes['Track']>, ParentType, ContextType>;
   track?: Resolver<ResolversTypes['Track'], ParentType, ContextType, RequireFields<QueryTrackArgs, 'id'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+};
+
+export type RecentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Recent'] = ResolversParentTypes['Recent']> = {
+  album?: Resolver<Maybe<ResolversTypes['Album']>, ParentType, ContextType>;
+  artists?: Resolver<Array<ResolversTypes['Artist']>, ParentType, ContextType>;
+  cover_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  custom_id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  popularity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['EType'], ParentType, ContextType>;
+  uri?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type SearchResolvers<ContextType = any, ParentType extends ResolversParentTypes['Search'] = ResolversParentTypes['Search']> = {
@@ -368,6 +398,7 @@ export type Resolvers<ContextType = any> = {
   Playlist?: PlaylistResolvers<ContextType>;
   PlaylistTrack?: PlaylistTrackResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Recent?: RecentResolvers<ContextType>;
   Search?: SearchResolvers<ContextType>;
   Tile?: TileResolvers<ContextType>;
   Track?: TrackResolvers<ContextType>;

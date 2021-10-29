@@ -2,6 +2,7 @@ import {
   Album,
   Artist,
   EType,
+  Recent,
   Playlist,
   PlaylistTrack,
   Search,
@@ -218,20 +219,21 @@ export default class SpotifyAPI extends DataSource<IContext> {
     return body.items.map(item => this.albumReducer(item.album))
   }
 
-  async getPlayHistory(): Promise<Track[]> {
+  async getPlayHistory(): Promise<Recent[]> {
     const { body } = await this.spotifyAPI.getMyRecentlyPlayedTracks()
 
+    type TTrack = SpotifyApi.TrackObjectSimplified & { custom_id: string }
     /**
      * Remove continuously repeating tracks
      * When a track is played in loop, only the most recent should be returned
      * Also make IDs of tracks that may repeat unique by concatenating the ID and the timestamp
      */
-    const compactList = (
-      tracks: SpotifyApi.PlayHistoryObject[]
-    ): SpotifyApi.PlayHistoryObject[] => {
+    const compactList = (tracks: SpotifyApi.PlayHistoryObject[]) => {
       const copiedItems = [...tracks]
 
-      copiedItems.forEach(({ track: currentTrack, played_at }, index) => {
+      copiedItems.forEach(({ track, played_at }, index) => {
+        const currentTrack = track as TTrack
+
         const nextItem =
           index < copiedItems.length ? copiedItems[index + 1] : undefined
 
@@ -239,7 +241,7 @@ export default class SpotifyAPI extends DataSource<IContext> {
           copiedItems.splice(copiedItems.indexOf(nextItem), 1)
         }
 
-        currentTrack.id = currentTrack.id + played_at
+        currentTrack.custom_id = currentTrack.id + played_at
       })
 
       return copiedItems
@@ -247,7 +249,10 @@ export default class SpotifyAPI extends DataSource<IContext> {
 
     const reducedHistory = compactList(body.items)
 
-    return reducedHistory.map(item => this.trackReducer(item.track))
+    return reducedHistory.map(item => ({
+      ...this.trackReducer(item.track),
+      custom_id: (item.track as TTrack).custom_id
+    })) as Recent[]
   }
 
   async getTrack(id: string): Promise<Track> {

@@ -1,4 +1,5 @@
 import {
+  Recent,
   useGetNewReleasesQuery,
   useGetPlaylistsQuery,
   useGetRecentlyPlayedQuery,
@@ -45,15 +46,19 @@ const Home = () => {
               {collections[index]}
             </Typography>
             <Box display="flex" gap={3} overflow="scroll" px={3} pt={2} pb={3}>
-              {collection?.map(({ id, name, type, cover_image }) => (
-                <Tile
-                  key={id}
-                  id={id}
-                  name={name}
-                  type={type}
-                  cover_image={cover_image}
-                />
-              ))}
+              {collection?.map(({ id, name, type, cover_image, ...rest }) => {
+                const { custom_id } = rest as Recent
+
+                return (
+                  <Tile
+                    key={custom_id || id}
+                    id={id}
+                    name={name}
+                    type={type}
+                    cover_image={cover_image}
+                  />
+                )
+              })}
             </Box>
           </Box>
         )
