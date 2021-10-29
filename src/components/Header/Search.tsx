@@ -18,7 +18,7 @@ const Search = () => {
   const searchParams = new URLSearchParams(window.location.search)
 
   const [input, setInput] = useState(() => searchParams.get("query") || "")
-  const [search, { data, loading }] = useSearchLazyQuery({
+  const [search, { loading, networkStatus }] = useSearchLazyQuery({
     variables: { query: input }
   })
 
@@ -32,13 +32,15 @@ const Search = () => {
   }, [input])
 
   useEffect(() => {
-    if (data?.search) {
+    if (networkStatus === 7) {
       const url = new URL(window.location.href)
       url.searchParams.set("query", input)
 
       input ? replace(url.pathname + url.search) : replace(url.pathname)
+    } else if (networkStatus === 8) {
+      replace("/search")
     }
-  }, [data?.search])
+  }, [networkStatus])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value)
@@ -71,7 +73,7 @@ const Search = () => {
                 transitions.create("background-color", {
                   duration: transitions.duration.shortest
                 }),
-              "&:hover, &:focus": {
+              "&:hover, &:focus-within": {
                 bgcolor: ({ palette }) =>
                   palette.mode === "light" ? "#fffc" : "HighlightText"
               }

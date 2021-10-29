@@ -17,7 +17,11 @@ const InfoDialog: React.FC<IProps> = ({ open, handleClose }) => {
     <Dialog
       open={open}
       onClose={handleClose}
-      sx={{ backdropFilter: "blur(3px)", bgcolor: "#fff8" }}
+      sx={{
+        backdropFilter: "blur(3px)",
+        bgcolor: ({ palette }) =>
+          palette.mode === "light" ? "#fff8" : "transparent"
+      }}
     >
       <DialogTitle sx={{ fontSize: "1.12rem", fontWeight: 600 }}>
         Premium Spotify Account required for playback
