@@ -1,4 +1,5 @@
 import { useSearchLazyQuery } from "@/generated/graphql"
+import useDebounce from "@/hooks/useDebounce"
 import { SearchRounded } from "@mui/icons-material"
 import {
   CircularProgress,
@@ -7,29 +8,25 @@ import {
   OutlinedInput
 } from "@mui/material"
 import { Box } from "@mui/system"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 
 const Search = () => {
-  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const { pathname } = useLocation()
   const { replace } = useHistory()
 
   const searchParams = new URLSearchParams(window.location.search)
-
   const [input, setInput] = useState(() => searchParams.get("query") || "")
+
+  const searchQuery = useDebounce(input, 500)
+
   const [search, { loading, networkStatus }] = useSearchLazyQuery({
-    variables: { query: input }
+    variables: { query: searchQuery }
   })
 
   useEffect(() => {
-    clearTimeout(timerRef.current as unknown as number)
-    timerRef.current = setTimeout(() => {
-      input && search()
-    }, 500)
-
-    return () => clearTimeout(timerRef.current as unknown as number)
-  }, [input])
+    searchQuery && search()
+  }, [searchQuery, search])
 
   useEffect(() => {
     if (networkStatus === 7) {
