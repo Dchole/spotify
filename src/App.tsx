@@ -22,7 +22,7 @@ const Artist = lazy(() => import("#/Artist"))
 const Library = lazy(() => import("#/Library"))
 const Search = lazy(() => import("#/Search"))
 const Playlist = lazy(() => import("#/Playlist"))
-const InfoDialog = lazy(() => import("~/InfoDialog"))
+const InfoDialog = lazy(() => import("~/Dialogs/Info"))
 
 const App = () => {
   const { token } = useAuth()

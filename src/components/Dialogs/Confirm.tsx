@@ -4,22 +4,36 @@ import { useLocation } from "react-router"
 interface IProps {
   open: boolean
   handleClose: () => void
+  confirm: () => void
 }
 
-const ConfirmDialog: React.FC<IProps> = ({ open, handleClose }) => {
+const ConfirmDialog: React.FC<IProps> = ({ open, confirm, handleClose }) => {
   const { pathname } = useLocation()
   const onArtistPage = pathname.split("/")[1]
 
+  const handleConfirm = () => {
+    confirm()
+    handleClose()
+  }
+
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Are you sure</DialogTitle>
-      <DialogActions>
+      <DialogTitle sx={{ textAlign: "center", fontSize: "1.6rem" }}>
+        Are you sure?
+      </DialogTitle>
+      <DialogActions
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
         <Button onClick={handleClose}>Cancel</Button>
         <Button
           color="error"
           variant="contained"
-          onClick={handleClose}
-          sx={{ borderRadius: "50%" }}
+          onClick={handleConfirm}
+          sx={{ borderRadius: 5 }}
           disableElevation
         >
           {onArtistPage ? "Unfollow" : "Delete"}

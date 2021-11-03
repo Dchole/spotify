@@ -1,19 +1,31 @@
-import { EType, GetArtistQuery, useGetArtistQuery } from "@/generated/graphql"
+import {
+  EType,
+  GetArtistQuery,
+  useGetArtistQuery,
+  useGetFollowedArtistsQuery
+} from "@/generated/graphql"
 import { ChevronRight, Share } from "@mui/icons-material"
 import { Button, Container, IconButton, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
-import { useEffect, useState } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import { useParams } from "react-router"
 import ArtistTracks from "~/ArtistTracks"
 import Showcase from "~/Showcase"
 import Tile from "~/Tile"
 import useGroupPlay from "@/hooks/useGroupPlay"
 import GroupPlayButton from "~/GroupPlayButton"
+import { spotifyApi } from "@/lib"
+
+const ConfirmDialog = lazy(() => import("~/Dialogs/Confirm"))
 
 const Artist = () => {
   const { id } = useParams<{ id: string }>()
   const artist = useGetArtistQuery({ variables: { id } }).data?.artist
+  const followedArtists = useGetFollowedArtistsQuery().data?.followed_artists
+  const [openConfirm, setOpenConfirm] = useState(false)
   const [showingMore, setShowingMore] = useState(false)
+  const [following, setFollowing] = useState(false)
+  const [pendingFollow, setPendingFollow] = useState(false)
 
   const [showingTracks, setShowingTracks] = useState<
     GetArtistQuery["artist"]["tracks"] | undefined
@@ -29,11 +41,41 @@ const Artist = () => {
     isTrackPlaying
   } = useGroupPlay(artist?.id)
 
-  const showMore = () => setShowingMore(!showingMore)
-
   useEffect(() => {
     setShowingTracks(showingMore ? artist?.tracks : artist?.tracks?.slice(0, 4))
   }, [showingMore, artist?.tracks])
+
+  useEffect(() => {
+    const isFollowing = followedArtists?.some(({ id }) => id === artist?.id)
+    setFollowing(Boolean(isFollowing))
+  }, [followedArtists])
+
+  const showMore = () => setShowingMore(!showingMore)
+
+  const handleOpenConfirm = () => setOpenConfirm(true)
+  const handleCloseConfirm = () => setOpenConfirm(false)
+
+  const followArtist = () => {
+    try {
+      setPendingFollow(true)
+      artist && spotifyApi.followArtists([artist.id])
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setPendingFollow(false)
+    }
+  }
+
+  const unfollowArtist = () => {
+    try {
+      setPendingFollow(true)
+      artist && spotifyApi.unfollowArtists([artist.id])
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setPendingFollow(false)
+    }
+  }
 
   return (
     <main>
@@ -51,8 +93,13 @@ const Artist = () => {
           sx={{ mb: 3 }}
         >
           <Stack direction="row" spacing={2}>
-            <Button variant="contained" disableElevation>
-              Follow
+            <Button
+              variant="contained"
+              disableElevation
+              onClick={following ? handleOpenConfirm : followArtist}
+              disabled={pendingFollow}
+            >
+              {following ? "Unfollow" : "Follow"}
             </Button>
             <IconButton aria-label="share">
               <Share />
@@ -133,6 +180,13 @@ const Artist = () => {
           ))}
         </Stack>
       </Container>
+      <Suspense fallback={<div />}>
+        <ConfirmDialog
+          open={openConfirm}
+          confirm={unfollowArtist}
+          handleClose={handleCloseConfirm}
+        />
+      </Suspense>
     </main>
   )
 }
