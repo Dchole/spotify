@@ -57,6 +57,21 @@ const ColorModeProvider: React.FC = ({ children }) => {
           },
           typography: {
             fontFamily: "'Nunito', sans-serif"
+          },
+          components: {
+            MuiDialog: {
+              styleOverrides: {
+                root: {
+                  backdropFilter: "blur(3px)",
+                  backgroundColor: mode === "light" ? "#fff8" : "transparent"
+                }
+              }
+            },
+            MuiDialogTitle: {
+              styleOverrides: {
+                root: { fontSize: "1.12rem", fontWeight: 600 }
+              }
+            }
           }
         })
       ),
