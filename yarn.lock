@@ -6951,6 +6951,11 @@ snakeize@^0.1.0:
   resolved "https://registry.yarnpkg.com/snakeize/-/snakeize-0.1.0.tgz#10c088d8b58eb076b3229bb5a04e232ce126422d"
   integrity sha1-EMCI2LWOsHazIpu1oE4jLOEmQi0=
 
+sort-objects-list@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/sort-objects-list/-/sort-objects-list-1.0.0.tgz#cd2f0f174bc560d25ca78dabd7e566647f2df677"
+  integrity sha512-53zKr9NBTqbXGGwLi2PsDCEGJBg6n/s3MEZPNbjbW1toxseNVWwwxqpcLk2jTtfe8ri/SPhhGEcIK+lMO9Vn1w==
+
 source-map-js@^0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-0.6.2.tgz#0bb5de631b41cfbda6cfba8bd05a80efdfd2385e"

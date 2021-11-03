@@ -12,11 +12,11 @@ import PlaylistControls from "~/PlaylistControls"
 import Showcase from "~/Showcase"
 import useGroupPlay from "@/hooks/useGroupPlay"
 import LikedTracks from "~/LikedTracksListing"
+import { sort } from "@/utils"
 
 export type TOrder =
   | ""
   | "title"
-  | "date"
   | "album"
   | "artist"
   | "duration"
@@ -35,10 +35,44 @@ const Playlist = () => {
   const likedSongs = likedSongsData?.liked_songs
 
   const [order, setOrder] = useState<TOrder>("")
+  const [sortedTracks, setSortedTracks] = useState(playlist?.tracks)
+  const [sortedLikedTracks, setSortedLikedTracks] = useState(likedSongs)
 
   useEffect(() => {
     if (id === "liked-songs") getLikedSongs()
   }, [getLikedSongs])
+
+  useEffect(() => {
+    setSortedTracks(playlist?.tracks)
+  }, [playlist])
+
+  useEffect(() => {
+    const playlistMapping = {
+      title: "track.name",
+      album: "track.album.name",
+      artist: "track.artists[0].name",
+      duration: "track.duration",
+      "": "added_at",
+      "date added": "added_at"
+    }
+
+    const likedSongsMapping = {
+      title: "name",
+      album: "album.name",
+      artist: "artists[0].name",
+      duration: "duration",
+      "": "added_at",
+      "date added": "added_at"
+    }
+
+    const sortedTracks =
+      playlist && sort(playlist.tracks || [], playlistMapping[order])
+    const sortedLiked =
+      likedSongs && sort(likedSongs || [], likedSongsMapping[order])
+
+    sortedTracks && setSortedTracks(sortedTracks)
+    sortedLiked && setSortedLikedTracks(sortedLiked)
+  }, [order])
 
   const {
     groupPlaying,
@@ -89,7 +123,7 @@ const Playlist = () => {
       </Container>
       {id === "liked-songs" ? (
         <LikedTracks
-          tracks={likedSongs}
+          tracks={sortedLikedTracks}
           playTrack={playTrack}
           pauseTrack={pauseTrack}
           playingTrack={playingTrack}
@@ -97,7 +131,7 @@ const Playlist = () => {
         />
       ) : (
         <PlaylistTracks
-          tracks={playlist?.tracks}
+          tracks={sortedTracks}
           playTrack={playTrack}
           pauseTrack={pauseTrack}
           playingTrack={playingTrack}

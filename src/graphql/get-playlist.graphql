@@ -18,6 +18,7 @@ query getPlaylist($id: ID!) {
         id
         name
         uri
+        duration
         cover_image
         artists {
           id
