@@ -4,8 +4,8 @@ import {
   useGetArtistQuery,
   useGetFollowedArtistsQuery
 } from "@/generated/graphql"
-import { ChevronRight, Share } from "@mui/icons-material"
-import { Button, Container, IconButton, Stack, Typography } from "@mui/material"
+import { ChevronRight } from "@mui/icons-material"
+import { Button, Container, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { lazy, Suspense, useEffect, useState } from "react"
 import { useParams } from "react-router"
@@ -15,11 +15,14 @@ import Tile from "~/Tile"
 import useGroupPlay from "@/hooks/useGroupPlay"
 import GroupPlayButton from "~/GroupPlayButton"
 import { spotifyApi } from "@/lib"
+import { useSnackbar } from "notistack"
+import ShareButton from "~/ShareButton"
 
 const ConfirmDialog = lazy(() => import("~/Dialogs/Confirm"))
 
 const Artist = () => {
   const { id } = useParams<{ id: string }>()
+  const { enqueueSnackbar } = useSnackbar()
   const artist = useGetArtistQuery({ variables: { id } }).data?.artist
   const followedArtists = useGetFollowedArtistsQuery().data?.followed_artists
   const [openConfirm, setOpenConfirm] = useState(false)
@@ -60,7 +63,7 @@ const Artist = () => {
       setPendingFollow(true)
       artist && spotifyApi.followArtists([artist.id])
     } catch (error) {
-      console.log(error)
+      enqueueSnackbar("Failed to follow artist", { variant: "error" })
     } finally {
       setPendingFollow(false)
     }
@@ -71,7 +74,7 @@ const Artist = () => {
       setPendingFollow(true)
       artist && spotifyApi.unfollowArtists([artist.id])
     } catch (error) {
-      console.log(error)
+      enqueueSnackbar("Failed to unfollow artist", { variant: "error" })
     } finally {
       setPendingFollow(false)
     }
@@ -94,16 +97,14 @@ const Artist = () => {
         >
           <Stack direction="row" spacing={2}>
             <Button
-              variant="contained"
+              variant={following ? "outlined" : "contained"}
               disableElevation
               onClick={following ? handleOpenConfirm : followArtist}
               disabled={pendingFollow}
             >
               {following ? "Unfollow" : "Follow"}
             </Button>
-            <IconButton aria-label="share">
-              <Share />
-            </IconButton>
+            <ShareButton />
           </Stack>
           <GroupPlayButton
             handlePlay={handlePlay}

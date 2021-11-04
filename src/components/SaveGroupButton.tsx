@@ -2,13 +2,14 @@ import {
   useGetPlaylistsLazyQuery,
   useGetSavedAlbumsLazyQuery
 } from "@/generated/graphql"
-import { useEffect, useState } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import { useLocation } from "react-router"
 import { spotifyApi } from "@/lib"
 import { Favorite, FavoriteBorder } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
 import { useSnackbar } from "notistack"
 
+const ConfirmDialog = lazy(() => import("./Dialogs/Confirm"))
 interface IProps {
   group_id?: string
 }
@@ -18,6 +19,7 @@ const SaveGroupButton: React.FC<IProps> = ({ group_id }) => {
   const { pathname } = useLocation()
   const [type, setType] = useState("")
   const [saved, setSaved] = useState(false)
+  const [openConfirm, setOpenConfirm] = useState(false)
   const [getAlbums, { data: albumsData, refetch: refetchAlbums }] =
     useGetSavedAlbumsLazyQuery()
   const [getPlaylists, { data: playlistsData, refetch: refetchPlaylists }] =
@@ -51,6 +53,9 @@ const SaveGroupButton: React.FC<IProps> = ({ group_id }) => {
 
     setSaved(Boolean(albumSaved || playlistSaved))
   }, [albumsData, playlistsData, group_id])
+
+  const handleOpen = () => setOpenConfirm(true)
+  const handleClose = () => setOpenConfirm(false)
 
   const addToFavourite = async () => {
     setSaved(true)
@@ -90,11 +95,18 @@ const SaveGroupButton: React.FC<IProps> = ({ group_id }) => {
     <>
       <IconButton
         aria-label={saved ? `remove ${type}` : `add ${type} to saved ${type}s`}
-        onClick={saved ? removeFromFavourite : addToFavourite}
+        onClick={saved ? handleOpen : addToFavourite}
         color={saved ? "secondary" : undefined}
       >
         {saved ? <Favorite /> : <FavoriteBorder />}
       </IconButton>
+      <Suspense fallback={<div />}>
+        <ConfirmDialog
+          open={openConfirm}
+          confirm={removeFromFavourite}
+          handleClose={handleClose}
+        />
+      </Suspense>
     </>
   )
 }

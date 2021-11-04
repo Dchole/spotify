@@ -1,12 +1,12 @@
 import { EType, useGetAlbumQuery } from "@/generated/graphql"
-import { Share } from "@mui/icons-material"
-import { Container, IconButton, Stack } from "@mui/material"
+import { Container, Stack } from "@mui/material"
 import { useParams } from "react-router"
 import AlbumTracks from "~/AlbumTracks"
 import Showcase from "~/Showcase"
 import useGroupPlay from "@/hooks/useGroupPlay"
 import GroupPlayButton from "~/GroupPlayButton"
 import SaveGroupButton from "~/SaveGroupButton"
+import ShareButton from "~/ShareButton"
 
 const Album = () => {
   const { id } = useParams<{ id: string }>()
@@ -42,9 +42,7 @@ const Album = () => {
         >
           <Stack spacing={2} direction="row">
             <SaveGroupButton group_id={album?.id} />
-            <IconButton aria-label="share album">
-              <Share />
-            </IconButton>
+            <ShareButton />
           </Stack>
           <GroupPlayButton
             handlePlay={handlePlay}

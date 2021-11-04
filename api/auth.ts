@@ -12,7 +12,9 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
     "user-read-private",
     "user-read-playback-state",
     "user-modify-playback-state",
-    "user-read-currently-playing"
+    "user-read-currently-playing",
+    "playlist-modify-private",
+    "playlist-modify-public"
   ]
 
   if (req.cookies.refresh_token) {

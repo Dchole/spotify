@@ -9,7 +9,7 @@ interface IProps {
 
 const ConfirmDialog: React.FC<IProps> = ({ open, confirm, handleClose }) => {
   const { pathname } = useLocation()
-  const onArtistPage = pathname.split("/")[1]
+  const onArtistPage = pathname.split("/")[1] === "artists"
 
   const handleConfirm = () => {
     confirm()
