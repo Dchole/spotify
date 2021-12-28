@@ -18,7 +18,7 @@ const Search = () => {
 
   const [search, { data }] = useSearchLazyQuery({
     variables: { query },
-    fetchPolicy: "cache-only"
+    fetchPolicy: "cache-first"
   })
 
   useEffect(() => {
