@@ -31,6 +31,8 @@ const Header = () => {
     setAnchorEl(event.currentTarget)
   const handleClose = () => setAnchorEl(null)
 
+  const goBack = () => window.history.back()
+
   return (
     <AppBar
       elevation={palette.mode === "light" ? 0 : 5}
@@ -38,11 +40,7 @@ const Header = () => {
     >
       <Toolbar>
         {pathname !== "/search" && (
-          <IconButton
-            aria-label="go back"
-            onClick={window.history.back}
-            sx={{ zIndex: 0 }}
-          >
+          <IconButton aria-label="go back" onClick={goBack} sx={{ zIndex: 0 }}>
             <ArrowBack />
           </IconButton>
         )}
