@@ -28,7 +28,7 @@ const Playlist = () => {
 
   const [getLikedSongs, { data: likedSongsData }] = useGetLikedSongsLazyQuery()
   const { data: playlistsData } = useGetPlaylistQuery({
-    variables: { id }
+    variables: { id: id || "" }
   })
 
   const playlist = playlistsData?.playlist

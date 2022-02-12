@@ -23,7 +23,7 @@ const ConfirmDialog = lazy(() => import("~/Dialogs/Confirm"))
 const Artist = () => {
   const { id } = useParams<{ id: string }>()
   const { enqueueSnackbar } = useSnackbar()
-  const artist = useGetArtistQuery({ variables: { id } }).data?.artist
+  const artist = useGetArtistQuery({ variables: { id: id || "" } }).data?.artist
   const followedArtists = useGetFollowedArtistsQuery().data?.followed_artists
   const [openConfirm, setOpenConfirm] = useState(false)
   const [showingMore, setShowingMore] = useState(false)

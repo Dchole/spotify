@@ -21,7 +21,7 @@ const Volume = lazy(() => import("~/Volume"))
 
 const Track = () => {
   const { id } = useParams<{ id: string }>()
-  const track = useGetTrackQuery({ variables: { id } }).data?.track
+  const track = useGetTrackQuery({ variables: { id: id || "" } }).data?.track
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)

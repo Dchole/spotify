@@ -10,7 +10,7 @@ import ShareButton from "~/ShareButton"
 
 const Album = () => {
   const { id } = useParams<{ id: string }>()
-  const album = useGetAlbumQuery({ variables: { id } }).data?.album
+  const album = useGetAlbumQuery({ variables: { id: id || "" } }).data?.album
 
   const {
     playTrack,
