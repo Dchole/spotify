@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from "react"
-import { useHistory, useLocation } from "react-router"
+import { useLocation } from "react-router-dom"
 import { Box } from "@mui/system"
 import {
   AppBar,
@@ -23,7 +23,6 @@ const Header = () => {
   const { data } = useGetUserQuery()
   const { showBanner, hideBanner } = usePlayback()
   const { palette } = useTheme()
-  const { goBack } = useHistory()
   const { pathname } = useLocation()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const deepLevel = pathname.split("/").length > 2
@@ -39,7 +38,11 @@ const Header = () => {
     >
       <Toolbar>
         {pathname !== "/search" && (
-          <IconButton aria-label="go back" onClick={goBack} sx={{ zIndex: 0 }}>
+          <IconButton
+            aria-label="go back"
+            onClick={window.history.back}
+            sx={{ zIndex: 0 }}
+          >
             <ArrowBack />
           </IconButton>
         )}

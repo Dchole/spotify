@@ -7,7 +7,7 @@ import {
   useReducer,
   useState
 } from "react"
-import { useHistory } from "react-router"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "./Auth"
 import { initialState, playbackReducer, TState } from "./playbackReducer"
 import { useSnackbar } from "notistack"
@@ -33,10 +33,11 @@ interface IContextProps {
 const PlaybackContext = createContext<IContextProps | null>(null)
 
 const PlaybackProvider: React.FC = ({ children }) => {
+  const navigate = useNavigate()
+  const { location } = useLocation()
   const { token } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
   const [showBanner, setShowBanner] = useState(false)
-  const { push, location } = useHistory()
   const [loading, setLoading] = useState(false)
   const [player, setPlayer] = useState<Spotify.Player | null>(null)
   const [device_id, setDevice_id] = useState("")
@@ -105,7 +106,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
           trackPage &&
           state.track_window.current_track.id !== playback.current_track
         ) {
-          push(`/tracks/${state.track_window.current_track.id}`)
+          navigate(`/tracks/${state.track_window.current_track.id}`)
         }
 
         dispatch({

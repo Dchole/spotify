@@ -1,6 +1,6 @@
 import { EType, useGetAlbumQuery } from "@/generated/graphql"
 import { Container, Stack } from "@mui/material"
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import AlbumTracks from "~/AlbumTracks"
 import Showcase from "~/Showcase"
 import useGroupPlay from "@/hooks/useGroupPlay"

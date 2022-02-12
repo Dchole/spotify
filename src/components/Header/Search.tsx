@@ -9,11 +9,11 @@ import {
 } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
-import { useHistory, useLocation } from "react-router"
+import { useNavigate, useLocation } from "react-router-dom"
 
 const Search = () => {
   const { pathname } = useLocation()
-  const { replace } = useHistory()
+  const navigate = useNavigate()
 
   const searchParams = new URLSearchParams(window.location.search)
   const [input, setInput] = useState(() => searchParams.get("query") || "")
@@ -33,9 +33,11 @@ const Search = () => {
       const url = new URL(window.location.href)
       url.searchParams.set("query", input)
 
-      input ? replace(url.pathname + url.search) : replace(url.pathname)
+      input
+        ? navigate(url.pathname + url.search, { replace: true })
+        : navigate(url.pathname, { replace: true })
     } else if (networkStatus === 8) {
-      replace("/search")
+      navigate("/search", { replace: true })
     }
   }, [networkStatus])
 

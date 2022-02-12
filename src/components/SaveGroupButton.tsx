@@ -3,7 +3,7 @@ import {
   useGetSavedAlbumsLazyQuery
 } from "@/generated/graphql"
 import { lazy, Suspense, useEffect, useState } from "react"
-import { useLocation } from "react-router"
+import { useLocation } from "react-router-dom"
 import { spotifyApi } from "@/lib"
 import { Favorite, FavoriteBorder } from "@mui/icons-material"
 import { IconButton } from "@mui/material"

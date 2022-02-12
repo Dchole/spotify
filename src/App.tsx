@@ -5,7 +5,7 @@ import "@fontsource/montserrat/700.css"
 import "@/styles/global.css"
 
 import { lazy, Suspense, useEffect, useState } from "react"
-import { Route, Switch } from "react-router"
+import { Route, Routes } from "react-router-dom"
 import { CssBaseline, ThemeProvider } from "@mui/material"
 import { SnackbarProvider } from "notistack"
 import { useAuth } from "~/context/Auth"
@@ -39,21 +39,21 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={2}>
         <PlaybackProvider>
-          <Layout>
-            <CssBaseline />
-            <Suspense fallback={<PageSpinner />}>
-              <Switch>
-                <Route path="/" component={Home} exact />
-                <Route path="/auth" component={Auth} />
-                <Route path="/search" component={Search} />
-                <Route path="/library" component={Library} />
-                <Route path="/tracks/:id" component={Track} />
-                <Route path="/albums/:id" component={Album} />
-                <Route path="/artists/:id" component={Artist} />
-                <Route path="/playlists/:id" component={Playlist} />
-              </Switch>
-            </Suspense>
-          </Layout>
+          <CssBaseline />
+          <Suspense fallback={<PageSpinner />}>
+            <Routes>
+              <Route path="/*" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="auth" element={<Auth />} />
+                <Route path="search" element={<Search />} />
+                <Route path="library" element={<Library />} />
+                <Route path="tracks/:id" element={<Track />} />
+                <Route path="albums/:id" element={<Album />} />
+                <Route path="artists/:id" element={<Artist />} />
+                <Route path="playlists/:id" element={<Playlist />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </PlaybackProvider>
       </SnackbarProvider>
       <Suspense fallback={<div />}>

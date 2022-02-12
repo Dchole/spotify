@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material"
-import { useLocation } from "react-router"
+import { useLocation } from "react-router-dom"
 
 interface IProps {
   open: boolean

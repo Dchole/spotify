@@ -1,12 +1,15 @@
-import { Box } from "@mui/system"
+import { Outlet } from "react-router-dom"
+import Box from "@mui/system/Box"
 import Header from "./Header"
 import Navigation from "./Navigation"
 
-const Layout: React.FC = ({ children }) => {
+const Layout = () => {
   return (
     <>
       <Header />
-      <Box sx={{ my: 9 }}>{children}</Box>
+      <Box sx={{ my: 9 }}>
+        <Outlet />
+      </Box>
       <Navigation />
     </>
   )

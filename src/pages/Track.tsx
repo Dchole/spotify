@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material"
 import { lazy, useCallback, useEffect, useState } from "react"
 import { useGetTrackQuery } from "@/generated/graphql"
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import { usePlayback } from "~/context/Playback"
 import { Link } from "react-router-dom"
 import useProgress from "@/hooks/useProgress"

@@ -1,10 +1,10 @@
 import { useEffect } from "react"
-import { useHistory } from "react-router"
+import { useNavigate } from "react-router-dom"
 import { useAuth } from "~/context/Auth"
 
 const Auth = () => {
   const { code, setToken } = useAuth()
-  const { replace } = useHistory()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (code) {
@@ -21,7 +21,7 @@ const Auth = () => {
           if (!access_token) throw new Error("Something went wrong")
 
           setToken(access_token)
-          replace("/")
+          navigate("/", { replace: true })
         })
         .catch(err => console.log(err.message))
     }
