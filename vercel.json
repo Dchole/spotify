@@ -1,0 +1,26 @@
+{
+  "headers": [
+    {
+      "source": "/api/graphql",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://studio.apollographql.com"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "POST"
+        }
+      ]
+    }
+  ],
+  "rewrites": [{ "source": "/:route((?!api).+)", "destination": "/index.html" }]
+}
