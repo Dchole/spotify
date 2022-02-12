@@ -34,7 +34,7 @@ const PlaybackContext = createContext<IContextProps | null>(null)
 
 const PlaybackProvider: React.FC = ({ children }) => {
   const navigate = useNavigate()
-  const { location } = useLocation()
+  const { pathname } = useLocation()
   const { token } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
   const [showBanner, setShowBanner] = useState(false)
@@ -100,7 +100,7 @@ const PlaybackProvider: React.FC = ({ children }) => {
 
     player?.addListener("player_state_changed", state => {
       if (state) {
-        const trackPage = location.pathname.split("/")[1] === "tracks"
+        const trackPage = pathname.split("/")[1] === "tracks"
 
         if (
           trackPage &&

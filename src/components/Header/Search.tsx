@@ -1,48 +1,32 @@
 import { useSearchLazyQuery } from "@/generated/graphql"
-import useDebounce from "@/hooks/useDebounce"
 import { SearchRounded } from "@mui/icons-material"
 import {
   CircularProgress,
   Collapse,
   InputAdornment,
-  OutlinedInput
+  OutlinedInput,
+  debounce
 } from "@mui/material"
 import { Box } from "@mui/system"
-import { useEffect, useState } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useEffect } from "react"
+import { useLocation, useSearchParams } from "react-router-dom"
 
 const Search = () => {
   const { pathname } = useLocation()
-  const navigate = useNavigate()
-
-  const searchParams = new URLSearchParams(window.location.search)
-  const [input, setInput] = useState(() => searchParams.get("query") || "")
-
-  const searchQuery = useDebounce(input, 500)
-
-  const [search, { loading, networkStatus }] = useSearchLazyQuery({
-    variables: { query: searchQuery }
-  })
+  const [searchParams, setSearchParams] = useSearchParams(location.search)
+  const [search, { loading }] = useSearchLazyQuery()
 
   useEffect(() => {
-    searchQuery && search()
-  }, [searchQuery, search])
-
-  useEffect(() => {
-    if (networkStatus === 7) {
-      const url = new URL(window.location.href)
-      url.searchParams.set("query", input)
-
-      input
-        ? navigate(url.pathname + url.search, { replace: true })
-        : navigate(url.pathname, { replace: true })
-    } else if (networkStatus === 8) {
-      navigate("/search", { replace: true })
-    }
-  }, [networkStatus])
+    const query = searchParams.get("query")
+    if (query) search({ variables: { query } })
+  }, [searchParams, search])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value)
+    const { value } = event.target
+
+    const searchParams = new URLSearchParams(window.location.search)
+    value ? searchParams.set("query", value) : searchParams.delete("query")
+    setSearchParams(searchParams.toString())
   }
 
   return (
@@ -58,9 +42,9 @@ const Search = () => {
             type="search"
             color="secondary"
             margin="dense"
-            value={input}
+            defaultValue={searchParams.get("query") || ""}
             placeholder="Songs, Albums, Artists and Playlists"
-            onChange={handleChange}
+            onChange={debounce(handleChange, 600)}
             inputProps={{
               "aria-label": "search for songs, albums, artists and playlists"
             }}

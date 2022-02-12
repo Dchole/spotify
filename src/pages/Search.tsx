@@ -10,20 +10,21 @@ import {
 } from "@mui/material"
 import { visuallyHidden } from "@mui/utils"
 import { useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 
 const Search = () => {
-  const searchParams = new URLSearchParams(window.location.search)
-  const query = searchParams.get("query") || ""
-
-  const [search, { data }] = useSearchLazyQuery({
-    variables: { query },
-    fetchPolicy: "cache-first"
-  })
+  const [searchParams] = useSearchParams(window.location.search)
+  const [search, { data }] = useSearchLazyQuery()
 
   useEffect(() => {
-    query && search()
-  }, [search])
+    const query = searchParams.get("query") || ""
+
+    if (query) {
+      search({
+        variables: { query }
+      })
+    }
+  }, [searchParams, search])
 
   return (
     <main>
